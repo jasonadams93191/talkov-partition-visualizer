@@ -1469,7 +1469,6 @@ function MatterTab() {
     { id: 'properties', label: 'Properties', icon: '🏡', count: MATTER.properties.length },
     { id: 'lis-pendens', label: 'Lis Pendens Records', icon: '🛡', count: MATTER.lisPendensRecords.length },
     { id: 'financials', label: 'Financials', icon: '💰', count: null },
-    { id: 'cotenancy', label: 'Cotenancy Ledger', icon: '⚖', count: null },
     { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
     { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
   ];
@@ -1554,7 +1553,6 @@ function MatterTab() {
           {relatedTab === 'properties' && <RelatedProperties />}
           {relatedTab === 'lis-pendens' && <RelatedLisPendens />}
           {relatedTab === 'financials' && <RelatedFinancials subTab={financialsSubTab} setSubTab={setFinancialsSubTab} />}
-          {relatedTab === 'cotenancy' && <RelatedLedger />}
           {relatedTab === 'prpa' && <RelatedPrpaClocks />}
           {relatedTab === 'case-calendar' && <RelatedCaseCalendar />}
           
@@ -2336,13 +2334,16 @@ function RelatedFinancials({ subTab, setSubTab }) {
         <button onClick={() => setSubTab('settlement-calculator')} className={`px-4 py-2 text-[12px] font-mont font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${subTab === 'settlement-calculator' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
           📊 Settlement Calculator
         </button>
+        <button onClick={() => setSubTab('cotenancy-ledger')} className={`px-4 py-2 text-[12px] font-mont font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${subTab === 'cotenancy-ledger' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
+          ⚖ Cotenancy Ledger
+        </button>
       </div>
       {subTab === 'financial-details' && <FinancialDetails />}
       {subTab === 'settlement-calculator' && <SettlementCalculator />}
+      {subTab === 'cotenancy-ledger' && <RelatedLedger />}
     </>
   );
 }
-
 function FinancialDetails() {
   const fd = MATTER.financialDetails;
   return (
