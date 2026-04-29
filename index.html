@@ -1840,45 +1840,88 @@ function MatterTimelineCard() {
 
 // SF Path component (chevron stages)
 function SfPath({ currentPhase }) {
+  const SHORT = {
+    INTAKE: 'Intake',
+    CONSULT: 'Consult',
+    PRELIT: 'Pre-Lit',
+    PLEAD: 'Pleadings',
+    DISC: 'Discovery',
+    PRPA_BRANCH: 'PRPA',
+    IJ: 'Interlocutory',
+    SALE: 'Sale',
+    ACCT: 'Accounting',
+    FEES: 'Fees',
+    CLOSE: 'Closeout',
+  };
+  const ICON = {
+    INTAKE: '📞',
+    CONSULT: '🤝',
+    PRELIT: '📋',
+    PLEAD: '📝',
+    DISC: '🔍',
+    PRPA_BRANCH: '⚖',
+    IJ: '🏛',
+    SALE: '💰',
+    ACCT: '📊',
+    FEES: '💵',
+    CLOSE: '✅',
+  };
+
+  const stepStyle = (idx, completed, current) => {
+    const baseBg = current ? '#0057B8' : completed ? '#28A745' : '#ffffff';
+    const baseColor = (current || completed) ? '#ffffff' : '#5e6c84';
+    const isFirst = idx === 0;
+    // Polygon: left notch (except first), right point. 10px notch.
+    const leftPad = isFirst ? 0 : 10;
+    const clipPath = isFirst
+      ? 'polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%)'
+      : 'polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%)';
+    return {
+      background: baseBg,
+      color: baseColor,
+      clipPath,
+      paddingLeft: `${10 + leftPad}px`,
+      paddingRight: '14px',
+      border: current ? 'none' : completed ? 'none' : '1px solid #dddbda',
+      borderRight: 'none',
+    };
+  };
+
   return (
-    <div className="bg-white border border-sf-border shadow-sm rounded overflow-x-auto">
-      <div className="flex items-stretch min-w-fit">
-        {PHASES.map((p) => {
-          const completed = p.num < currentPhase;
-          const current = p.num === currentPhase;
-          const cls = current
-            ? 'bg-acs-blue text-white font-bold'
-            : completed
-              ? 'bg-acs-success text-white'
-              : 'bg-white text-gray-600';
-          const chev = current
-            ? 'border-l-acs-blue'
-            : completed
-              ? 'border-l-acs-success'
-              : 'border-l-white';
-          return (
-            <div key={p.id} className="flex items-stretch flex-shrink-0">
-              <div className={`px-4 py-2 ${cls} font-mont text-[11.5px] flex items-center min-w-[110px] border-y border-sf-border ${p.num === 1 ? 'border-l rounded-l' : ''}`}>
-                <span className="opacity-70 mr-1.5">{p.num}.</span>
-                <span className="truncate">{p.title.split('—')[0].split('&')[0].trim().split(' ').slice(0, 2).join(' ')}</span>
-                {current && <span className="ml-1.5">→</span>}
+    <div className="bg-white border border-sf-border shadow-sm rounded">
+      <div className="flex items-stretch p-1.5 gap-px">
+        {/* Collapse arrow (matches SF) */}
+        <button className="px-2 py-1 mr-1 border border-sf-border rounded text-gray-500 hover:bg-gray-50 text-[12px] flex-shrink-0">›</button>
+
+        {/* Path steps */}
+        <div className="flex items-stretch flex-1 min-w-0">
+          {PHASES.map((p, idx) => {
+            const completed = p.num < currentPhase;
+            const current = p.num === currentPhase;
+            return (
+              <div
+                key={p.id}
+                className="flex-1 min-w-0 py-2 font-mont text-[11px] font-semibold flex items-center justify-center gap-1.5 truncate"
+                style={stepStyle(idx, completed, current)}
+                title={`Phase ${p.num}: ${p.title}`}
+              >
+                <span className="text-[12px] flex-shrink-0">{ICON[p.id]}</span>
+                <span className="truncate">{SHORT[p.id]}</span>
               </div>
-              <div className={`w-0 h-auto border-y-[19px] border-y-transparent border-l-[12px] ${chev}`}></div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="px-4 py-2 border-t border-sf-border bg-gray-50 flex justify-between items-center text-[11.5px]">
-        <div>
-          <span className="text-gray-500 font-mont uppercase mr-2">Current Phase:</span>
-          <span className="font-bold text-sf-navy">Phase {currentPhase}: {PHASES[currentPhase - 1]?.title}</span>
+            );
+          })}
         </div>
-        <button className="sf-action-btn primary">Mark Stage Complete</button>
+
+        {/* Mark Stage as Complete button */}
+        <button className="ml-2 bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-2 rounded font-mont font-semibold text-[11.5px] flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+          <span>✓</span>
+          <span className="hidden md:inline">Mark Stage as Complete</span>
+          <span className="md:hidden">Mark Complete</span>
+        </button>
       </div>
     </div>
   );
 }
-
 // Related list sub-components
 function RelatedParticipants({ subTab, setSubTab }) {
   const SUBS = [
