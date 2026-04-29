@@ -93,6 +93,200 @@ const TALKOV_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAA
 // DATA
 // =================================================================
 
+
+// =================================================================
+// FEEDBACK SYSTEM — per-section comments saved to localStorage
+// =================================================================
+
+const FeedbackContext = React.createContext({ feedback: [], addFeedback: () => {}, removeFeedback: () => {}, clearAll: () => {} });
+
+function FeedbackProvider({ children }) {
+  const [feedback, setFeedback] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('talkov-feedback') || '[]'); } catch { return []; }
+  });
+  React.useEffect(() => {
+    try { localStorage.setItem('talkov-feedback', JSON.stringify(feedback)); } catch {}
+  }, [feedback]);
+  const addFeedback = (entry) => setFeedback((prev) => [...prev, { ...entry, id: Date.now() + Math.random(), timestamp: new Date().toISOString() }]);
+  const removeFeedback = (id) => setFeedback((prev) => prev.filter((f) => f.id !== id));
+  const clearAll = () => { if (confirm('Clear all feedback? This cannot be undone.')) setFeedback([]); };
+  return (
+    <FeedbackContext.Provider value={{ feedback, addFeedback, removeFeedback, clearAll }}>
+      {children}
+    </FeedbackContext.Provider>
+  );
+}
+
+function useFeedback() { return React.useContext(FeedbackContext); }
+
+function Feedback({ section, label }) {
+  const { feedback, addFeedback } = useFeedback();
+  const [open, setOpen] = React.useState(false);
+  const [text, setText] = React.useState('');
+  const [rating, setRating] = React.useState(null);
+  const ref = React.useRef(null);
+  const sectionFeedback = feedback.filter((f) => f.section === section);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    setTimeout(() => document.addEventListener('mousedown', close), 50);
+    return () => document.removeEventListener('mousedown', close);
+  }, [open]);
+
+  const submit = (e) => {
+    e?.stopPropagation();
+    if (!text.trim() && !rating) return;
+    addFeedback({ section, label: label || section, text: text.trim(), rating });
+    setText('');
+    setRating(null);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative inline-block" ref={ref} onClick={(e) => e.stopPropagation()}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className={`text-[11px] px-1.5 py-0.5 rounded transition-colors ${sectionFeedback.length > 0 ? 'bg-acs-gold text-acs-charcoal hover:bg-yellow-400' : 'text-gray-400 hover:bg-gray-100 hover:text-acs-blue'}`}
+        title={`Feedback on "${label || section}"${sectionFeedback.length ? ` (${sectionFeedback.length})` : ''}`}
+      >
+        <span className="mr-0.5">💬</span>
+        {sectionFeedback.length > 0 && <span className="font-bold">{sectionFeedback.length}</span>}
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 z-50 bg-white border border-sf-border rounded-lg shadow-xl w-80 p-3" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-[12px] font-mont font-bold text-sf-navy">Feedback: <span className="text-acs-blue">{label || section}</span></div>
+            <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-acs-error text-[14px]">×</button>
+          </div>
+          <div className="flex gap-2 mb-2">
+            <button onClick={() => setRating(rating === 'up' ? null : 'up')} className={`px-3 py-1 rounded text-[14px] border ${rating === 'up' ? 'bg-acs-success text-white border-acs-success' : 'bg-white border-gray-300 hover:bg-green-50'}`}>👍</button>
+            <button onClick={() => setRating(rating === 'down' ? null : 'down')} className={`px-3 py-1 rounded text-[14px] border ${rating === 'down' ? 'bg-acs-error text-white border-acs-error' : 'bg-white border-gray-300 hover:bg-red-50'}`}>👎</button>
+            <span className="text-[10.5px] text-gray-500 self-center">Optional rating</span>
+          </div>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="What works? What needs to change?"
+            className="w-full border border-sf-border rounded p-2 text-[12px] focus:outline-none focus:border-acs-blue"
+            rows="3"
+            onKeyDown={(e) => { if (e.ctrlKey && e.key === 'Enter') submit(e); }}
+          />
+          <div className="flex justify-between items-center mt-2">
+            <span className="text-[10px] text-gray-400">Ctrl+Enter to save</span>
+            <button onClick={submit} className="bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-1 rounded text-[11.5px] font-mont font-semibold">Save Feedback</button>
+          </div>
+          {sectionFeedback.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="text-[10.5px] font-mont uppercase tracking-wider text-gray-500 mb-1.5">Previous Feedback ({sectionFeedback.length})</div>
+              <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                {sectionFeedback.map((f) => (
+                  <div key={f.id} className="bg-gray-50 px-2 py-1.5 rounded text-[11.5px] border-l-2 border-acs-blue">
+                    <div className="flex items-baseline justify-between mb-0.5">
+                      <span>{f.rating === 'up' ? '👍' : f.rating === 'down' ? '👎' : ''}</span>
+                      <span className="text-[10px] text-gray-400">{new Date(f.timestamp).toLocaleString()}</span>
+                    </div>
+                    {f.text && <div className="text-gray-700">{f.text}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FeedbackHub() {
+  const { feedback, removeFeedback, clearAll } = useFeedback();
+  const [open, setOpen] = React.useState(false);
+
+  const exportText = () => {
+    return feedback.map((f) => {
+      const r = f.rating === 'up' ? '[👍]' : f.rating === 'down' ? '[👎]' : '';
+      const time = new Date(f.timestamp).toLocaleString();
+      return `[${f.label}] ${r} ${f.text || '(rating only)'} — ${time}`;
+    }).join('\n\n');
+  };
+
+  const copyAll = async () => {
+    if (feedback.length === 0) return;
+    try { await navigator.clipboard.writeText(exportText()); alert('Feedback copied to clipboard.'); }
+    catch { alert('Copy failed; try the Download option instead.'); }
+  };
+
+  const download = () => {
+    const blob = new Blob([JSON.stringify(feedback, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `talkov-feedback-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(!open)}
+        className="fixed bottom-6 right-6 z-40 bg-acs-blue hover:bg-acs-dark-blue text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 font-mont font-semibold text-[12.5px]"
+        title="Feedback Hub"
+      >
+        <span>💬</span>
+        <span>Feedback</span>
+        {feedback.length > 0 && (
+          <span className="bg-acs-gold text-acs-charcoal rounded-full px-2 py-0.5 text-[10.5px] font-bold mono-num">{feedback.length}</span>
+        )}
+      </button>
+
+      {open && (
+        <div className="fixed bottom-20 right-6 z-40 bg-white border border-sf-border rounded-lg shadow-2xl w-[440px] max-w-[calc(100vw-3rem)] max-h-[80vh] flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border bg-gradient-to-r from-acs-blue to-acs-dark-blue text-white rounded-t-lg">
+            <div>
+              <div className="font-mont font-bold text-[14px]">Feedback Hub</div>
+              <div className="text-[11px] opacity-90">{feedback.length} {feedback.length === 1 ? 'item' : 'items'} saved locally</div>
+            </div>
+            <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white text-[18px]">×</button>
+          </div>
+
+          <div className="flex gap-1.5 px-3 py-2 border-b border-sf-border bg-gray-50">
+            <button onClick={copyAll} disabled={feedback.length === 0} className="sf-action-btn flex-1 disabled:opacity-50">📋 Copy All</button>
+            <button onClick={download} disabled={feedback.length === 0} className="sf-action-btn flex-1 disabled:opacity-50">⤓ Download JSON</button>
+            <button onClick={clearAll} disabled={feedback.length === 0} className="sf-action-btn disabled:opacity-50">🗑 Clear</button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {feedback.length === 0 ? (
+              <div className="text-center py-8 text-gray-400 text-[12.5px]">
+                No feedback yet. Click any 💬 button on the page to leave a comment.
+              </div>
+            ) : (
+              feedback.slice().reverse().map((f) => (
+                <div key={f.id} className="border border-sf-border rounded p-2.5 bg-white">
+                  <div className="flex items-baseline justify-between mb-1">
+                    <span className="font-mont font-bold text-[11.5px] text-acs-blue">{f.label}</span>
+                    <span className="text-[10px] text-gray-400 mono-num">{new Date(f.timestamp).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-[14px]">{f.rating === 'up' ? '👍' : f.rating === 'down' ? '👎' : '💬'}</span>
+                    <div className="flex-1 text-[12px] text-gray-700 leading-relaxed">{f.text || <em className="text-gray-400">(rating only)</em>}</div>
+                    <button onClick={() => removeFeedback(f.id)} className="text-gray-300 hover:text-acs-error text-[12px]" title="Remove">×</button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="px-3 py-2 border-t border-sf-border bg-gray-50 text-[10.5px] text-gray-500 rounded-b-lg">
+            Saved to your browser&apos;s local storage. Survives refresh; doesn&apos;t leave your device.
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 const PHASES = [
   {
     id: 'INTAKE', num: 1, title: 'Lead Intake & Qualification',
@@ -2131,7 +2325,8 @@ function MatterRecordView({ activeWorkspace, relatedTab, setRelatedTab, particip
                 <div className="text-[12px] text-gray-500 mt-0.5">{court} · Case No. {caseNumber} · Filed {filed}{ov.caption ? '' : ' · ' + MATTER.track}</div>
               </div>
             </div>
-            <div className="flex gap-1.5 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap items-center">
+              <Feedback section="matter.header" label="Matter Header" />
               <button className="sf-action-btn">+ Follow</button>
               <button className="sf-action-btn">Edit</button>
               <button className="sf-action-btn">Change Status</button>
@@ -2173,7 +2368,10 @@ function MatterRecordView({ activeWorkspace, relatedTab, setRelatedTab, particip
         </div>
 
         {/* Tab content */}
-        <div className="p-4">
+        <div className="p-4 relative">
+          <div className="absolute top-2 right-3 z-10">
+            <Feedback section={`related.${relatedTab}`} label={(RELATED_LISTS.find(r => r.id === relatedTab) || {label: relatedTab}).label} />
+          </div>
           {relatedTab === 'action-items' && <RelatedActionItems />}
           {relatedTab === 'parties' && (
             <RelatedParticipants subTab={participantSubTab} setSubTab={setParticipantSubTab} />
@@ -2261,6 +2459,7 @@ function FieldGroup({ title, rows, defaultOpen = true }) {
         <span className={`text-acs-blue inline-block transition-transform ${open ? 'rotate-0' : '-rotate-90'}`}>▼</span>
         <span className="flex-1">{title}</span>
         <span className="text-[10px] text-gray-400 font-normal">{rows.length} fields</span>
+        <Feedback section={`fieldgroup.${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} label={title} />
       </div>
       {open && (
         <div className="border border-t-0 border-sf-border rounded-b p-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
@@ -2642,6 +2841,9 @@ function SfPath({ initialCurrentPhase = 6 }) {
           <span className="hidden md:inline">{buttonLabel}</span>
           <span className="md:hidden">{buttonShort}</span>
         </button>
+        <div className="ml-1 self-center">
+          <Feedback section="matter.path" label="Sales Path" />
+        </div>
       </div>
 
       {/* GUIDANCE PANEL */}
@@ -3989,12 +4191,16 @@ function BuildPlanTab() {
 
 function App() {
   const [tab, setTab] = useState(0);
+  const TAB_NAMES = ['Partition Lifecycle', 'Workflow Diagram', 'Practice Analytics', 'Sample Matter', 'CaseCloud Build Plan'];
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex-1 max-w-[1500px] w-full mx-auto px-4 pb-6">
         <TabNav tab={tab} setTab={setTab} />
-        <main className="pt-5">
+        <div className="flex justify-end -mt-1 mb-2">
+          <Feedback section={`tab.${tab}`} label={`Tab: ${TAB_NAMES[tab]}`} />
+        </div>
+        <main className="pt-3">
           {tab === 0 && <LifecycleTab />}
           {tab === 1 && <WorkflowTab />}
           {tab === 2 && <AnalyticsTab />}
@@ -4007,7 +4213,12 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <FeedbackProvider>
+    <App />
+    <FeedbackHub />
+  </FeedbackProvider>
+);
 </script>
 </body>
 </html>
