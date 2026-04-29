@@ -630,6 +630,45 @@ const MATTER = {
       { label: 'Conflict Acknowledgment', value: 'Signed (no prior dealings)' },
     ],
   },
+  strategyTheory: [
+    { label: 'Case Theory (one-line)', value: 'Force sale (or appraised buyout) under PRPA; recover Maria-paid carrying costs offset by rental value of her exclusive use; § 874.040 fee shift on common-benefit work.' },
+    { label: 'Key Precedents (Right to Partition)', value: 'Capuccio v. Caire (right is absolute) · LEG Investments v. Boxler (waiver requires clear-and-convincing written agreement) · Summers v. Superior Court (MSA path)' },
+    { label: 'Key Precedents (Accounting/Offsets)', value: 'Wallace v. Daley (charges & credits framework) · Hunter v. Schultz (rental value defensive offset) · Willmon v. Koyer (contribution for paid liens)' },
+    { label: 'PRPA Posture', value: 'Court-confirmed applicability 2/4/2026; FMV $812K confirmed 4/22/2026; Day 38 of 45 in cotenant buyout window' },
+    { label: 'Settlement Floor (firm)', value: '$240,000 net to Carlos' },
+    { label: 'Settlement Target', value: '$270,667 (FMV × 1/3) via PRPA buyout — Maria signaled intent' },
+    { label: 'BATNA if no buyout', value: 'Open-market sale → § 874.318/319; estimated 3-6 months to escrow close; net to Carlos ~$228K post-fees' },
+    { label: 'Ouster Status', value: 'NOT pled (defensive offset only) — confirmed in cross-complaint review' },
+    { label: 'Accounting Categories at Issue', value: 'Mortgage P&I, property tax, insurance (Maria paid 100%); roof repair 2023; kitchen improvement (value-enhancement test); rental value offset' },
+    { label: 'Key Risks', value: '(1) Maria misses 60-day funding after election → reverts to sale, +90 days. (2) Defective lis pendens cert-mail → § 405.38 fee-shift to defendant. (3) Common-benefit time-tagging gap (42% tag rate) → § 874.040 fee partial denial.' },
+    { label: 'Strengths', value: 'Right is absolute; default already entered against Luis; PRPA pre-empts most defenses; FMV uncontested' },
+    { label: 'Weaknesses', value: 'Hostile family dynamics could reignite if buyout fails; rental value calc disputed (Maria claims under-market FMV)' },
+  ],
+  keyDates: [
+    { label: 'Date of First Contact', value: '10/2/2025', filled: true },
+    { label: 'Engagement Signed', value: '10/8/2025', filled: true },
+    { label: 'Demand Letter Sent', value: '10/10/2025', filled: true },
+    { label: 'Demand Window Expired', value: '10/24/2025', filled: true },
+    { label: 'Complaint Filed', value: '10/14/2025', filled: true },
+    { label: 'Lis Pendens Recorded (Riverside)', value: '10/14/2025', filled: true },
+    { label: 'Cert-Mail Service Complete', value: '10/15/2025', filled: true },
+    { label: 'Maria Answer + Cross-Complaint', value: '11/19/2025', filled: true },
+    { label: 'Default Entered (Luis)', value: '1/8/2026', filled: true },
+    { label: 'PRPA Applicability Determined', value: '2/4/2026', filled: true },
+    { label: 'Court-Ordered Appraisal Received', value: '3/8/2026', filled: true },
+    { label: 'FMV Notice Mailed', value: '3/16/2026', filled: true },
+    { label: 'FMV Objection Hearing', value: '4/22/2026 (value confirmed $812K)', filled: true },
+    { label: 'Buyout Right Notice', value: '3/22/2026 (45-day clock starts)', filled: true },
+    { label: 'Buyout Election Deadline', value: '5/6/2026 (Day 38 of 45)', filled: true },
+    { label: 'Buyout Funding Deadline (if elected)', value: '~7/5/2026 (60 days post-election)', filled: false },
+    { label: 'Manner Determination Motion (alt path)', value: 'TBD if no buyout — projected ~5/13/2026', filled: false },
+    { label: 'Interlocutory Judgment (Sale Track)', value: 'TBD if no buyout — projected ~6/1/2026', filled: false },
+    { label: 'Sale Confirmation Hearing', value: 'TBD if sale ordered — projected ~10/2026', filled: false },
+    { label: 'Final Accounting Submitted', value: 'TBD — Phase 9', filled: false },
+    { label: '§ 874.040 Fee Motion', value: 'TBD — projected ~30 days post-judgment', filled: false },
+    { label: 'Final Judgment of Partition', value: 'TBD — Phase 10', filled: false },
+    { label: 'Matter Closed', value: 'TBD — Phase 11', filled: false },
+  ],
   caseDetails: [
     { label: 'Matter Number', value: 'TLW-2025-0287' },
     { label: 'Practice Area', value: 'Partition' },
@@ -1697,10 +1736,11 @@ function CaseDevelopment() {
       <FieldGroup title="Matter Information" rows={MATTER.matterInformation} />
       <FieldGroup title="Retained" rows={MATTER.retained} />
       <FieldGroup title="Property Information" rows={MATTER.propertyInformation} />
+      <FieldGroup title="Strategy & Theory of the Case" rows={MATTER.strategyTheory} />
+      <FieldGroup title="Key Dates & Statutory Deadlines" rows={MATTER.keyDates} />
     </div>
   );
 }
-
 function FieldGroup({ title, rows }) {
   return (
     <div>
