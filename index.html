@@ -576,6 +576,60 @@ const MATTER = {
   leadAttorney: 'Scott Talkov',
   feeStructure: 'Contingency (35%)',
   statuteOfLimitations: 'N/A (partition is equitable; no SOL)',
+  intakeFields: {
+    leadAndContact: [
+      { label: 'Lead Source', value: 'Website form (talkovlaw.com)' },
+      { label: 'Date of First Contact', value: '10/2/2025' },
+      { label: 'Intake Specialist', value: 'Francisco Ramos' },
+      { label: 'Intake Form Completed', value: '10/3/2025' },
+      { label: 'Initial Consultation', value: '10/6/2025 — Scott Talkov' },
+      { label: 'Geo-Routed Office', value: 'Riverside (3610 Central Ave Ste 400)' },
+    ],
+    clientInformation: [
+      { label: 'Client Name', value: 'Carlos Hernandez' },
+      { label: 'Email', value: 'carlos.hernandez@example.com' },
+      { label: 'Mobile Phone', value: '(951) 555-0142' },
+      { label: 'Preferred Contact', value: 'Phone (afternoons)' },
+      { label: 'Mailing Address', value: '15822 Adobe Way, Riverside, CA 92506' },
+      { label: 'DOB / Age', value: '4/12/1978 (47)' },
+      { label: 'Spanish Speaker', value: 'Yes — bilingual' },
+    ],
+    subjectProperty: [
+      { label: 'Property Address', value: '4521 Mockingbird Ln, Riverside, CA 92506' },
+      { label: 'APN', value: '218-330-014' },
+      { label: 'Estimated FMV (at intake)', value: '$750,000–$850,000 (Zillow Zestimate)' },
+      { label: 'Property Type', value: 'Single-family residence' },
+      { label: 'Mortgage Status', value: 'Active — Wells Fargo, ~$287,000 balance (Maria pays)' },
+      { label: 'Occupancy', value: 'Maria Hernandez — exclusive, 4+ years' },
+      { label: 'Title Verification', value: 'Pending preliminary title report' },
+    ],
+    coOwnership: [
+      { label: 'Number of Cotenants', value: '3' },
+      { label: "Plaintiff's Fractional Interest", value: '1/3' },
+      { label: 'Vesting Type', value: 'Tenancy in Common' },
+      { label: 'Source of Title', value: 'Deed of Distribution from probate of Eduardo Hernandez (decedent, d. 2019)' },
+      { label: 'Date Vesting Created', value: 'August 2021' },
+      { label: 'Written Partition Agreement', value: 'None recorded' },
+      { label: 'Other Cotenants Named', value: 'Maria Hernandez (sister) · Luis Hernandez (brother)' },
+      { label: 'PRPA Eligibility', value: 'Yes — TIC, no agreement, will be filed post-1/1/2023' },
+    ],
+    clientGoals: [
+      { label: 'Desired Outcome', value: 'Force sale and split proceeds; open to buyout offer at FMV' },
+      { label: 'Urgency Level', value: 'High — needs liquidity within 6–9 months for business expansion' },
+      { label: 'Family Dynamics', value: 'Hostile — no communication 18+ months; multiple failed family meetings' },
+      { label: 'Acceptance of PRPA Buyout', value: 'Yes if at appraised value' },
+      { label: "Settlement Floor (Client's stated)", value: '$240,000 net (after fees + costs)' },
+    ],
+    preEngagement: [
+      { label: 'Conflicts Pre-Check (all named)', value: 'Cleared 10/2/2025 — no prior representations across 7 offices' },
+      { label: 'Fee Structure Discussed', value: 'Contingency — 35% of plaintiff recovery' },
+      { label: 'Costs Advanced By', value: 'Firm (recoverable under § 874.040)' },
+      { label: 'Engagement Letter Sent', value: '10/6/2025 (DocuSign)' },
+      { label: 'Engagement Letter Signed', value: '10/8/2025' },
+      { label: 'Retainer Collected', value: 'N/A — contingency, no upfront retainer' },
+      { label: 'Conflict Acknowledgment', value: 'Signed (no prior dealings)' },
+    ],
+  },
   caseDetails: [
     { label: 'Matter Number', value: 'TLW-2025-0287' },
     { label: 'Practice Area', value: 'Partition' },
@@ -1672,12 +1726,24 @@ function FieldGroup({ title, rows }) {
 
 function CaseOnboarding() {
   return (
-    <div className="p-4">
-      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5">
+    <div className="p-4 space-y-4">
+      {/* ===== INTAKE SECTION ===== */}
+      <div className="bg-acs-light-blue border-l-2 border-acs-blue rounded p-2 text-[11.5px] text-gray-700 mb-2">
+        <strong className="text-acs-blue font-mont">Intake</strong> — fields captured during the intake call/form. These flow directly into Matter creation and trigger Activity Plan templates downstream.
+      </div>
+      <FieldGroup title="Lead Source & Initial Contact" rows={MATTER.intakeFields.leadAndContact} />
+      <FieldGroup title="Client Information" rows={MATTER.intakeFields.clientInformation} />
+      <FieldGroup title="Subject Property (intake snapshot)" rows={MATTER.intakeFields.subjectProperty} />
+      <FieldGroup title="Co-Ownership Details" rows={MATTER.intakeFields.coOwnership} />
+      <FieldGroup title="Client's Stated Goals" rows={MATTER.intakeFields.clientGoals} />
+      <FieldGroup title="Pre-Engagement Compliance & Fee" rows={MATTER.intakeFields.preEngagement} />
+
+      {/* ===== ONBOARDING CHECKLIST ===== */}
+      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5 mt-4">
         <span className="text-acs-blue">▼</span> Onboarding Checklist
         <span className="ml-auto text-[11px] font-normal text-gray-500">{MATTER.onboarding.filter(o => o.complete).length}/{MATTER.onboarding.length} complete</span>
       </div>
-      <div className="border border-t-0 border-sf-border rounded-b">
+      <div className="border border-t-0 border-sf-border rounded-b" style={{marginTop: 0}}>
         {MATTER.onboarding.map((o, i) => (
           <div key={i} className="flex items-start gap-3 px-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-acs-light-blue">
             <div className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[11px] font-bold ${o.complete ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
@@ -1693,7 +1759,6 @@ function CaseOnboarding() {
     </div>
   );
 }
-
 function FilesESignature() {
   return (
     <div className="p-4 space-y-4">
