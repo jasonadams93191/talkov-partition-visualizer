@@ -1849,6 +1849,25 @@ function AnalyticsTab() {
 
 // ----- Sample Matter tab (Salesforce-style redesign) --------------------
 
+const PARTICIPANT_GROUPS = {
+  cotenants: { label: 'Cotenants', filter: (p) => p.role.includes('Plaintiff') || p.role.includes('Defendant') },
+  counsel: { label: 'Counsel', filter: (p) => p.counsel && p.counsel !== '—' },
+  court: { label: 'Court', filter: () => false },
+  vendors: { label: 'Vendors', filter: () => false },
+};
+
+const RELATED_LISTS = [
+  { id: 'action-items', label: 'Action Items', icon: '✓', count: MATTER.activities.length + MATTER.tasks.length },
+  { id: 'parties', label: 'Parties Involved', icon: '👥', count: 12 },
+  { id: 'conflict-checks', label: 'Conflict Checks', icon: '🔍', count: MATTER.conflictChecks.length },
+  { id: 'properties', label: 'Properties', icon: '🏡', count: MATTER.properties.length },
+  { id: 'lis-pendens', label: 'Lis Pendens Records', icon: '🛡', count: MATTER.lisPendensRecords.length },
+  { id: 'financials', label: 'Financials', icon: '💰', count: null },
+  { id: 'time-logs', label: 'Time Logs', icon: '⏱', count: MATTER.timeEntries.length },
+  { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
+  { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
+];
+
 const WORKSPACE_TABS = [
   { id: 'hernandez', label: 'Hernandez v. Hernandez', icon: '⚖' },
   { id: 'wong', label: 'Wong v. Liu', icon: '⚖', overrides: { caption: 'Wong v. Liu — Partition Action', caseNumber: 'SCV-2025-049211', court: 'San Bernardino Sup. Ct.', filed: 'August 22, 2025', property: '1284 Pacific Ave, Long Beach, CA 90802', fmv: 1145000, leadAttorney: 'Katja Grosch', stagePill: 'PHASE 5 · DISCOVERY', stagePillCls: 'sf-pill-blue', buyoutPill: null, feeStructure: 'Hourly @ $525-750/hr' } },
@@ -1861,25 +1880,6 @@ function MatterTab() {
   const [relatedTab, setRelatedTab] = useState('action-items');
   const [financialsSubTab, setFinancialsSubTab] = useState('settlement-calculator');
   const [participantSubTab, setParticipantSubTab] = useState('cotenants');
-
-  const PARTICIPANT_GROUPS = {
-    cotenants: { label: 'Cotenants', filter: (p) => p.role.includes('Plaintiff') || p.role.includes('Defendant') },
-    counsel: { label: 'Counsel', filter: (p) => p.counsel && p.counsel !== '—' },
-    court: { label: 'Court', filter: () => false },
-    vendors: { label: 'Vendors', filter: () => false },
-  };
-
-  const RELATED_LISTS = [
-    { id: 'action-items', label: 'Action Items', icon: '✓', count: MATTER.activities.length + MATTER.tasks.length },
-    { id: 'parties', label: 'Parties Involved', icon: '👥', count: 12 },
-    { id: 'conflict-checks', label: 'Conflict Checks', icon: '🔍', count: MATTER.conflictChecks.length },
-    { id: 'properties', label: 'Properties', icon: '🏡', count: MATTER.properties.length },
-    { id: 'lis-pendens', label: 'Lis Pendens Records', icon: '🛡', count: MATTER.lisPendensRecords.length },
-    { id: 'financials', label: 'Financials', icon: '💰', count: null },
-    { id: 'time-logs', label: 'Time Logs', icon: '⏱', count: MATTER.timeEntries.length },
-    { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
-    { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
-  ];
 
   return (
     <div className="space-y-3">
