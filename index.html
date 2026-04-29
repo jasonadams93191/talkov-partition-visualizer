@@ -267,51 +267,231 @@ const PHASES = [
 
 const PHASE_GUIDANCE = {
   INTAKE: {
-    keyFields: ['Lead Source', 'Multi-Party Conflicts Cleared', 'CA Real Property Confirmed', 'Property Pre-Screen Complete', 'Consultation Booked', 'Geo-Routed Office Assigned'],
-    guidance: 'Capture lead within 24 hours via website form, (877) PARTITION, or referral. Run conflicts on EVERY named cotenant (often 2–6 family members) across all 7 offices. Verify CA real property held in TIC. Geo-route to nearest office and book consult on attorney\'s calendar with intake form pre-attached. Drive form completion through followup cadence (day 1, 3, 7) — abandon at day 14 if non-responsive.',
+    keyFields: [
+      { label: 'Lead Source', value: 'Website form (talkovlaw.com)' },
+      { label: 'Date of First Contact', value: '10/2/2025' },
+      { label: 'Multi-Party Conflicts Cleared', value: 'Yes — all 3 cotenants (10/2/2025)' },
+      { label: 'Property Pre-Screen', value: 'CA real property in TIC — confirmed' },
+      { label: 'Geo-Routed Office', value: 'Riverside (3610 Central Ave)' },
+      { label: 'Consultation Booked', value: '10/6/2025 with Scott Talkov' },
+    ],
+    guidance: {
+      transition: 'Intake → Consultation & Engagement',
+      criteria: [
+        'Lead captured within 24 hours of first contact',
+        'Multi-party conflicts run on every named cotenant',
+        'Property confirmed as CA real property held in TIC',
+        'Geo-routed to nearest of 7 offices',
+        'Consultation booked on attorney calendar with intake form attached',
+        'Followup cadence (day 1, 3, 7) set on form completion',
+      ],
+    },
   },
   CONSULT: {
-    keyFields: ['Consultation Conducted', 'Retain/Decline/Refer Decision', 'Engagement Letter Signed', 'Retainer or Contingency Documented', 'Matter Opened in CaseCloud'],
-    guidance: 'Attorney consult covers facts, full ownership map, client goal (sale vs buyout vs in-kind), and fee structure. Decide Retain / Decline / Refer-Out. If retained: execute engagement letter via DocuSign, document contingency arrangement (Talkov standard: 35% of plaintiff recovery), open Matter in CaseCloud — auto-creates advpm__Participant__c records, triggers preliminary title order, and activates Phase 3 Activity Plan template.',
+    keyFields: [
+      { label: 'Consultation Date', value: '10/6/2025' },
+      { label: 'Conducting Attorney', value: 'Scott Talkov' },
+      { label: 'Outcome', value: 'Retained' },
+      { label: 'Engagement Letter Signed', value: '10/8/2025 (DocuSign)' },
+      { label: 'Fee Arrangement', value: 'Contingency — 35% of plaintiff recovery' },
+      { label: 'Matter Opened in CaseCloud', value: 'Yes (10/8/2025)' },
+    ],
+    guidance: {
+      transition: 'Consultation & Engagement → Pre-Litigation',
+      criteria: [
+        'Attorney consult conducted (facts, ownership map, fee structure)',
+        'Retain / Decline / Refer-Out decision logged',
+        'Engagement letter signed via DocuSign',
+        'Contingency or retainer arrangement documented',
+        'Matter opened in CaseCloud with cotenants and property',
+        'Pre-litigation Activity Plan template activated',
+      ],
+    },
   },
   PRELIT: {
-    keyFields: ['Preliminary Title Report Received', 'Chain of Title Abstracted', 'Cotenancy Ledger Initialized', 'Demand Letter Sent', 'Settlement Window Expired'],
-    guidance: 'Order preliminary title report — vesting deed, encumbrances, prior lis pendens history. Abstract chain of title to confirm TIC vesting date (matters for PRPA eligibility — TIC must arise without written partition agreement). Build initial Cotenancy Ledger on advpm__Participant__c. Send demand letter citing LEG Investments v. Boxler (absolute right) and previewing offsets per Wallace / Hunter. 14–21 day response window; log all communications. Settle if possible (saves the relationship and the fee), proceed if no.',
+    keyFields: [
+      { label: 'Preliminary Title Report', value: 'Received 10/12/2025 (Riverside Title)' },
+      { label: 'Cotenancy Ledger Initialized', value: 'Yes — 3 Participant records' },
+      { label: 'Demand Letter Sent', value: '10/10/2025 (cited LEG Investments v. Boxler)' },
+      { label: 'Demand Window', value: 'Expired 10/24/2025 — no settlement' },
+      { label: 'Settlement Attempted', value: 'Yes (declined by defendants)' },
+    ],
+    guidance: {
+      transition: 'Pre-Litigation → Pleadings & Lis Pendens',
+      criteria: [
+        'Preliminary title report on file',
+        'Chain of title abstracted (PRPA-eligibility verified)',
+        'Cotenancy Ledger initialized on advpm__Participant__c',
+        'Demand letter sent citing LEG Investments v. Boxler',
+        '14–21 day response window expired without settlement',
+      ],
+    },
   },
   PLEAD: {
-    keyFields: ['Verified Complaint Filed', 'Lis Pendens Recorded (every county)', 'Cert-Mail Service Complete', 'All Cotenants Served', 'Answer or Default Status Set'],
-    guidance: 'Draft verified complaint per CCP § 872.230 (description of property, plaintiff\'s interest, all parties, basis for partition, manner sought). Partner verifies with client. E-file in proper county. CRITICAL: record lis pendens IMMEDIATELY upon filing in every county where any parcel sits — § 872.250. Cert mail service per § 405.22 (defective service = expungement risk + § 405.38 fee shift to defendant). Track answers / cross-complaints / defaults; default prove-up shortcuts to interlocutory judgment.',
+    keyFields: [
+      { label: 'Verified Complaint Filed', value: '10/14/2025 (Riverside Sup. Ct.)' },
+      { label: 'Case Number', value: 'RIC-2025-0148211' },
+      { label: 'Lis Pendens Recorded', value: '10/14/2025 (Riverside, Doc 2025-0481211)' },
+      { label: 'Cert-Mail Service', value: 'Complete (10/15/2025)' },
+      { label: 'Maria Hernandez', value: 'Answered + cross-complaint (11/19/2025)' },
+      { label: 'Luis Hernandez', value: 'Defaulted (1/8/2026)' },
+    ],
+    guidance: {
+      transition: 'Pleadings & Lis Pendens → Discovery & Motions',
+      criteria: [
+        'Verified complaint per CCP § 872.230 filed',
+        'Lis pendens recorded immediately upon filing in every county',
+        'Cert-mail service of lis pendens complete (§ 405.22 compliance)',
+        'All cotenants served with summons + complaint',
+        'Answers filed OR defaults entered for all defendants',
+      ],
+    },
   },
   DISC: {
-    keyFields: ['Initial Disclosures Served', 'Written Discovery Complete', 'Depositions Done', 'FMV Appraiser Designated', 'MSA on Right to Partition Heard'],
-    guidance: 'Initial disclosures per CCP § 2016.090 within 60 days of demand. Written discovery (RFPs / SROGs / RFAs) on title, mortgages, occupancy, contributions. Real-estate subpoenas to escrow, lender, broker, HOA. Depositions of cotenants — lock in testimony on possession, contributions, ouster theory if pled. Designate FMV appraiser (CCP § 2034.210) + CPA forensic if multi-year offsets. File MSA on right to partition (CCP § 437c, § 872.710) — Capuccio + LEG Investments + Summers v. Superior Court establish absolute right; cuts months off pre-IJ phase.',
+    keyFields: [
+      { label: 'Initial Disclosures', value: 'Served 1/12/2026 (CCP § 2016.090)' },
+      { label: 'Written Discovery Status', value: 'RFPs / SROGs complete' },
+      { label: 'Depositions', value: 'Maria Hernandez (3/2/2026)' },
+      { label: 'FMV Appraiser Designated', value: 'Mendez & Co.' },
+      { label: 'MSA on Right to Partition', value: 'Filed and stipulated (PRPA path)' },
+    ],
+    guidance: {
+      transition: 'Discovery & Motions → PRPA Track / Interlocutory Judgment',
+      criteria: [
+        'Initial disclosures per CCP § 2016.090 served',
+        'Written discovery responses received',
+        'Key depositions complete (cotenants on possession + contributions)',
+        'FMV appraiser designated under § 2034.210',
+        'MSA on right to partition heard or stipulated (Capuccio + LEG)',
+      ],
+    },
   },
   PRPA_BRANCH: {
-    keyFields: ['PRPA Applicability Order', 'Court-Ordered Appraisal Received', 'Notice of FMV Mailed (10-day clock)', 'FMV Objection Hearing (30-day clock)', 'Buyout Right Notice (45-day election clock)', 'Buyout Funding Window (60-day clock)'],
-    guidance: 'CURRENT PHASE. Court determined PRPA applies (§ 874.313). Sworn appraisal received from Mendez & Co.: $812,000. Four cascading clocks running off appraisal date — 10 / 30 / 45 / 60 days. Buyout election deadline 5/6/2026 (Day 38 of 45). Defense counsel J. Reyes confirmed Maria intent to elect; awaiting written election. If buyout closes: 60-day funding window. If no buyout: § 874.318 manner determination — partition in kind unless great prejudice; otherwise open-market sale via court-appointed broker (§ 874.319, NOT auction).',
+    keyFields: [
+      { label: 'PRPA Applicability Order', value: '2/4/2026 (court ruled sua sponte)' },
+      { label: 'Court-Ordered Appraisal', value: '$812,000 (Mendez & Co., 3/8/2026)' },
+      { label: 'Notice of FMV', value: 'Mailed 3/16/2026 (10-day clock met)' },
+      { label: 'FMV Hearing', value: '4/22/2026 — value confirmed, no objection' },
+      { label: 'Buyout Right Notice', value: '3/22/2026 — 45-day clock running' },
+      { label: 'Buyout Election Deadline', value: '5/6/2026 — Day 38 of 45 (Maria signaling YES)' },
+      { label: 'Funding Window', value: '60 days post-election (TBD)' },
+    ],
+    guidance: {
+      transition: 'PRPA Track → Interlocutory Judgment / Closeout',
+      criteria: [
+        'PRPA applicability determined by court (§ 874.313)',
+        'Court-ordered appraisal received from disinterested appraiser',
+        'Notice of FMV mailed within 10 days (§ 874.316(c))',
+        'FMV objection hearing held ≥30 days after notice',
+        'Cotenant buyout election filed within 45 days (§ 874.317(b))',
+        'Buyout funding deposited within 60 days OR § 874.318 manner determination',
+      ],
+    },
   },
   IJ: {
-    keyFields: ['Interlocutory Judgment Entered', 'Manner of Partition Determined', 'Referee Proposed', 'Referee Oath Filed', 'Bond Posted (if required)'],
-    guidance: 'Interlocutory judgment per CCP § 872.720 — determines all parties\' fractional interests, orders partition, appoints referee. Stipulate or litigate manner: in kind (rare, raw land), by sale (modal), by appraisal (only if all stipulate per Cummings v. Dessel). Propose referee — typically a real-estate attorney or licensed broker; opposing counsel often stipulates to a neutral. Referee files oath within 10 days. Bond if court orders. Engagement meeting: property walkthrough, prior offers review, recommended manner.',
+    keyFields: [
+      { label: 'Interlocutory Judgment', value: 'TBD (if no PRPA buyout)' },
+      { label: 'Manner of Partition', value: 'TBD — sale (modal) or in-kind' },
+      { label: 'Referee', value: 'TBD — proposed: D. Kim (real-estate atty)' },
+      { label: 'Referee Oath', value: 'TBD' },
+      { label: 'Referee Bond', value: 'TBD (court discretion)' },
+    ],
+    guidance: {
+      transition: 'Interlocutory Judgment → Manner of Partition Execution',
+      criteria: [
+        'Interlocutory judgment per § 872.720 entered',
+        "Each party's fractional interest determined",
+        'Manner of partition stipulated or litigated (sale / in-kind / by appraisal)',
+        'Referee proposed and appointed',
+        'Referee oath filed within 10 days of appointment',
+        'Bond posted if court orders',
+      ],
+    },
   },
   SALE: {
-    keyFields: ['Listing Agreement (Sale Track)', 'Marketing Period Complete', 'Offer Accepted Subject to Court Confirmation', 'Notice of Sale Posted', 'MTC + Overbid Hearing', 'Escrow Closed'],
-    guidance: 'Modal outcome: sale. Referee retains broker (§ 873.060). MLS listing; reasonable marketing period. Accept offer subject to court confirmation. Notice of sale ≥10 days before confirmation hearing (§ 873.640). Referee\'s report of sale (§ 873.710). Motion to confirm sale + overbid procedure (§§ 873.730, 873.740) — minimum overbid math: 10% over first $10K + 5% over balance. Court order confirms; escrow closes; deed records; proceeds wire to referee trust account. If in-kind: surveyor + referee divide; court confirms.',
+    keyFields: [
+      { label: 'Manner Selected', value: 'TBD (sale modal if no buyout)' },
+      { label: 'Listing Agreement', value: 'TBD (referee + broker)' },
+      { label: 'Marketing Period', value: 'TBD' },
+      { label: 'Notice of Sale', value: 'TBD (≥10 days pre-confirmation)' },
+      { label: 'MTC + Overbid Hearing', value: 'TBD' },
+      { label: 'Escrow Closed', value: 'TBD' },
+    ],
+    guidance: {
+      transition: 'Manner of Partition → Accounting & Offsets',
+      criteria: [
+        'Listing agreement executed (referee + broker, § 873.060)',
+        'Marketing period complete; offer accepted subject to court confirmation',
+        'Notice of sale posted ≥10 days before confirmation hearing',
+        "Referee's report of sale filed (§ 873.710)",
+        'MTC + overbid procedure heard; sale confirmed (§§ 873.730, 873.740)',
+        'Escrow closed; proceeds wired to referee trust',
+      ],
+    },
   },
   ACCT: {
-    keyFields: ['Mortgage/Tax/Insurance Credits Compiled', 'Repairs + Improvements Documented', 'Rental Value Offset Computed', 'Ouster Analysis Complete', 'Final Accounting Schedule Submitted'],
-    guidance: 'Compile mortgage P&I, taxes, insurance contributions per cotenant — credits per Hunter v. Schultz / Willmon v. Koyer. Necessary repairs at cost; improvements at LESSER of cost or value-enhancement (Wallace v. Daley). Rental value offset is DEFENSIVE only without ouster (Estate of Hughes) — reduces in-possession cotenant\'s credit, does not generate affirmative recovery for out-of-possession. Multi-year cases or flow-through entities → engage forensic CPA. Stipulated accounting modal; short-cause trial if disputed. Submit final accounting schedule with motion for final judgment.',
+    keyFields: [
+      { label: 'Mortgage / Tax / Insurance Credits', value: 'Compiled (Maria 100%)' },
+      { label: 'Repairs Documented', value: 'Roof 2023 ($14,000)' },
+      { label: 'Improvements (value-enhancement only)', value: 'Kitchen ($11,400)' },
+      { label: 'Rental Value Offset', value: '48 mos × $2,800 = $134,400' },
+      { label: 'Ouster Status', value: 'NOT pled — defensive offset only' },
+      { label: 'Accounting Schedule', value: 'TBD — submit with final judgment' },
+    ],
+    guidance: {
+      transition: 'Accounting & Offsets → Final Judgment & Fee Apportionment',
+      criteria: [
+        'Mortgage/tax/insurance contributions compiled per cotenant (Hunter v. Schultz)',
+        'Necessary repairs at cost; improvements at lesser of cost or value-enhancement (Wallace)',
+        'Rental value offset computed (defensive only without ouster)',
+        'Ouster analysis complete (Estate of Hughes)',
+        'Forensic CPA engaged if multi-year complexity',
+        'Final accounting schedule submitted',
+      ],
+    },
   },
   FEES: {
-    keyFields: ['Final Judgment Drafted', 'Common-Benefit Time Entries Tagged', '§ 874.040 Fee Motion Filed', 'Fee Declaration Submitted', 'Fee Hearing Order'],
-    guidance: 'Draft final judgment per CCP §§ 872.730, 874.210 — confirms manner, incorporates accounting, allocates net proceeds, directs referee on disbursement. CRITICAL: ensure all advpm__Time__c entries are tagged Common_Benefit__c (Y/N/Mixed) AT ENTRY — § 874.040 fee shifting only realizes on tagged entries. File motion for fee apportionment per § 874.040 (pro-rata default with broad equitable discretion per Orien v. Lutz, Lin v. Jeng). Fee declaration with common-benefit categorization (Capuccio v. Caire establishes recoverability; Forrest v. Elam limits to non-spurious work). Court rules on apportionment.',
+    keyFields: [
+      { label: 'Final Judgment', value: 'TBD' },
+      { label: 'Common-Benefit Time Tagged', value: '95% on this matter (vs 42% firm-wide)' },
+      { label: '§ 874.040 Fee Motion', value: 'TBD — projected ~30 days post-judgment' },
+      { label: 'Lodestar Realization', value: 'TBD on motion ruling' },
+      { label: 'Fee Hearing Order', value: 'TBD' },
+    ],
+    guidance: {
+      transition: 'Final Judgment & Fees → Distribution & Closeout',
+      criteria: [
+        'Final judgment of partition drafted (§§ 872.730, 874.210)',
+        'All advpm__Time__c entries tagged Common_Benefit__c (Y/N/Mixed)',
+        'Motion for fee apportionment filed (§ 874.040)',
+        'Fee declaration with common-benefit categorization (Capuccio v. Caire)',
+        'Court rules on apportionment',
+        'Fees paid from proceeds before distribution',
+      ],
+    },
   },
   CLOSE: {
-    keyFields: ['Disbursement Instructions Issued', 'Funds Wired to All Parties', 'Allocation Deeds Recorded (in-kind only)', 'Lis Pendens Released (every county)', 'Referee Discharged', 'Matter Closed in CaseCloud'],
-    guidance: 'Disbursement instructions to escrow / referee per final judgment + fee order. Wire funds to all parties; reconcile to penny. Record allocation deeds (in-kind cases). Release lis pendens in EVERY county where recorded — § 405.38 fee-shift risk if missed. Referee files final account; court discharges (§ 873.010(b)(4)). Client closeout letter, retention package, NPS survey, referral ask. Close matter in CaseCloud (Stage = Closed, Status = Completed); archive matter file; release conflict locks. Note: Status = Closed can be set from any phase via early-close (Settled / Withdrawn / Stipulated) — distinct from this Closeout phase which is the modal completion path.',
+    keyFields: [
+      { label: 'Disbursement Instructions', value: 'TBD' },
+      { label: 'Funds Wired to All Parties', value: 'TBD' },
+      { label: 'Lis Pendens Released', value: 'TBD (every county where recorded)' },
+      { label: 'Referee Discharged', value: 'TBD' },
+      { label: 'Matter Status', value: 'Active (will → Closed: Completed at finish)' },
+    ],
+    guidance: {
+      transition: 'Closeout → Matter Closed',
+      criteria: [
+        'Disbursement instructions per final judgment + fee order',
+        'Funds wired to all parties; reconciled to penny',
+        'Allocation deeds recorded (in-kind cases)',
+        'Lis pendens released in every county where recorded',
+        'Referee final account filed; court discharges',
+        'Client closeout letter, NPS, referral ask',
+        'Matter closed in CaseCloud (Status = Closed: Completed)',
+      ],
+    },
   },
 };
-
 const GLOSSARY = [
   { term: 'Partition', cite: 'CCP § 872.010 et seq.', body: "A court-supervised process for ending the co-ownership of real or personal property. Any cotenant with a present possessory interest may compel partition; the court determines whether to divide the property in kind, order it sold, or — under PRPA — let one cotenant buy out the others. The right to partition is essentially absolute absent a clear-and-convincing written waiver." },
   { term: 'Tenancy in Common (TIC)', cite: 'Civil Code § 685', body: 'A form of co-ownership in which each cotenant owns an undivided fractional interest, with no right of survivorship. Each TIC interest can be sold, mortgaged, or devised independently. The vast majority of partition matters involve TIC. Under PRPA, any TIC without a written partition agreement triggers special protections (appraisal, buyout right, open-market sale).' },
@@ -2233,37 +2413,47 @@ function SfPath({ initialCurrentPhase = 6 }) {
       {/* GUIDANCE PANEL */}
       {guidanceOpen && (
         <div className="border-t border-sf-border bg-gray-50">
-          <div className="px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap border-b border-sf-border">
-            <div className="flex items-center gap-3">
-              <span className={`text-[10px] font-mont font-bold uppercase tracking-wider ${stateColor}`}>{stateLabel}</span>
-              <span className="text-[13px] font-mont font-bold text-sf-navy">Phase {selected.num}: {selected.title}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <button onClick={() => setGuidanceTab('fields')} className={`px-3 py-1 text-[11px] font-mont font-semibold rounded ${guidanceTab === 'fields' ? 'bg-white text-sf-navy border border-sf-border' : 'text-gray-500 hover:text-sf-navy'}`}>
-                Key Fields
-              </button>
-              <button onClick={() => setGuidanceTab('guidance')} className={`px-3 py-1 text-[11px] font-mont font-semibold rounded ${guidanceTab === 'guidance' ? 'bg-white text-sf-navy border border-sf-border' : 'text-gray-500 hover:text-sf-navy'}`}>
-                Guidance for Success
-              </button>
-            </div>
+          <div className="px-4 py-2 flex items-center gap-3 flex-wrap border-b border-sf-border bg-white">
+            <span className={`text-[10px] font-mont font-bold uppercase tracking-wider ${stateColor}`}>{stateLabel}</span>
+            <span className="text-[13px] font-mont font-bold text-sf-navy">Phase {selected.num}: {selected.title}</span>
           </div>
-
-          <div className="px-4 py-3 bg-white">
-            {guidanceTab === 'fields' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white">
+            {/* LEFT — Key Fields */}
+            <div className="p-4 border-r border-sf-border">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[13px] font-mont font-bold text-acs-charcoal">Key Fields</span>
+                <button className="text-[11px] text-sf-blue hover:underline font-mont font-semibold">Edit</button>
+              </div>
+              <div className="space-y-2.5">
                 {guidance.keyFields.map((f, i) => (
-                  <div key={i} className="flex items-start gap-2 text-[12.5px]">
-                    <span className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[10px] font-bold ${isCompleted ? 'bg-acs-success text-white' : isCurrent ? 'bg-white border-2 border-acs-blue text-acs-blue' : 'bg-white border border-gray-300 text-gray-400'}`}>
-                      {isCompleted ? '✓' : isCurrent ? '○' : ''}
-                    </span>
-                    <span className={isCompleted ? 'text-gray-600' : 'text-acs-charcoal'}>{f}</span>
+                  <div key={i} className="border-b border-gray-100 pb-2 last:border-0 flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{f.label}</div>
+                      <div className="text-[12.5px] text-sf-navy font-medium mt-0.5 break-words">{f.value}</div>
+                    </div>
+                    <span className="text-gray-300 hover:text-acs-blue cursor-pointer text-[11px] flex-shrink-0 mt-1">✏</span>
                   </div>
                 ))}
               </div>
-            )}
-            {guidanceTab === 'guidance' && (
-              <div className="text-[12.5px] leading-relaxed text-acs-charcoal">{guidance.guidance}</div>
-            )}
+            </div>
+
+            {/* RIGHT — Guidance for Success */}
+            <div className="p-4">
+              <div className="text-[13px] font-mont font-bold text-acs-charcoal mb-3">Guidance for Success</div>
+              <div className="text-[13px] font-mont font-bold text-sf-navy mb-2.5">
+                {guidance.guidance.transition}
+              </div>
+              <ul className="space-y-1.5 text-[12.5px] text-acs-charcoal">
+                {guidance.guidance.criteria.map((c, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[10px] font-bold ${isCompleted || (isCurrent && i < guidance.guidance.criteria.length - 2) ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
+                      {(isCompleted || (isCurrent && i < guidance.guidance.criteria.length - 2)) ? '✓' : ''}
+                    </span>
+                    <span className="leading-snug">{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {isFuture && (
