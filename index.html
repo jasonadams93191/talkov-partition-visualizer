@@ -671,6 +671,33 @@ const MATTER = {
     { label: 'Final Judgment of Partition', value: 'TBD — Phase 10', filled: false },
     { label: 'Matter Closed', value: 'TBD — Phase 11', filled: false },
   ],
+  timeEntries: [
+    { id: 'TE-001', date: '10/2/2025', tk: 'Lexi Scott', tkInit: 'LS', activity: 'A101 Plan and prepare for', desc: 'Initial intake call with Carlos. Captured ownership map, family history, demand-letter strategy.', hours: 0.7, rate: 195, value: 137, cb: 'Y', cbReason: 'Pre-engagement intake; common to entire matter' },
+    { id: 'TE-002', date: '10/8/2025', tk: 'Scott Talkov', tkInit: 'ST', activity: 'A106 Communicate (with client)', desc: 'Engagement letter review with client; explained contingency structure and PRPA pathway.', hours: 0.5, rate: 850, value: 425, cb: 'N', cbReason: 'Client-specific engagement matter; not common-benefit' },
+    { id: 'TE-003', date: '10/10/2025', tk: 'Adeeb Djawad', tkInit: 'AD', activity: 'A104 Review/analyze', desc: 'Drafted demand letter citing LEG Investments v. Boxler and Capuccio; partner review.', hours: 1.8, rate: 525, value: 945, cb: 'Y', cbReason: 'Establishes right to partition for all parties' },
+    { id: 'TE-004', date: '10/14/2025', tk: 'Adeeb Djawad', tkInit: 'AD', activity: 'A103 Draft/revise', desc: 'Drafted verified complaint per § 872.230; partner verified with client.', hours: 4.2, rate: 525, value: 2205, cb: 'Y', cbReason: 'Pleading initiates the partition; common to all cotenants' },
+    { id: 'TE-005', date: '10/14/2025', tk: 'Lexi Scott', tkInit: 'LS', activity: 'A101 Plan and prepare for', desc: 'E-filed complaint Riverside Sup. Ct.; recorded lis pendens; coordinated process service.', hours: 1.4, rate: 195, value: 273, cb: 'Y', cbReason: 'Filing + lis pendens compliance — common benefit' },
+    { id: 'TE-006', date: '11/22/2025', tk: 'Scott Talkov', tkInit: 'ST', activity: 'A106 Communicate (with client)', desc: 'Strategy call with Carlos re: Maria cross-complaint for accounting. Discussed offset categories.', hours: 0.6, rate: 850, value: 510, cb: 'Mixed', cbReason: 'Strategy partly common-benefit (right framework) partly client-specific (offset positions)' },
+    { id: 'TE-007', date: '12/5/2025', tk: 'Adeeb Djawad', tkInit: 'AD', activity: 'A104 Review/analyze', desc: 'Reviewed Maria answer + cross-comp; analyzed offset claims under Hunter v. Schultz.', hours: 2.3, rate: 525, value: 1208, cb: 'N', cbReason: 'Defensive offset positioning is client-specific, not common benefit' },
+    { id: 'TE-008', date: '1/8/2026', tk: 'Lexi Scott', tkInit: 'LS', activity: 'A103 Draft/revise', desc: 'Default request package against Luis. Filed and served.', hours: 0.9, rate: 195, value: 176, cb: 'Y', cbReason: 'Default advances case for all cotenants; common-benefit' },
+    { id: 'TE-009', date: '2/4/2026', tk: 'Scott Talkov', tkInit: 'ST', activity: 'A107 Court appearance', desc: 'PRPA applicability hearing; court ruled sua sponte applies. 45 min in court + 30 min prep.', hours: 1.3, rate: 850, value: 1105, cb: 'Y', cbReason: 'PRPA framework determination governs entire matter' },
+    { id: 'TE-010', date: '3/8/2026', tk: 'Adeeb Djawad', tkInit: 'AD', activity: 'A104 Review/analyze', desc: 'Reviewed Mendez & Co. sworn appraisal $812K; cross-checked methodology and comps.', hours: 1.6, rate: 525, value: 840, cb: 'Y', cbReason: 'Appraisal governs FMV for buyout, sale, and accounting — all-cotenant impact' },
+    { id: 'TE-011', date: '4/22/2026', tk: 'Scott Talkov', tkInit: 'ST', activity: 'A107 Court appearance', desc: 'FMV objection hearing; defense did not contest. Order entered confirming $812,000.', hours: 1.5, rate: 850, value: 1275, cb: 'Y', cbReason: 'FMV order governs all subsequent distribution math' },
+    { id: 'TE-012', date: '4/28/2026', tk: 'Adeeb Djawad', tkInit: 'AD', activity: 'A106 Communicate (other counsel)', desc: 'Call with J. Reyes (defense) re: Maria buyout intent. Logged election expectations.', hours: 0.4, rate: 525, value: 210, cb: 'Mixed', cbReason: 'Coordination is common-benefit but settlement positioning is client-specific' },
+  ],
+  timeStats: {
+    totalEntries: 12,
+    totalHours: 17.2,
+    totalNotionalValue: 9309,
+    cbYesHours: 12.5,
+    cbYesValue: 6906,
+    cbNoHours: 2.9,
+    cbNoValue: 1633,
+    cbMixedHours: 1.0,
+    cbMixedValue: 720,
+    untaggedHours: 0.8,
+    taggedRate: 95,
+  },
   caseDetails: [
     { label: 'Matter Number', value: 'TLW-2025-0287' },
     { label: 'Practice Area', value: 'Partition' },
@@ -1592,6 +1619,7 @@ function MatterTab() {
     { id: 'properties', label: 'Properties', icon: '🏡', count: MATTER.properties.length },
     { id: 'lis-pendens', label: 'Lis Pendens Records', icon: '🛡', count: MATTER.lisPendensRecords.length },
     { id: 'financials', label: 'Financials', icon: '💰', count: null },
+    { id: 'time-logs', label: 'Time Logs', icon: '⏱', count: MATTER.timeEntries.length },
     { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
     { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
   ];
@@ -1678,6 +1706,7 @@ function MatterTab() {
           {relatedTab === 'properties' && <RelatedProperties />}
           {relatedTab === 'lis-pendens' && <RelatedLisPendens />}
           {relatedTab === 'financials' && <RelatedFinancials subTab={financialsSubTab} setSubTab={setFinancialsSubTab} />}
+          {relatedTab === 'time-logs' && <RelatedTimeLogs />}
           {relatedTab === 'prpa' && <RelatedPrpaClocks />}
           {relatedTab === 'case-calendar' && <RelatedCaseCalendar />}
           
@@ -2619,6 +2648,152 @@ function RelatedCaseCalendar() {
     </div>
   );
 }
+function RelatedTimeLogs() {
+  const [running, setRunning] = React.useState(false);
+  const [seconds, setSeconds] = React.useState(0);
+  const [taskDesc, setTaskDesc] = React.useState('Drafting buyout funding court order');
+  const [cb, setCb] = React.useState('Y');
+
+  React.useEffect(() => {
+    if (!running) return;
+    const t = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [running]);
+
+  const fmtDur = (s) => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  };
+  const fmtHrs = (s) => (s / 3600).toFixed(2);
+
+  const stats = MATTER.timeStats;
+  const cbColor = (v) => v === 'Y' ? 'sf-pill-green' : v === 'N' ? 'bg-gray-200 text-gray-700' : 'sf-pill-gold';
+
+  return (
+    <div className="space-y-4">
+      {/* TIMER WIDGET */}
+      <div className="bg-gradient-to-r from-acs-blue to-acs-dark-blue rounded-lg p-4 text-white shadow-md">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-4">
+            <div className="text-[10.5px] font-mont uppercase tracking-wider opacity-80">Active Timer</div>
+            <div className={`mono-num text-[28px] font-bold tracking-wider ${running ? '' : 'opacity-60'}`}>{fmtDur(seconds)}</div>
+            <div className="text-[10.5px] font-mont opacity-80 mono-num">= {fmtHrs(seconds)} hrs</div>
+          </div>
+          <div className="flex gap-1.5">
+            {!running ? (
+              <button onClick={() => setRunning(true)} className="bg-acs-success hover:bg-green-700 text-white px-4 py-1.5 rounded font-mont font-semibold text-[12px] flex items-center gap-1.5">
+                <span>▶</span> Start
+              </button>
+            ) : (
+              <button onClick={() => setRunning(false)} className="bg-acs-warning hover:bg-yellow-600 text-acs-charcoal px-4 py-1.5 rounded font-mont font-semibold text-[12px] flex items-center gap-1.5">
+                <span>⏸</span> Pause
+              </button>
+            )}
+            <button onClick={() => { setRunning(false); setSeconds(0); }} className="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded font-mont font-semibold text-[12px]">
+              Reset
+            </button>
+            <button className="bg-acs-gold hover:bg-yellow-500 text-acs-charcoal px-4 py-1.5 rounded font-mont font-semibold text-[12px] flex items-center gap-1.5">
+              <span>💾</span> Log Time
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+          <div className="md:col-span-2">
+            <label className="text-[10.5px] font-mont uppercase tracking-wider opacity-80 block mb-1">Task / Description</label>
+            <input type="text" value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)}
+              className="w-full bg-white/10 border border-white/30 rounded px-2 py-1 text-[12px] text-white placeholder-white/60 focus:outline-none focus:border-acs-gold" />
+          </div>
+          <div>
+            <label className="text-[10.5px] font-mont uppercase tracking-wider opacity-80 block mb-1">Common Benefit?</label>
+            <div className="flex gap-1">
+              {['Y', 'N', 'Mixed'].map((v) => (
+                <button key={v} onClick={() => setCb(v)} className={`px-3 py-1 rounded text-[11.5px] font-mont font-semibold ${cb === v ? 'bg-acs-gold text-acs-charcoal' : 'bg-white/10 hover:bg-white/20 text-white'}`}>{v}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="mt-2 text-[10.5px] opacity-80">
+          Common-benefit tagging is required at entry. § 874.040 fee declarations auto-roll up from these tags.
+        </div>
+      </div>
+
+      {/* STATS STRIP */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <StatTile label="Entries" value={stats.totalEntries} sub="advpm__Time__c" />
+        <StatTile label="Total Hours" value={stats.totalHours} sub="On matter to date" />
+        <StatTile label="Notional Value" value={fmt(stats.totalNotionalValue)} sub="At blended rates" />
+        <StatTile label="Common-Benefit Hrs" value={stats.cbYesHours} sub={fmt(stats.cbYesValue) + " recoverable"} green />
+        <StatTile label="Tag Rate" value={stats.taggedRate + '%'} sub={"Goal: 100% at entry"} gold />
+      </div>
+
+      {/* TIME LOGS TABLE */}
+      <div className="bg-white border border-sf-border rounded">
+        <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border-b border-sf-border flex items-center justify-between">
+          <span className="flex items-center gap-1.5">⏱ Time Logs ({MATTER.timeEntries.length})</span>
+          <div className="flex gap-1">
+            <button className="sf-action-btn">+ Manual Entry</button>
+            <button className="sf-action-btn">📊 Run Lodestar Report</button>
+            <button className="sf-action-btn">⤓ Export</button>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12.5px]">
+            <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[10.5px] bg-gray-50">
+              <th className="py-1.5 px-2">Date</th>
+              <th className="py-1.5 px-2">Timekeeper</th>
+              <th className="py-1.5 px-2">Activity</th>
+              <th className="py-1.5 px-2">Description</th>
+              <th className="py-1.5 px-2 text-right">Hours</th>
+              <th className="py-1.5 px-2 text-right">Rate</th>
+              <th className="py-1.5 px-2 text-right">Value</th>
+              <th className="py-1.5 px-2 text-center">CB</th>
+            </tr></thead>
+            <tbody>
+              {MATTER.timeEntries.map((e) => (
+                <tr key={e.id} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer">
+                  <td className="py-1.5 px-2 mono-num">{e.date}</td>
+                  <td className="py-1.5 px-2"><span className="inline-flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-acs-blue text-white flex items-center justify-center text-[9px] font-bold">{e.tkInit}</span><span className="text-[11.5px]">{e.tk}</span></span></td>
+                  <td className="py-1.5 px-2 font-mono text-[11px] text-gray-600">{e.activity}</td>
+                  <td className="py-1.5 px-2 text-[11.5px]" title={e.cbReason}>{e.desc}</td>
+                  <td className="py-1.5 px-2 text-right mono-num font-bold">{e.hours.toFixed(1)}</td>
+                  <td className="py-1.5 px-2 text-right mono-num text-gray-600">${e.rate}</td>
+                  <td className="py-1.5 px-2 text-right mono-num">{fmt(e.value)}</td>
+                  <td className="py-1.5 px-2 text-center"><span className={`sf-pill ${cbColor(e.cb)}`}>{e.cb}</span></td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="bg-acs-charcoal text-white font-bold border-t-2 border-acs-gold">
+                <td colSpan="4" className="py-2 px-2">Total (12 entries)</td>
+                <td className="py-2 px-2 text-right mono-num">{stats.totalHours.toFixed(1)}</td>
+                <td className="py-2 px-2 text-right mono-num text-gray-300">blended ~$540/hr</td>
+                <td className="py-2 px-2 text-right mono-num">{fmt(stats.totalNotionalValue)}</td>
+                <td className="py-2 px-2"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div className="bg-yellow-50 px-3 py-2 rounded text-[11.5px] text-gray-700 border-l-2 border-acs-gold">
+        <strong className="text-acs-charcoal">advpm__Time__c</strong> + custom <code className="text-[11px] bg-white px-1 rounded">Common_Benefit__c</code> picklist (Y / N / Mixed) and <code className="text-[11px] bg-white px-1 rounded">Common_Benefit_Reason__c</code> text. Save is blocked unless both fields are populated. The Run Lodestar Report button generates a § 874.040 fee declaration from this dataset in one click.
+      </div>
+    </div>
+  );
+}
+
+function StatTile({ label, value, sub, green, gold }) {
+  return (
+    <div className={`bg-white p-3 rounded border-t-[3px] shadow-sm ${green ? 'border-acs-success' : gold ? 'border-acs-gold' : 'border-acs-blue'}`}>
+      <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{label}</div>
+      <div className={`text-[20px] font-bold mono-num font-mont mt-0.5 ${green ? 'text-acs-success' : gold ? 'text-acs-charcoal' : 'text-sf-navy'}`}>{value}</div>
+      <div className="text-[10.5px] text-gray-500 mt-0.5">{sub}</div>
+    </div>
+  );
+}
+
 function RelatedFinancials({ subTab, setSubTab }) {
   return (
     <>
