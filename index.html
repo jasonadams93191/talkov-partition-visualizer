@@ -2643,6 +2643,10 @@ function FinancialDetails() {
   const fd = MATTER.financialDetails;
   return (
     <div className="space-y-4">
+      <div className="bg-acs-light-blue border-l-4 border-acs-blue rounded p-3 text-[12px] leading-relaxed text-gray-700">
+        <div className="font-mont font-bold text-[12.5px] text-acs-blue mb-1">Fee model — why this works at scale</div>
+        Talkov bears all cost &amp; time risk for 35% of plaintiff recovery. Two structural sweeteners: <strong>§ 874.040</strong> shifts common-benefit fees to <em>all cotenants</em> as costs of partition (firm gets paid by client AND from defendants&apos; shares), and the <strong>PRPA buyout track</strong> compresses cycle to 8–10 months when buyout closes. Without disciplined common-benefit tagging at time-entry, § 874.040 leaves money on the table — the 42% tagging rate below is the firm-wide gap to close. <strong>Lodestar cross-check (CRPC 1.5)</strong> still applies: California courts compare contingency take vs. hours × reasonable rate, so time records have to be defensible even on a contingency.
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="sf-card p-3">
           <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">Fee Arrangement</div>
@@ -2706,7 +2710,7 @@ function FinancialDetails() {
             <div className="flex justify-between border-b border-gray-100 py-1"><span className="text-gray-600">Untagged (firm gap)</span><span className="mono-num font-bold text-acs-error">58%</span></div>
             <div className="flex justify-between py-1"><span className="text-gray-600">Recoverable @ § 874.040</span><span className="mono-num font-bold">TBD on motion</span></div>
           </div>
-          <div className="text-[11px] text-gray-500 mt-2">Critical: tag at entry, not retrofit. Powers fee declaration.</div>
+          <div className="text-[11px] text-gray-500 mt-2">Critical: tag Y/N + reason at entry, not retrofit. Powers § 874.040 fee declaration auto-rendering. ACS build closes the gap.</div>
         </div>
       </div>
     </div>
@@ -2852,7 +2856,7 @@ function SettlementCalculator() {
       </div>
 
       <div className="bg-yellow-50 px-3 py-2 rounded text-[11.5px] text-gray-700 border-l-2 border-acs-gold">
-        <strong className="text-acs-charcoal">Note:</strong> The Settlement Calculator is built on top of the Cotenancy Ledger (advpm__Participant__c rollups). When buyout closes, scenario 2 fires; otherwise scenarios 1 & 3 govern post-sale distribution. Offer And Demands records auto-roll into the Calculator's scenario set.
+        <strong className="text-acs-charcoal">Why contingency partition pencils out:</strong> Talkov bears 100% of cost &amp; time risk for a 35% take of plaintiff recovery. Two structural sweeteners make the math work: (1) <strong>CCP § 874.040 / § 874.020</strong> — common-benefit fees are recoverable as <em>costs of partition</em> from the proceeds, before distribution, so the firm is paid both by their client AND by the other cotenants' shares; (2) <strong>PRPA buyout track (§ 874.317)</strong> — when buyout closes, the case goes filing-to-escrow in 8–10 months instead of 18–24, dramatically improving contingency cycle economics. The Calculator is built on Cotenancy Ledger rollups (advpm__Participant__c); Offer &amp; Demands records auto-roll into the scenario set.
       </div>
     </div>
   );
