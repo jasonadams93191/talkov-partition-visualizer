@@ -1849,7 +1849,15 @@ function AnalyticsTab() {
 
 // ----- Sample Matter tab (Salesforce-style redesign) --------------------
 
+const WORKSPACE_TABS = [
+  { id: 'hernandez', label: 'Hernandez v. Hernandez', icon: '⚖' },
+  { id: 'wong', label: 'Wong v. Liu', icon: '⚖', overrides: { caption: 'Wong v. Liu — Partition Action', caseNumber: 'SCV-2025-049211', court: 'San Bernardino Sup. Ct.', filed: 'August 22, 2025', property: '1284 Pacific Ave, Long Beach, CA 90802', fmv: 1145000, leadAttorney: 'Katja Grosch', stagePill: 'PHASE 5 · DISCOVERY', stagePillCls: 'sf-pill-blue', buyoutPill: null, feeStructure: 'Hourly @ $525-750/hr' } },
+  { id: 'patel', label: 'Estate of Patel', icon: '⚖', overrides: { caption: 'Estate of Patel — Partition Action', caseNumber: '23-PR-008142', court: 'Orange County Sup. Ct.', filed: 'July 8, 2025', property: '5512 Riverdale Way, Tustin, CA 92780', fmv: 982000, leadAttorney: 'Adeeb Djawad', stagePill: 'PHASE 8 · SALE TRACK', stagePillCls: 'sf-pill-green', buyoutPill: null, feeStructure: 'Contingency 35%' } },
+  { id: 'pipeline', label: 'Riverside Pipeline Dashboard', icon: '📊', dashboard: true },
+];
+
 function MatterTab() {
+  const [activeWorkspace, setActiveWorkspace] = React.useState('hernandez');
   const [relatedTab, setRelatedTab] = useState('action-items');
   const [financialsSubTab, setFinancialsSubTab] = useState('settlement-calculator');
   const [participantSubTab, setParticipantSubTab] = useState('cotenants');
@@ -1895,37 +1903,223 @@ function MatterTab() {
         </div>
       </div>
 
-      {/* Row 2: Console workspace tabs (open records as tabs, browser-style) */}
+      {/* Row 2: Console workspace tabs (clickable) */}
       <div className="bg-gray-100 border-b border-sf-border px-2 flex items-center gap-px">
-        <div className="flex items-center px-3 py-1.5 bg-white border-l border-r border-t border-sf-border rounded-t font-mont text-[11.5px] gap-2 cursor-pointer relative" style={{marginBottom: '-1px', borderBottom: '1px solid white', boxShadow: 'inset 3px 0 0 #0176d3'}}>
-          <span className="text-[#0d9488]">⚖</span>
-          <span className="font-semibold text-sf-navy">Hernandez v. Hernandez</span>
-          <span className="text-gray-400 hover:text-acs-error text-[12px] ml-1" title="Close tab">×</span>
-        </div>
-        <div className="flex items-center px-3 py-1.5 hover:bg-gray-50 font-mont text-[11.5px] gap-2 cursor-pointer text-gray-600 border-l border-gray-200">
-          <span className="text-[#0d9488]">⚖</span>
-          <span>Wong v. Liu</span>
-          <span className="text-gray-300 hover:text-acs-error text-[12px] ml-1">×</span>
-        </div>
-        <div className="flex items-center px-3 py-1.5 hover:bg-gray-50 font-mont text-[11.5px] gap-2 cursor-pointer text-gray-600 border-l border-gray-200">
-          <span className="text-[#0d9488]">⚖</span>
-          <span>Estate of Patel</span>
-          <span className="text-gray-300 hover:text-acs-error text-[12px] ml-1">×</span>
-        </div>
-        <div className="flex items-center px-3 py-1.5 hover:bg-gray-50 font-mont text-[11.5px] gap-2 cursor-pointer text-gray-600 border-l border-gray-200">
-          <span>📊</span>
-          <span>Riverside Pipeline Dashboard</span>
-          <span className="text-gray-300 hover:text-acs-error text-[12px] ml-1">×</span>
-        </div>
+        {WORKSPACE_TABS.map((wt) => {
+          const active = activeWorkspace === wt.id;
+          return (
+            <button
+              key={wt.id}
+              onClick={() => setActiveWorkspace(wt.id)}
+              className={`flex items-center px-3 py-1.5 font-mont text-[11.5px] gap-2 border-l border-r border-t border-sf-border cursor-pointer relative ${active ? 'bg-white rounded-t font-semibold text-sf-navy' : 'hover:bg-gray-50 text-gray-600'}`}
+              style={active ? { marginBottom: '-1px', borderBottom: '1px solid white', boxShadow: 'inset 3px 0 0 #0176d3' } : {}}
+            >
+              <span className={wt.dashboard ? '' : 'text-[#0d9488]'}>{wt.icon}</span>
+              <span>{wt.label}</span>
+              <span className={`text-[12px] ml-1 ${active ? 'text-gray-400 hover:text-acs-error' : 'text-gray-300 hover:text-acs-error'}`} title="Close tab">×</span>
+            </button>
+          );
+        })}
         <button className="px-2 py-1.5 text-gray-500 hover:bg-gray-200 rounded text-[14px]" title="Open new tab">+</button>
         <div className="ml-auto flex items-center gap-2 px-2 text-gray-500 text-[11.5px]">
-          <button className="hover:text-sf-navy" title="History">⟲ History</button>
-          <button className="hover:text-sf-navy" title="Pinned">📌 Pinned</button>
-          <button className="hover:text-sf-navy" title="Pop out">⤴</button>
+          <button className="hover:text-sf-navy">⟲ History</button>
+          <button className="hover:text-sf-navy">📌 Pinned</button>
+          <button className="hover:text-sf-navy">⤴</button>
         </div>
       </div>
 
+      {activeWorkspace === 'pipeline' ? <PipelineDashboard /> : <MatterRecordView activeWorkspace={activeWorkspace} relatedTab={relatedTab} setRelatedTab={setRelatedTab} participantSubTab={participantSubTab} setParticipantSubTab={setParticipantSubTab} financialsSubTab={financialsSubTab} setFinancialsSubTab={setFinancialsSubTab} />}
+    </div>
+  );
+}
+
+function PipelineDashboard() {
+  const KPIS = [
+    { label: 'Active Matters', value: '31', sub: 'Riverside office' },
+    { label: 'Plaintiff Recovery in Flight', value: '$4.2M', sub: 'Net of fees + expenses' },
+    { label: 'Avg Stage Age', value: '142d', sub: 'Across all phases' },
+    { label: 'PRPA Matters', value: '38%', sub: '12 of 31 — fastest growing', gold: true },
+    { label: 'Buyout Window Active', value: '4', sub: 'Within 45-day clocks', critical: true },
+    { label: 'CB Tag Rate (office)', value: '57%', sub: 'firm 42% · goal 100%', gold: true },
+  ];
+  const FUNNEL = [
+    { stage: 'Intake', count: 6 },
+    { stage: 'Consult', count: 3 },
+    { stage: 'Pre-Lit', count: 2 },
+    { stage: 'Pleadings', count: 2 },
+    { stage: 'Discovery', count: 6 },
+    { stage: 'PRPA Track', count: 4 },
+    { stage: 'Interlocutory', count: 2 },
+    { stage: 'Sale/Manner', count: 4 },
+    { stage: 'Accounting', count: 1 },
+    { stage: 'Final Judgment', count: 1 },
+    { stage: 'Closeout', count: 0 },
+  ];
+  const maxCount = Math.max(...FUNNEL.map((f) => f.count));
+  const RECENT = [
+    { matter: 'Hernandez v. Hernandez', phase: 'PRPA · Day 38/45', owner: 'Talkov', urgency: 'high' },
+    { matter: 'Wong v. Liu', phase: 'Discovery · 220d', owner: 'Grosch', urgency: 'high' },
+    { matter: 'Estate of Patel', phase: 'Sale · 181d in phase', owner: 'Djawad', urgency: 'med' },
+    { matter: 'Gomez v. Ortiz', phase: 'Accounting · 137d', owner: 'Rhode', urgency: 'med' },
+    { matter: 'Brown v. Brown', phase: 'Service · 68d', owner: 'Williamson', urgency: 'low' },
+    { matter: 'Chen v. Chen Estate', phase: 'PRPA · Day 12/45', owner: 'Talkov', urgency: 'low' },
+    { matter: 'Patel v. Singh', phase: 'Sale · escrow open', owner: 'Djawad', urgency: 'low' },
+  ];
+
+  return (
+    <div className="bg-acs-light-silver min-h-screen p-5 space-y-4 -mx-4 -mb-6 rounded-b-lg">
+      {/* Dashboard header */}
+      <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-acs-blue flex items-start justify-between flex-wrap gap-3">
+        <div>
+          <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">Pipeline Dashboard</div>
+          <div className="text-[20px] font-mont font-bold text-sf-navy">Riverside Office · April 2026</div>
+          <div className="text-[12px] text-gray-500 mt-0.5">Showing 31 active matters · last refreshed just now · auto-refresh on 5min</div>
+        </div>
+        <div className="flex gap-1.5">
+          <button className="sf-action-btn">⟲ Refresh</button>
+          <button className="sf-action-btn">🔍 Filter</button>
+          <button className="sf-action-btn">⤓ Export</button>
+          <button className="sf-action-btn primary">📊 Drill Down</button>
+        </div>
+      </div>
+
+      {/* KPI grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {KPIS.map((k, i) => (
+          <div key={i} className={`bg-white p-3 rounded-lg shadow-sm border-t-[3px] ${k.critical ? 'border-acs-error' : k.gold ? 'border-acs-gold' : 'border-acs-blue'}`}>
+            <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{k.label}</div>
+            <div className={`text-[22px] font-bold mono-num font-mont mt-0.5 ${k.critical ? 'text-acs-error' : 'text-sf-navy'}`}>{k.value}</div>
+            <div className="text-[10.5px] text-gray-500 mt-0.5">{k.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Funnel + Recent matters */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="font-mont font-bold text-[13px] text-sf-navy mb-3">Pipeline by Phase (Riverside)</div>
+          <div className="space-y-1.5">
+            {FUNNEL.map((f, i) => {
+              const pct = (f.count / maxCount) * 100;
+              return (
+                <div key={i} className="flex items-center gap-2 text-[12px]">
+                  <div className="w-28 text-right font-mont text-gray-600">{f.stage}</div>
+                  <div className="flex-1 bg-gray-100 rounded h-6 relative">
+                    <div className="absolute left-0 top-0 h-full rounded bg-gradient-to-r from-acs-blue to-acs-dark-blue" style={{width: pct + '%'}}></div>
+                    <div className="absolute left-2 top-0 h-full flex items-center text-white font-mont font-bold text-[11px]" style={{textShadow: '0 0 2px rgba(0,0,0,0.4)'}}>{f.count}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="font-mont font-bold text-[13px] text-sf-navy mb-3 flex items-center justify-between">
+            <span>Recent Matters / Risk Watch</span>
+            <button className="text-[11px] text-sf-blue font-normal">View all</button>
+          </div>
+          <table className="w-full text-[12px]">
+            <thead><tr className="border-b border-sf-border text-gray-500 font-mont uppercase text-[10.5px] text-left">
+              <th className="py-1.5">Matter</th><th className="py-1.5">Phase</th><th className="py-1.5">Owner</th><th className="py-1.5">Risk</th>
+            </tr></thead>
+            <tbody>
+              {RECENT.map((r, i) => (
+                <tr key={i} className="border-b border-gray-100">
+                  <td className="py-1.5 text-sf-blue font-medium">{r.matter}</td>
+                  <td className="py-1.5">{r.phase}</td>
+                  <td className="py-1.5 text-gray-600">{r.owner}</td>
+                  <td className="py-1.5"><span className={`sf-pill ${r.urgency === 'high' ? 'sf-pill-red' : r.urgency === 'med' ? 'sf-pill-gold' : 'bg-gray-200 text-gray-700'}`}>{r.urgency}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Bottom row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="font-mont font-bold text-[13px] text-sf-navy mb-2">PRPA Buyout Windows Active</div>
+          <div className="text-[11px] text-gray-500 mb-2">Matters within 45-day clocks</div>
+          {[
+            { name: 'Hernandez', day: 38, of: 45 },
+            { name: 'Chen', day: 12, of: 45 },
+            { name: 'Reyes Estate', day: 28, of: 45 },
+            { name: 'Vargas', day: 7, of: 45 },
+          ].map((m, i) => (
+            <div key={i} className="flex items-center gap-2 mb-1.5 text-[11.5px]">
+              <span className="flex-1 text-sf-blue">{m.name}</span>
+              <div className="w-24 bg-gray-200 rounded h-2 overflow-hidden">
+                <div className={`h-full ${m.day > 30 ? 'bg-acs-error' : m.day > 15 ? 'bg-acs-warning' : 'bg-acs-success'}`} style={{width: (m.day / m.of * 100) + '%'}}></div>
+              </div>
+              <span className="text-[10.5px] text-gray-500 mono-num w-12 text-right">{m.day}/{m.of}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="font-mont font-bold text-[13px] text-sf-navy mb-2">Common-Benefit Tagging — by Attorney</div>
+          {[
+            { name: 'Scott Talkov', rate: 78 },
+            { name: 'Adeeb Djawad', rate: 92 },
+            { name: 'Lexi Scott', rate: 81 },
+            { name: 'Katja Grosch', rate: 34 },
+            { name: 'Steve Williamson', rate: 21 },
+          ].map((a, i) => (
+            <div key={i} className="flex items-center gap-2 mb-1.5 text-[11.5px]">
+              <span className="flex-1 text-acs-charcoal">{a.name}</span>
+              <div className="w-24 bg-gray-200 rounded h-2 overflow-hidden">
+                <div className={`h-full ${a.rate > 70 ? 'bg-acs-success' : a.rate > 40 ? 'bg-acs-warning' : 'bg-acs-error'}`} style={{width: a.rate + '%'}}></div>
+              </div>
+              <span className="text-[10.5px] mono-num w-10 text-right font-bold">{a.rate}%</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-acs-charcoal text-white p-4 rounded-lg shadow-sm">
+          <div className="font-mont font-bold text-[13px] text-acs-gold mb-2">Office at a glance</div>
+          <div className="space-y-1.5 text-[12px]">
+            <div className="flex justify-between"><span className="opacity-80">Office</span><span className="font-bold">Riverside</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Managing Partner</span><span className="font-bold">Scott Talkov</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Active matters</span><span className="font-bold mono-num">31</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Recovery in flight</span><span className="font-bold mono-num">$4.2M</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Avg stage age</span><span className="font-bold mono-num">142 days</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Recovery YTD</span><span className="font-bold mono-num text-acs-gold">$1.8M</span></div>
+            <div className="flex justify-between border-t border-white/20 pt-1.5 mt-1.5"><span className="opacity-80">PRPA mix</span><span className="font-bold">38%</span></div>
+            <div className="flex justify-between"><span className="opacity-80">Tag-rate gap → fees</span><span className="font-bold text-acs-error">~$340K</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MatterRecordView({ activeWorkspace, relatedTab, setRelatedTab, participantSubTab, setParticipantSubTab, financialsSubTab, setFinancialsSubTab }) {
+  const tab = WORKSPACE_TABS.find((w) => w.id === activeWorkspace);
+  const ov = tab?.overrides || {};
+  const caption = ov.caption || MATTER.caption;
+  const caseNumber = ov.caseNumber || MATTER.caseNumber;
+  const court = ov.court || MATTER.court;
+  const filed = ov.filed || MATTER.filed;
+  const property = ov.property || MATTER.property;
+  const fmv = ov.fmv || MATTER.fmv;
+  const leadAttorney = ov.leadAttorney || MATTER.leadAttorney;
+  const stagePill = ov.stagePill || 'PHASE 6 · PRPA';
+  const stagePillCls = ov.stagePillCls || 'sf-pill-gold';
+  const feeStructure = ov.feeStructure || MATTER.feeStructure;
+  const isAlt = activeWorkspace !== 'hernandez';
+
+  return (
+    <div className="space-y-3">
+      {isAlt && (
+        <div className="bg-yellow-50 border border-yellow-300 px-4 py-2 mb-3 text-[12px] text-yellow-900 rounded flex items-center gap-2">
+          <span>⚠</span>
+          <span><strong>Demo mode:</strong> Record header reflects {tab.label}; related-list content below shows the Hernandez matter dataset for illustration. In the live system each workspace tab loads its own matter data.</span>
+        </div>
+      )}
       {/* Record Header */}
+
       <div className="bg-white border border-sf-border shadow-sm">
         <div className="px-5 py-3 border-b border-sf-border bg-gradient-to-b from-white to-gray-50">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -1933,8 +2127,8 @@ function MatterTab() {
               <div className="w-10 h-10 rounded flex items-center justify-center text-white font-bold text-[22px] flex-shrink-0" style={{background: '#0d9488'}}>⚖</div>
               <div>
                 <div className="text-[11px] text-gray-500 font-mont uppercase tracking-wider">Matter</div>
-                <div className="text-[18px] font-mont font-bold text-sf-navy leading-tight">{MATTER.caption}</div>
-                <div className="text-[12px] text-gray-500 mt-0.5">{MATTER.court} · Case No. {MATTER.caseNumber} · Filed {MATTER.filed} · {MATTER.track}</div>
+                <div className="text-[18px] font-mont font-bold text-sf-navy leading-tight">{caption}</div>
+                <div className="text-[12px] text-gray-500 mt-0.5">{court} · Case No. {caseNumber} · Filed {filed}{ov.caption ? '' : ' · ' + MATTER.track}</div>
               </div>
             </div>
             <div className="flex gap-1.5 flex-wrap">
@@ -1950,11 +2144,11 @@ function MatterTab() {
         <div className="grid grid-cols-2 md:grid-cols-7 gap-x-5 gap-y-2 px-5 py-3 text-[12px]">
           <Highlight label="Matter Type" value="Partition" />
           <Highlight label="Status" valueNode={<span className="sf-pill sf-pill-green">Active</span>} />
-          <Highlight label="Stage" valueNode={<span className="sf-pill sf-pill-gold">PHASE 6 · PRPA</span>} />
-          <Highlight label="Buyout Window" valueNode={<span className="sf-pill sf-pill-red">Day 38 of 45</span>} />
-          <Highlight label="FMV" value={fmt(MATTER.fmv)} />
-          <Highlight label="Lead Attorney" value={MATTER.leadAttorney} />
-          <Highlight label="Fee Arrangement" value={MATTER.feeStructure} />
+          <Highlight label="Stage" valueNode={<span className={`sf-pill ${stagePillCls}`}>{stagePill}</span>} />
+          {!isAlt && <Highlight label="Buyout Window" valueNode={<span className="sf-pill sf-pill-red">Day 38 of 45</span>} />}
+          <Highlight label="FMV" value={fmt(fmv)} />
+          <Highlight label="Lead Attorney" value={leadAttorney} />
+          <Highlight label="Fee Arrangement" value={feeStructure} />
         </div>
       </div>
 
@@ -2548,8 +2742,8 @@ function RelatedParticipants({ subTab, setSubTab }) {
 function NavDropdown() {
   const [open, setOpen] = React.useState(false);
   const items = [
-    { label: 'Home', icon: '🏠' },
-    { label: 'Matters', icon: '⚖', active: true },
+    { label: 'Home', icon: '🏠', active: true },
+    { label: 'Matters', icon: '⚖' },
     { label: 'Contacts', icon: '👤' },
     { label: 'Calendar', icon: '📅' },
     { label: 'Tasks', icon: '✓' },
@@ -2569,8 +2763,8 @@ function NavDropdown() {
         className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-[12.5px] font-mont font-semibold text-sf-navy cursor-pointer"
         title="Navigation"
       >
-        <span className="text-[14px]">⚖</span>
-        <span>Matters</span>
+        <span className="text-[14px]">🏠</span>
+        <span>Home</span>
         <span className={`text-[10px] text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
       </button>
       {open && (
