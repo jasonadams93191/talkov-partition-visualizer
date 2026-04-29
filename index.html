@@ -2322,7 +2322,7 @@ function MatterTimelineCard() {
 function SfPath({ initialCurrentPhase = 6 }) {
   const [currentPhase, setCurrentPhase] = React.useState(initialCurrentPhase);
   const [selectedPhase, setSelectedPhase] = React.useState(initialCurrentPhase);
-  const [guidanceOpen, setGuidanceOpen] = React.useState(true);
+  const [guidanceOpen, setGuidanceOpen] = React.useState(false);
   const [guidanceTab, setGuidanceTab] = React.useState('guidance');
 
   const SHORT = {
