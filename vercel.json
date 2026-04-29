@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "talkov-partition-visualizer",
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" }
+  ]
+}
