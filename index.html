@@ -265,6 +265,53 @@ const PHASES = [
   },
 ];
 
+const PHASE_GUIDANCE = {
+  INTAKE: {
+    keyFields: ['Lead Source', 'Multi-Party Conflicts Cleared', 'CA Real Property Confirmed', 'Property Pre-Screen Complete', 'Consultation Booked', 'Geo-Routed Office Assigned'],
+    guidance: 'Capture lead within 24 hours via website form, (877) PARTITION, or referral. Run conflicts on EVERY named cotenant (often 2–6 family members) across all 7 offices. Verify CA real property held in TIC. Geo-route to nearest office and book consult on attorney\'s calendar with intake form pre-attached. Drive form completion through followup cadence (day 1, 3, 7) — abandon at day 14 if non-responsive.',
+  },
+  CONSULT: {
+    keyFields: ['Consultation Conducted', 'Retain/Decline/Refer Decision', 'Engagement Letter Signed', 'Retainer or Contingency Documented', 'Matter Opened in CaseCloud'],
+    guidance: 'Attorney consult covers facts, full ownership map, client goal (sale vs buyout vs in-kind), and fee structure. Decide Retain / Decline / Refer-Out. If retained: execute engagement letter via DocuSign, document contingency arrangement (Talkov standard: 35% of plaintiff recovery), open Matter in CaseCloud — auto-creates advpm__Participant__c records, triggers preliminary title order, and activates Phase 3 Activity Plan template.',
+  },
+  PRELIT: {
+    keyFields: ['Preliminary Title Report Received', 'Chain of Title Abstracted', 'Cotenancy Ledger Initialized', 'Demand Letter Sent', 'Settlement Window Expired'],
+    guidance: 'Order preliminary title report — vesting deed, encumbrances, prior lis pendens history. Abstract chain of title to confirm TIC vesting date (matters for PRPA eligibility — TIC must arise without written partition agreement). Build initial Cotenancy Ledger on advpm__Participant__c. Send demand letter citing LEG Investments v. Boxler (absolute right) and previewing offsets per Wallace / Hunter. 14–21 day response window; log all communications. Settle if possible (saves the relationship and the fee), proceed if no.',
+  },
+  PLEAD: {
+    keyFields: ['Verified Complaint Filed', 'Lis Pendens Recorded (every county)', 'Cert-Mail Service Complete', 'All Cotenants Served', 'Answer or Default Status Set'],
+    guidance: 'Draft verified complaint per CCP § 872.230 (description of property, plaintiff\'s interest, all parties, basis for partition, manner sought). Partner verifies with client. E-file in proper county. CRITICAL: record lis pendens IMMEDIATELY upon filing in every county where any parcel sits — § 872.250. Cert mail service per § 405.22 (defective service = expungement risk + § 405.38 fee shift to defendant). Track answers / cross-complaints / defaults; default prove-up shortcuts to interlocutory judgment.',
+  },
+  DISC: {
+    keyFields: ['Initial Disclosures Served', 'Written Discovery Complete', 'Depositions Done', 'FMV Appraiser Designated', 'MSA on Right to Partition Heard'],
+    guidance: 'Initial disclosures per CCP § 2016.090 within 60 days of demand. Written discovery (RFPs / SROGs / RFAs) on title, mortgages, occupancy, contributions. Real-estate subpoenas to escrow, lender, broker, HOA. Depositions of cotenants — lock in testimony on possession, contributions, ouster theory if pled. Designate FMV appraiser (CCP § 2034.210) + CPA forensic if multi-year offsets. File MSA on right to partition (CCP § 437c, § 872.710) — Capuccio + LEG Investments + Summers v. Superior Court establish absolute right; cuts months off pre-IJ phase.',
+  },
+  PRPA_BRANCH: {
+    keyFields: ['PRPA Applicability Order', 'Court-Ordered Appraisal Received', 'Notice of FMV Mailed (10-day clock)', 'FMV Objection Hearing (30-day clock)', 'Buyout Right Notice (45-day election clock)', 'Buyout Funding Window (60-day clock)'],
+    guidance: 'CURRENT PHASE. Court determined PRPA applies (§ 874.313). Sworn appraisal received from Mendez & Co.: $812,000. Four cascading clocks running off appraisal date — 10 / 30 / 45 / 60 days. Buyout election deadline 5/6/2026 (Day 38 of 45). Defense counsel J. Reyes confirmed Maria intent to elect; awaiting written election. If buyout closes: 60-day funding window. If no buyout: § 874.318 manner determination — partition in kind unless great prejudice; otherwise open-market sale via court-appointed broker (§ 874.319, NOT auction).',
+  },
+  IJ: {
+    keyFields: ['Interlocutory Judgment Entered', 'Manner of Partition Determined', 'Referee Proposed', 'Referee Oath Filed', 'Bond Posted (if required)'],
+    guidance: 'Interlocutory judgment per CCP § 872.720 — determines all parties\' fractional interests, orders partition, appoints referee. Stipulate or litigate manner: in kind (rare, raw land), by sale (modal), by appraisal (only if all stipulate per Cummings v. Dessel). Propose referee — typically a real-estate attorney or licensed broker; opposing counsel often stipulates to a neutral. Referee files oath within 10 days. Bond if court orders. Engagement meeting: property walkthrough, prior offers review, recommended manner.',
+  },
+  SALE: {
+    keyFields: ['Listing Agreement (Sale Track)', 'Marketing Period Complete', 'Offer Accepted Subject to Court Confirmation', 'Notice of Sale Posted', 'MTC + Overbid Hearing', 'Escrow Closed'],
+    guidance: 'Modal outcome: sale. Referee retains broker (§ 873.060). MLS listing; reasonable marketing period. Accept offer subject to court confirmation. Notice of sale ≥10 days before confirmation hearing (§ 873.640). Referee\'s report of sale (§ 873.710). Motion to confirm sale + overbid procedure (§§ 873.730, 873.740) — minimum overbid math: 10% over first $10K + 5% over balance. Court order confirms; escrow closes; deed records; proceeds wire to referee trust account. If in-kind: surveyor + referee divide; court confirms.',
+  },
+  ACCT: {
+    keyFields: ['Mortgage/Tax/Insurance Credits Compiled', 'Repairs + Improvements Documented', 'Rental Value Offset Computed', 'Ouster Analysis Complete', 'Final Accounting Schedule Submitted'],
+    guidance: 'Compile mortgage P&I, taxes, insurance contributions per cotenant — credits per Hunter v. Schultz / Willmon v. Koyer. Necessary repairs at cost; improvements at LESSER of cost or value-enhancement (Wallace v. Daley). Rental value offset is DEFENSIVE only without ouster (Estate of Hughes) — reduces in-possession cotenant\'s credit, does not generate affirmative recovery for out-of-possession. Multi-year cases or flow-through entities → engage forensic CPA. Stipulated accounting modal; short-cause trial if disputed. Submit final accounting schedule with motion for final judgment.',
+  },
+  FEES: {
+    keyFields: ['Final Judgment Drafted', 'Common-Benefit Time Entries Tagged', '§ 874.040 Fee Motion Filed', 'Fee Declaration Submitted', 'Fee Hearing Order'],
+    guidance: 'Draft final judgment per CCP §§ 872.730, 874.210 — confirms manner, incorporates accounting, allocates net proceeds, directs referee on disbursement. CRITICAL: ensure all advpm__Time__c entries are tagged Common_Benefit__c (Y/N/Mixed) AT ENTRY — § 874.040 fee shifting only realizes on tagged entries. File motion for fee apportionment per § 874.040 (pro-rata default with broad equitable discretion per Orien v. Lutz, Lin v. Jeng). Fee declaration with common-benefit categorization (Capuccio v. Caire establishes recoverability; Forrest v. Elam limits to non-spurious work). Court rules on apportionment.',
+  },
+  CLOSE: {
+    keyFields: ['Disbursement Instructions Issued', 'Funds Wired to All Parties', 'Allocation Deeds Recorded (in-kind only)', 'Lis Pendens Released (every county)', 'Referee Discharged', 'Matter Closed in CaseCloud'],
+    guidance: 'Disbursement instructions to escrow / referee per final judgment + fee order. Wire funds to all parties; reconcile to penny. Record allocation deeds (in-kind cases). Release lis pendens in EVERY county where recorded — § 405.38 fee-shift risk if missed. Referee files final account; court discharges (§ 873.010(b)(4)). Client closeout letter, retention package, NPS survey, referral ask. Close matter in CaseCloud (Stage = Closed, Status = Completed); archive matter file; release conflict locks. Note: Status = Closed can be set from any phase via early-close (Settled / Withdrawn / Stipulated) — distinct from this Closeout phase which is the modal completion path.',
+  },
+};
+
 const GLOSSARY = [
   { term: 'Partition', cite: 'CCP § 872.010 et seq.', body: "A court-supervised process for ending the co-ownership of real or personal property. Any cotenant with a present possessory interest may compel partition; the court determines whether to divide the property in kind, order it sold, or — under PRPA — let one cotenant buy out the others. The right to partition is essentially absolute absent a clear-and-convincing written waiver." },
   { term: 'Tenancy in Common (TIC)', cite: 'Civil Code § 685', body: 'A form of co-ownership in which each cotenant owns an undivided fractional interest, with no right of survivorship. Each TIC interest can be sold, mortgaged, or devised independently. The vast majority of partition matters involve TIC. Under PRPA, any TIC without a written partition agreement triggers special protections (appraisal, buyout right, open-market sale).' },
@@ -1699,7 +1746,7 @@ function MatterTab() {
       </div>
 
       {/* PATH (Lightning chevron stages) */}
-      <SfPath currentPhase={6} />
+      <SfPath initialCurrentPhase={6} />
 
       {/* RELATED LISTS - full width tabs */}
       <div className="bg-white border border-sf-border shadow-sm rounded">
@@ -2092,71 +2139,82 @@ function MatterTimelineCard() {
 }
 
 // SF Path component (chevron stages)
-function SfPath({ currentPhase }) {
+function SfPath({ initialCurrentPhase = 6 }) {
+  const [currentPhase, setCurrentPhase] = React.useState(initialCurrentPhase);
+  const [selectedPhase, setSelectedPhase] = React.useState(initialCurrentPhase);
+  const [guidanceOpen, setGuidanceOpen] = React.useState(true);
+  const [guidanceTab, setGuidanceTab] = React.useState('guidance');
+
   const SHORT = {
-    INTAKE: 'Intake',
-    CONSULT: 'Consult',
-    PRELIT: 'Pre-Lit',
-    PLEAD: 'Pleadings',
-    DISC: 'Discovery',
-    PRPA_BRANCH: 'PRPA',
-    IJ: 'Interlocutory',
-    SALE: 'Sale',
-    ACCT: 'Accounting',
-    FEES: 'Fees',
-    CLOSE: 'Closeout',
+    INTAKE: 'Intake', CONSULT: 'Consult', PRELIT: 'Pre-Lit', PLEAD: 'Pleadings',
+    DISC: 'Discovery', PRPA_BRANCH: 'PRPA', IJ: 'Interlocutory', SALE: 'Sale',
+    ACCT: 'Accounting', FEES: 'Fees', CLOSE: 'Closeout',
   };
   const ICON = {
-    INTAKE: '📞',
-    CONSULT: '🤝',
-    PRELIT: '📋',
-    PLEAD: '📝',
-    DISC: '🔍',
-    PRPA_BRANCH: '⚖',
-    IJ: '🏛',
-    SALE: '💰',
-    ACCT: '📊',
-    FEES: '💵',
-    CLOSE: '✅',
+    INTAKE: '📞', CONSULT: '🤝', PRELIT: '📋', PLEAD: '📝', DISC: '🔍',
+    PRPA_BRANCH: '⚖', IJ: '🏛', SALE: '💰', ACCT: '📊', FEES: '💵', CLOSE: '✅',
   };
 
-  const stepStyle = (idx, completed, current) => {
-    const baseBg = current ? '#0057B8' : completed ? '#28A745' : '#ffffff';
-    const baseColor = (current || completed) ? '#ffffff' : '#5e6c84';
+  const stepStyle = (idx, completed, current, selected) => {
+    let bg, color;
+    if (current) { bg = '#0057B8'; color = '#ffffff'; }
+    else if (completed) { bg = '#28A745'; color = '#ffffff'; }
+    else { bg = '#ffffff'; color = '#5e6c84'; }
+
     const isFirst = idx === 0;
-    // Polygon: left notch (except first), right point. 10px notch.
     const leftPad = isFirst ? 0 : 10;
     const clipPath = isFirst
       ? 'polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%)'
       : 'polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%)';
     return {
-      background: baseBg,
-      color: baseColor,
+      background: bg,
+      color: color,
       clipPath,
       paddingLeft: `${10 + leftPad}px`,
       paddingRight: '14px',
-      border: current ? 'none' : completed ? 'none' : '1px solid #dddbda',
-      borderRight: 'none',
+      cursor: 'pointer',
+      filter: selected ? 'drop-shadow(0 0 0 2px #FFD700)' : 'none',
+      outline: selected ? '2px solid #FFD700' : 'none',
+      transition: 'filter 0.15s, transform 0.1s',
     };
   };
 
+  const advance = () => {
+    if (currentPhase < PHASES.length) {
+      const next = currentPhase + 1;
+      setCurrentPhase(next);
+      setSelectedPhase(next);
+    }
+  };
+
+  const selected = PHASES[selectedPhase - 1];
+  const guidance = PHASE_GUIDANCE[selected.id] || { keyFields: [], guidance: '' };
+  const isCurrent = selectedPhase === currentPhase;
+  const isCompleted = selectedPhase < currentPhase;
+  const isFuture = selectedPhase > currentPhase;
+  const stateLabel = isCurrent ? 'CURRENT STAGE' : isCompleted ? 'COMPLETED STAGE' : 'FUTURE STAGE';
+  const stateColor = isCurrent ? 'text-acs-blue' : isCompleted ? 'text-acs-success' : 'text-gray-500';
+
   return (
     <div className="bg-white border border-sf-border shadow-sm rounded">
+      {/* PATH BAR */}
       <div className="flex items-stretch p-1.5 gap-px">
-        {/* Collapse arrow (matches SF) */}
-        <button className="px-2 py-1 mr-1 border border-sf-border rounded text-gray-500 hover:bg-gray-50 text-[12px] flex-shrink-0">›</button>
+        <button onClick={() => setGuidanceOpen(!guidanceOpen)} className="px-2 py-1 mr-1 border border-sf-border rounded text-gray-500 hover:bg-gray-50 text-[12px] flex-shrink-0" title={guidanceOpen ? 'Hide guidance' : 'Show guidance'}>
+          <span className={`inline-block transition-transform ${guidanceOpen ? '-rotate-90' : 'rotate-0'}`}>›</span>
+        </button>
 
-        {/* Path steps */}
         <div className="flex items-stretch flex-1 min-w-0">
           {PHASES.map((p, idx) => {
             const completed = p.num < currentPhase;
             const current = p.num === currentPhase;
+            const selected = p.num === selectedPhase;
             return (
               <div
                 key={p.id}
+                onClick={() => setSelectedPhase(p.num)}
                 className="flex-1 min-w-0 py-2 font-mont text-[11px] font-semibold flex items-center justify-center gap-1.5 truncate"
-                style={stepStyle(idx, completed, current)}
-                title={`Phase ${p.num}: ${p.title}`}
+                style={stepStyle(idx, completed, current, selected)}
+                title={`Phase ${p.num}: ${p.title}${selected ? ' (selected)' : ''}`}
               >
                 <span className="text-[12px] flex-shrink-0">{ICON[p.id]}</span>
                 <span className="truncate">{SHORT[p.id]}</span>
@@ -2165,13 +2223,56 @@ function SfPath({ currentPhase }) {
           })}
         </div>
 
-        {/* Mark Stage as Complete button */}
-        <button className="ml-2 bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-2 rounded font-mont font-semibold text-[11.5px] flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+        <button onClick={advance} disabled={currentPhase >= PHASES.length} className="ml-2 bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-2 rounded font-mont font-semibold text-[11.5px] flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap disabled:bg-gray-300 disabled:cursor-not-allowed">
           <span>✓</span>
           <span className="hidden md:inline">Mark Stage as Complete</span>
           <span className="md:hidden">Mark Complete</span>
         </button>
       </div>
+
+      {/* GUIDANCE PANEL */}
+      {guidanceOpen && (
+        <div className="border-t border-sf-border bg-gray-50">
+          <div className="px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap border-b border-sf-border">
+            <div className="flex items-center gap-3">
+              <span className={`text-[10px] font-mont font-bold uppercase tracking-wider ${stateColor}`}>{stateLabel}</span>
+              <span className="text-[13px] font-mont font-bold text-sf-navy">Phase {selected.num}: {selected.title}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setGuidanceTab('fields')} className={`px-3 py-1 text-[11px] font-mont font-semibold rounded ${guidanceTab === 'fields' ? 'bg-white text-sf-navy border border-sf-border' : 'text-gray-500 hover:text-sf-navy'}`}>
+                Key Fields
+              </button>
+              <button onClick={() => setGuidanceTab('guidance')} className={`px-3 py-1 text-[11px] font-mont font-semibold rounded ${guidanceTab === 'guidance' ? 'bg-white text-sf-navy border border-sf-border' : 'text-gray-500 hover:text-sf-navy'}`}>
+                Guidance for Success
+              </button>
+            </div>
+          </div>
+
+          <div className="px-4 py-3 bg-white">
+            {guidanceTab === 'fields' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {guidance.keyFields.map((f, i) => (
+                  <div key={i} className="flex items-start gap-2 text-[12.5px]">
+                    <span className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[10px] font-bold ${isCompleted ? 'bg-acs-success text-white' : isCurrent ? 'bg-white border-2 border-acs-blue text-acs-blue' : 'bg-white border border-gray-300 text-gray-400'}`}>
+                      {isCompleted ? '✓' : isCurrent ? '○' : ''}
+                    </span>
+                    <span className={isCompleted ? 'text-gray-600' : 'text-acs-charcoal'}>{f}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {guidanceTab === 'guidance' && (
+              <div className="text-[12.5px] leading-relaxed text-acs-charcoal">{guidance.guidance}</div>
+            )}
+          </div>
+
+          {isFuture && (
+            <div className="px-4 py-2 bg-yellow-50 border-t border-yellow-200 text-[11px] text-gray-600">
+              Previewing future phase — these are the fields and steps required to advance the matter <em>to</em> Phase {selected.num}.
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
