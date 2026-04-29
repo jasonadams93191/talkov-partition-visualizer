@@ -706,11 +706,39 @@ const MATTER = {
     { name: 'Buyout Funding Order (draft)', signed: 'Pending', signer: 'TBD', method: 'E-signature', status: 'Awaiting' },
   ],
   chatterUpdates: [
-    { date: 'Apr 29, 1:54 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
-    { date: 'Apr 29, 1:17 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
-    { date: 'Apr 29, 1:16 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
-    { date: 'Apr 28, 4:22 PM', actor: 'Adeeb Djawad', action: 'Status Change', detail: 'Stage changed: Discovery -> PRPA Track' },
-    { date: 'Apr 22, 11:08 AM', actor: 'Scott Talkov', action: 'Order Recorded', detail: 'FMV confirmed at $812,000 by court' },
+    {
+      time: '1h ago', date: 'Apr 29, 2026 at 5:34 AM', actor: 'Adeeb Djawad',
+      changes: [
+        { field: 'Stage', from: 'Discovery', to: 'PRPA Track', fromIcon: '🔍', toIcon: '⚖' },
+        { field: 'Track', from: 'Classic', to: 'PRPA', fromIcon: '📋', toIcon: '⚖' },
+      ],
+    },
+    {
+      time: '7h ago', date: 'Apr 28, 2026 at 10:15 PM', actor: 'Scott Talkov',
+      changes: [
+        { field: 'Buyout Status', from: 'Awaiting election', to: 'Defense signaled YES', fromIcon: '⏳', toIcon: '✅' },
+      ],
+    },
+    {
+      time: '7d ago', date: 'Apr 22, 2026 at 11:08 AM', actor: 'Scott Talkov',
+      changes: [
+        { field: 'FMV', from: '$0 (pending appraisal)', to: '$812,000 (court-confirmed)', fromIcon: '❓', toIcon: '💰' },
+        { field: 'Stage', from: 'PRPA — FMV Hearing', to: 'PRPA — Buyout Window', fromIcon: '🏛', toIcon: '⏱' },
+      ],
+    },
+    {
+      time: '38d ago', date: 'Mar 22, 2026 at 9:00 AM', actor: 'Lexi Scott',
+      changes: [
+        { field: 'PRPA Buyout Window', from: 'Not started', to: 'Day 1 of 45', fromIcon: '⚪', toIcon: '🟢' },
+      ],
+    },
+    {
+      time: '85d ago', date: 'Feb 4, 2026 at 2:14 PM', actor: 'Hon. T. Velasquez (court entry)',
+      changes: [
+        { field: 'PRPA Applicability', from: 'Pending', to: 'Confirmed (TIC, no agreement, post-2023)', fromIcon: '❓', toIcon: '✅' },
+        { field: 'Track', from: 'Undetermined', to: 'PRPA', fromIcon: '❓', toIcon: '⚖' },
+      ],
+    },
   ],
   upcomingTasks: [
     { date: 'Apr 30', name: 'Update cotenant ledger — March mortgage', owner: 'Lexi Scott', overdue: false },
@@ -1813,22 +1841,66 @@ function MatterTimelineCard() {
           </>
         )}
         {tab === 'chatter' && (
-          <div className="space-y-2.5">
-            {MATTER.chatterUpdates.map((c, i) => (
-              <div key={i} className="flex gap-2 px-2 py-2 hover:bg-gray-50 rounded">
-                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-acs-blue text-white flex items-center justify-center font-bold text-[10px]">
-                  {c.actor.split(' ').map(s => s[0]).join('').slice(0, 2)}
-                </div>
-                <div className="flex-1">
-                  <div className="text-[11.5px]">
-                    <span className="font-bold text-sf-blue">{c.actor}</span>
-                    <span className="text-gray-500"> · {c.action}</span>
-                  </div>
-                  <div className="text-[11px] text-gray-600 mt-0.5">{c.detail}</div>
-                  <div className="text-[10.5px] text-gray-400 mt-0.5 mono-num">{c.date}</div>
-                </div>
+          <div className="space-y-3">
+            {/* Post / Question composer */}
+            <div className="border border-sf-border rounded">
+              <div className="flex border-b border-sf-border bg-gray-50">
+                <button className="px-3 py-1.5 text-[11.5px] font-mont font-semibold text-sf-navy border-b-2 border-sf-blue bg-white">Post</button>
+                <button className="px-3 py-1.5 text-[11.5px] font-mont font-semibold text-gray-500 border-b-2 border-transparent">Question</button>
               </div>
-            ))}
+              <div className="p-2 flex gap-2 items-center">
+                <input type="text" placeholder="Share an update..." className="flex-1 border border-sf-border rounded px-2 py-1.5 text-[11.5px] focus:outline-none focus:border-sf-blue" />
+                <button className="bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-1.5 rounded text-[11.5px] font-mont font-semibold">Share</button>
+              </div>
+            </div>
+
+            {/* Filter / search / refresh */}
+            <div className="flex gap-2 items-center">
+              <button className="border border-sf-border rounded px-2 py-1 text-[11px] hover:bg-gray-50">⇅</button>
+              <div className="flex-1 relative">
+                <input type="text" placeholder="Search this feed..." className="w-full border border-sf-border rounded pl-7 pr-2 py-1 text-[11.5px] focus:outline-none focus:border-sf-blue" />
+                <span className="absolute left-2 top-1.5 text-gray-400 text-[11px]">🔍</span>
+              </div>
+              <button className="border border-sf-border rounded px-2 py-1 text-[11px] hover:bg-gray-50">↻</button>
+            </div>
+
+            {/* Activity feed */}
+            <div className="space-y-3">
+              {MATTER.chatterUpdates.map((c, i) => (
+                <div key={i}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-6 h-6 rounded-full bg-acs-blue text-white flex items-center justify-center font-bold text-[9px] flex-shrink-0">
+                      {c.actor.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="text-[11.5px]">
+                      <span className="font-bold text-sf-blue">{c.actor}</span>
+                      <span className="text-gray-500"> updated this record.</span>
+                    </div>
+                    <span className="text-[10.5px] text-gray-400 ml-auto">{c.time}</span>
+                  </div>
+                  <div className="ml-8 border border-sf-border rounded bg-white p-2.5 space-y-1.5">
+                    {c.changes.map((ch, j) => (
+                      <div key={j}>
+                        <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont mb-0.5">{ch.field}</div>
+                        <div className="flex items-center gap-1.5 text-[11.5px]">
+                          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-gray-100 rounded">
+                            <span>{ch.fromIcon}</span><span>{ch.from}</span>
+                          </span>
+                          <span className="text-gray-400">→</span>
+                          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-acs-light-blue text-sf-navy rounded font-medium">
+                            <span>{ch.toIcon}</span><span>{ch.to}</span>
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-1">
+              <button className="text-[11.5px] text-sf-blue font-mont font-semibold hover:underline">Show All Updates</button>
+            </div>
           </div>
         )}
       </div>
