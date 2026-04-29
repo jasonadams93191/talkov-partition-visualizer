@@ -101,22 +101,94 @@ const TALKOV_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAA
 const FeedbackContext = React.createContext({ feedback: [], addFeedback: () => {}, removeFeedback: () => {}, clearAll: () => {} });
 
 function FeedbackProvider({ children }) {
-  const [feedback, setFeedback] = React.useState(() => {
-    try { return JSON.parse(localStorage.getItem('talkov-feedback') || '[]'); } catch { return []; }
-  });
+  const [feedback, setFeedback] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const API_URL = '/api/feedback';
+
+  // Initial load + 30s polling so cross-device updates appear
+  const refresh = React.useCallback(async () => {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error('GET ' + res.status);
+      const data = await res.json();
+      const norm = data.map((d) => ({
+        id: d.id,
+        section: d.section,
+        label: d.label,
+        rating: d.rating,
+        text: d.text,
+        timestamp: d.created_at,
+      }));
+      setFeedback(norm);
+      setError(null);
+    } catch (e) {
+      console.warn('Feedback refresh failed:', e);
+      setError(String(e.message || e));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   React.useEffect(() => {
-    try { localStorage.setItem('talkov-feedback', JSON.stringify(feedback)); } catch {}
-  }, [feedback]);
-  const addFeedback = (entry) => setFeedback((prev) => [...prev, { ...entry, id: Date.now() + Math.random(), timestamp: new Date().toISOString() }]);
-  const removeFeedback = (id) => setFeedback((prev) => prev.filter((f) => f.id !== id));
-  const clearAll = () => { if (confirm('Clear all feedback? This cannot be undone.')) setFeedback([]); };
+    refresh();
+    const t = setInterval(refresh, 30000);
+    return () => clearInterval(t);
+  }, [refresh]);
+
+  const addFeedback = async (entry) => {
+    // Optimistic
+    const optimistic = { ...entry, id: 'temp-' + Date.now(), timestamp: new Date().toISOString() };
+    setFeedback((prev) => [...prev, optimistic]);
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      });
+      if (!res.ok) throw new Error('POST ' + res.status);
+      const saved = await res.json();
+      setFeedback((prev) => prev.map((f) => (f.id === optimistic.id ? { ...saved, timestamp: saved.created_at } : f)));
+    } catch (e) {
+      console.error('Feedback save failed:', e);
+      setError('Save failed: ' + (e.message || e));
+      // Roll back
+      setFeedback((prev) => prev.filter((f) => f.id !== optimistic.id));
+      alert('Could not save feedback: ' + (e.message || e));
+    }
+  };
+
+  const removeFeedback = async (id) => {
+    const prev = feedback;
+    setFeedback((p) => p.filter((f) => f.id !== id));
+    try {
+      const res = await fetch(`${API_URL}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('DELETE ' + res.status);
+    } catch (e) {
+      console.error('Delete failed:', e);
+      setFeedback(prev);
+      alert('Could not delete: ' + (e.message || e));
+    }
+  };
+
+  const clearAll = async () => {
+    if (!confirm('Clear ALL feedback for everyone? This cannot be undone.')) return;
+    const ids = feedback.map((f) => f.id);
+    setFeedback([]);
+    try {
+      await Promise.all(ids.map((id) => fetch(`${API_URL}?id=${encodeURIComponent(id)}`, { method: 'DELETE' })));
+    } catch (e) {
+      console.error('Clear all failed:', e);
+      refresh();
+    }
+  };
+
   return (
-    <FeedbackContext.Provider value={{ feedback, addFeedback, removeFeedback, clearAll }}>
+    <FeedbackContext.Provider value={{ feedback, addFeedback, removeFeedback, clearAll, loading, error, refresh }}>
       {children}
     </FeedbackContext.Provider>
   );
 }
-
 function useFeedback() { return React.useContext(FeedbackContext); }
 
 function Feedback({ section, label }) {
@@ -245,7 +317,7 @@ function FeedbackHub() {
           <div className="flex items-center justify-between px-4 py-3 border-b border-sf-border bg-gradient-to-r from-acs-blue to-acs-dark-blue text-white rounded-t-lg">
             <div>
               <div className="font-mont font-bold text-[14px]">Feedback Hub</div>
-              <div className="text-[11px] opacity-90">{feedback.length} {feedback.length === 1 ? 'item' : 'items'} saved locally</div>
+              <div className="text-[11px] opacity-90">{feedback.length} {feedback.length === 1 ? 'item' : 'items'} · syncing across devices</div>
             </div>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white text-[18px]">×</button>
           </div>
@@ -279,7 +351,7 @@ function FeedbackHub() {
           </div>
 
           <div className="px-3 py-2 border-t border-sf-border bg-gray-50 text-[10.5px] text-gray-500 rounded-b-lg">
-            Saved to your browser&apos;s local storage. Survives refresh; doesn&apos;t leave your device.
+            Saved to a shared database — visible across devices. Auto-refreshes every 30s.
           </div>
         </div>
       )}
