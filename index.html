@@ -739,10 +739,18 @@ const MATTER = {
   ],
   relatedMatters: [],
   caseCalendar: [
-    { date: '5/6/2026', event: 'PRPA buyout election deadline (45-day clock)', type: 'Statutory deadline', critical: true },
-    { date: '5/13/2026', event: '[Conditional] § 874.318 manner determination motion (if no buyout)', type: 'Filing deadline', critical: false },
-    { date: '~6/15/2026', event: 'Buyout funding deadline (60 days post-election)', type: 'Statutory deadline', critical: false },
-    { date: '~7/15/2026', event: 'CMC after manner determination (alt path)', type: 'Court hearing', critical: false },
+    { date: '2026-04-22', title: 'FMV objection hearing — value confirmed $812,000', owner: 'ST', kind: 'court', past: true },
+    { date: '2026-04-28', title: 'Defense counsel call — Maria buyout intent confirmed', owner: 'ST', kind: 'milestone', past: true },
+    { date: '2026-04-29', title: 'TODAY', owner: '', kind: 'today', past: false },
+    { date: '2026-04-30', title: 'Update cotenant ledger — March mortgage', owner: 'LS', kind: 'task', past: false },
+    { date: '2026-05-03', title: 'Confirm Maria written buyout election', owner: 'ST', kind: 'task', past: false },
+    { date: '2026-05-03', title: 'Draft buyout funding court order', owner: 'AD', kind: 'task', past: false },
+    { date: '2026-05-06', title: 'PRPA buyout election deadline (45-day clock)', owner: 'STAT', kind: 'deadline', critical: true, past: false },
+    { date: '2026-05-10', title: '[Conditional] Draft § 874.318 manner motion', owner: 'AD', kind: 'task', past: false },
+    { date: '2026-05-13', title: '[Conditional] § 874.318 manner motion filing deadline', owner: 'ST', kind: 'filing', past: false },
+    { date: '2026-05-15', title: 'Tag Q1 time entries common-benefit Y/N', owner: 'ALL', kind: 'task', past: false },
+    { date: '2026-06-15', title: 'Buyout funding deadline (60 days post-election)', owner: 'AD', kind: 'deadline', critical: false, past: false },
+    { date: '2026-07-15', title: '[Alt path] CMC after manner determination', owner: 'ST', kind: 'court', past: false },
   ],
   financialDetails: {
     contingencyPct: 35,
@@ -2151,25 +2159,130 @@ function RelatedRelatedMatters() {
 }
 
 function RelatedCaseCalendar() {
+  const [view, setView] = React.useState({ year: 2026, month: 4 }); // Apr 2026 = today
+  const TODAY = '2026-04-29';
+
+  const monthName = (y, m) => new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  const daysInMonth = (y, m) => new Date(y, m, 0).getDate();
+  const firstDayOfMonth = (y, m) => new Date(y, m - 1, 1).getDay();
+  const fmtIso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+  // Build 6×7 grid for the month (with leading/trailing days from adjacent months)
+  const buildGrid = (y, m) => {
+    const dim = daysInMonth(y, m);
+    const fdow = firstDayOfMonth(y, m);
+    const prevDim = daysInMonth(y, m - 1);
+    const cells = [];
+    // Leading days (previous month)
+    for (let i = fdow - 1; i >= 0; i--) {
+      const d = prevDim - i;
+      const py = m === 1 ? y - 1 : y;
+      const pm = m === 1 ? 12 : m - 1;
+      cells.push({ date: fmtIso(py, pm, d), day: d, otherMonth: true });
+    }
+    // Current month
+    for (let d = 1; d <= dim; d++) {
+      cells.push({ date: fmtIso(y, m, d), day: d, otherMonth: false });
+    }
+    // Trailing days
+    while (cells.length < 42) {
+      const offset = cells.length - (fdow + dim) + 1;
+      const ny = m === 12 ? y + 1 : y;
+      const nm = m === 12 ? 1 : m + 1;
+      cells.push({ date: fmtIso(ny, nm, offset), day: offset, otherMonth: true });
+    }
+    return cells;
+  };
+
+  const cells = buildGrid(view.year, view.month);
+
+  const eventsByDate = {};
+  MATTER.caseCalendar.forEach((e) => {
+    if (!eventsByDate[e.date]) eventsByDate[e.date] = [];
+    eventsByDate[e.date].push(e);
+  });
+
+  const eventClass = (kind, critical) => {
+    if (critical) return 'bg-red-100 text-red-900 border-l-2 border-acs-error';
+    switch (kind) {
+      case 'court': return 'bg-blue-100 text-blue-900';
+      case 'deadline': return 'bg-orange-100 text-orange-900 border-l-2 border-orange-500';
+      case 'filing': return 'bg-yellow-100 text-yellow-900';
+      case 'task': return 'bg-green-100 text-green-900';
+      case 'milestone': return 'bg-purple-100 text-purple-900';
+      case 'today': return 'bg-acs-blue text-white font-bold';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const prev = () => setView((v) => v.month === 1 ? { year: v.year - 1, month: 12 } : { year: v.year, month: v.month - 1 });
+  const next = () => setView((v) => v.month === 12 ? { year: v.year + 1, month: 1 } : { year: v.year, month: v.month + 1 });
+  const today = () => setView({ year: 2026, month: 4 });
+
+  const DOW = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+
   return (
-    <table className="w-full text-[12.5px]">
-      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-        <th className="py-1.5 pr-2">Date</th><th className="py-1.5 pr-2">Event</th><th className="py-1.5 pr-2">Type</th><th className="py-1.5">Critical</th>
-      </tr></thead>
-      <tbody>
-        {MATTER.caseCalendar.map((c, i) => (
-          <tr key={i} className={`border-b border-gray-100 ${c.critical ? 'bg-red-50' : ''}`}>
-            <td className="py-2 pr-2 mono-num font-bold">{c.date}</td>
-            <td className="py-2 pr-2">{c.event}</td>
-            <td className="py-2 pr-2 text-[11.5px] text-gray-600">{c.type}</td>
-            <td className="py-2">{c.critical ? <span className="sf-pill sf-pill-red">Critical</span> : <span className="text-gray-400 text-[11px]">—</span>}</td>
-          </tr>
+    <div className="bg-white border border-sf-border rounded shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-sf-border">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-purple-100 rounded flex items-center justify-center text-[18px]">📅</div>
+          <div>
+            <div className="text-[11px] text-gray-500 font-mont uppercase tracking-wider">Matter Calendar</div>
+            <div className="text-[18px] font-bold font-mont text-sf-navy">{monthName(view.year, view.month)}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <button onClick={prev} className="sf-action-btn px-2">‹</button>
+          <button onClick={today} className="sf-action-btn">Today</button>
+          <button onClick={next} className="sf-action-btn px-2">›</button>
+        </div>
+      </div>
+
+      {/* Day-of-week header */}
+      <div className="grid grid-cols-7 bg-gray-50 border-b border-sf-border">
+        {DOW.map((d) => (
+          <div key={d} className="px-2 py-1.5 text-[10px] font-mont font-bold text-gray-500 tracking-wider">{d}</div>
         ))}
-      </tbody>
-    </table>
+      </div>
+
+      {/* Calendar grid */}
+      <div className="grid grid-cols-7" style={{ minHeight: '500px' }}>
+        {cells.map((c, i) => {
+          const isToday = c.date === TODAY;
+          const events = eventsByDate[c.date] || [];
+          return (
+            <div key={i} className={`border-r border-b border-sf-border min-h-[88px] p-1.5 ${c.otherMonth ? 'bg-gray-50' : 'bg-white'} ${isToday ? 'bg-acs-light-blue ring-1 ring-acs-blue ring-inset' : ''} hover:bg-gray-50`}>
+              <div className="flex items-center justify-between">
+                <span className={`text-[11.5px] font-mont font-bold ${c.otherMonth ? 'text-gray-400' : isToday ? 'text-acs-blue' : 'text-gray-700'}`}>{c.day}</span>
+                <button className="text-gray-300 hover:text-acs-blue text-[12px] leading-none">+</button>
+              </div>
+              <div className="space-y-0.5 mt-1">
+                {events.map((e, j) => (
+                  <div key={j} className={`text-[9.5px] px-1.5 py-0.5 rounded truncate ${eventClass(e.kind, e.critical)}`} title={e.title}>
+                    {e.owner && e.owner !== '' && <span className="font-bold mr-1">({e.owner})</span>}
+                    {e.title}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="px-4 py-2 bg-gray-50 border-t border-sf-border flex flex-wrap gap-3 text-[10.5px] text-gray-600">
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-red-100 border-l-2 border-acs-error rounded-sm"></span>Critical deadline</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-orange-100 border-l-2 border-orange-500 rounded-sm"></span>Statutory deadline</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-blue-100 rounded-sm"></span>Court hearing</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-yellow-100 rounded-sm"></span>Filing</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-green-100 rounded-sm"></span>Task</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-purple-100 rounded-sm"></span>Milestone</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 bg-acs-blue rounded-sm"></span>Today</span>
+      </div>
+    </div>
   );
 }
-
 function RelatedFinancials({ subTab, setSubTab }) {
   return (
     <>
