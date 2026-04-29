@@ -457,9 +457,120 @@ const MATTER = {
   apn: '218-330-014',
   fmv: 812000,
   cotenants: [
-    { name: 'Carlos Hernandez', role: 'Plaintiff', share: '1/3', status: 'Filed partition; seeks sale', counsel: 'Talkov Law (Scott Talkov)' },
-    { name: 'Maria Hernandez', role: 'Defendant', share: '1/3', status: 'In exclusive possession 4+ yrs; signaling buyout', counsel: 'Defense counsel: J. Reyes' },
-    { name: 'Luis Hernandez', role: 'Defendant', share: '1/3', status: 'Defaulted (6/8/2025); not contesting', counsel: '—' },
+    {
+      name: 'Carlos Hernandez', role: 'Plaintiff', share: '1/3',
+      status: 'Filed partition; seeks sale or buyout',
+      counsel: 'Talkov Law (Scott Talkov)',
+      phone: '(951) 555-0142',
+      email: 'carlos.hernandez@example.com',
+      address: '15822 Adobe Way, Riverside, CA 92506',
+      notes: [
+        { date: '4/15/2026', author: 'Scott Talkov', text: 'Confirmed willingness to accept buyout at appraised value $270,667. Owns local business; prefers cash settlement over continued sale process.' },
+        { date: '10/2/2025', author: 'Lexi Scott', text: 'Initial intake call. Inherited 1/3 from late father Eduardo Hernandez (d. 2019). Cousins not communicating; demand letter sent to formalize.' },
+      ],
+    },
+    {
+      name: 'Maria Hernandez', role: 'Defendant', share: '1/3',
+      status: 'In exclusive possession 4+ yrs; signaling buyout election',
+      counsel: 'Defense counsel: J. Reyes',
+      phone: '(951) 555-0188',
+      email: 'maria.hernandez@example.com',
+      address: '4521 Mockingbird Ln, Riverside, CA 92506 (subject property)',
+      notes: [
+        { date: '4/28/2026', author: 'Scott Talkov', text: 'Defense counsel J. Reyes confirmed Maria intent to elect buyout. Awaiting written election. Funding source: pre-approval letter from Wells Fargo for $300K HELOC.' },
+        { date: '4/10/2026', author: 'Adeeb Djawad', text: 'Maria opened informal $220K offer (rejected — below FMV). Anticipated PRPA election at appraised $270,667.' },
+      ],
+    },
+    {
+      name: 'Luis Hernandez', role: 'Defendant', share: '1/3',
+      status: 'Defaulted (6/8/2025); not contesting',
+      counsel: '\u2014',
+      phone: '(951) 555-0203',
+      email: 'luis.hernandez@example.com',
+      address: 'Last known: 8847 Magnolia Ave, Apt 12, Riverside, CA 92503',
+      notes: [
+        { date: '1/8/2026', author: 'Lexi Scott', text: 'Default entered. Luis served personally 10/22/2025; no answer filed within statutory window.' },
+        { date: '10/22/2025', author: 'Process server', text: 'Personal service complete at last known address. Subject confirmed identity but stated he wants no involvement in matter.' },
+      ],
+    },
+  ],
+  counselParticipants: [
+    {
+      name: 'Scott Talkov', role: 'Partition Attorney (Plaintiff)',
+      firm: 'Talkov Law', phone: '(951) 888-3300', email: 'scott@talkovlaw.com',
+      address: '3610 Central Ave, Ste 400, Riverside, CA 92506',
+      notes: [
+        { date: '10/8/2025', author: 'Lexi Scott', text: 'Lead attorney. Engagement signed; contingency 35%. Riverside office assigned based on geo-routing.' },
+      ],
+    },
+    {
+      name: 'J. Reyes', role: 'Defense Counsel (Maria)',
+      firm: 'Reyes Family Law', phone: '(951) 555-0440', email: 'reyes@reyesfamilylaw.com',
+      address: '5840 Mission Inn Ave, Riverside, CA 92501',
+      notes: [
+        { date: '4/28/2026', author: 'Scott Talkov', text: 'Cooperative defense counsel. Has signaled buyout election; expecting filing by 5/3.' },
+        { date: '11/19/2025', author: 'Adeeb Djawad', text: 'Filed answer + cross-complaint for accounting on Maria\'s behalf. Reasonable to deal with.' },
+      ],
+    },
+  ],
+  courtParticipants: [
+    {
+      name: 'Hon. T. Velasquez', role: 'Judge', dept: 'Dept. 8', court: 'Riverside Sup. Ct.',
+      phone: '(951) 777-3157', email: 'dept8@riverside.courts.ca.gov',
+      address: '4050 Main St, Riverside, CA 92501',
+      notes: [
+        { date: '4/22/2026', author: 'Scott Talkov', text: 'Judge confirmed FMV at $812,000 at hearing. Tendency: efficient, no-nonsense, runs tight calendar.' },
+        { date: '2/4/2026', author: 'Adeeb Djawad', text: 'Judge ruled PRPA applies sua sponte after reviewing intake. Quick order, did not require briefing.' },
+      ],
+    },
+    {
+      name: 'Riverside Sup. Ct. Clerk', role: 'Court Clerk', dept: 'Civil Filing', court: 'Riverside Sup. Ct.',
+      phone: '(951) 777-3000', email: 'civilclerk@riverside.courts.ca.gov',
+      address: '4050 Main St, Riverside, CA 92501',
+      notes: [
+        { date: '3/16/2026', author: 'Lexi Scott', text: 'FMV notice mailed by clerk on time (within 10-day window). Verify cert mail delivery to all 3 cotenants.' },
+      ],
+    },
+  ],
+  vendorParticipants: [
+    {
+      name: 'Mendez & Co. Real Estate Appraisers', role: 'Court-Appointed Appraiser',
+      firm: 'Mendez & Co.', phone: '(951) 555-0911', email: 'appraisals@mendezco.com',
+      address: '6200 Brockton Ave, Riverside, CA 92506', cost: '$2,800',
+      notes: [
+        { date: '3/8/2026', author: 'Adeeb Djawad', text: 'Sworn appraisal received. $812,000. Full report on file. Defense did not object at FMV hearing.' },
+      ],
+    },
+    {
+      name: 'Riverside Title Co.', role: 'Title Officer',
+      firm: 'Riverside Title', phone: '(951) 555-0700', email: 'orders@riversidetitle.com',
+      address: '3737 Main St, Riverside, CA 92501', cost: '$847',
+      notes: [
+        { date: '10/9/2025', author: 'Lexi Scott', text: 'Preliminary title report received. Confirmed TIC vesting, no recorded waiver/buy-sell, no adverse encumbrances beyond standard mortgage.' },
+      ],
+    },
+    {
+      name: 'TBD - Court-Appointed Referee', role: 'Court-Appointed Referee',
+      firm: '\u2014', phone: '\u2014', email: '\u2014',
+      address: '\u2014', cost: 'TBD if no buyout',
+      notes: [
+        { date: '4/28/2026', author: 'Scott Talkov', text: 'Holding off on referee proposal until buyout window closes. If sale track triggers, will propose D. Kim (real-estate attorney, prior partition referee experience) for stipulation.' },
+      ],
+    },
+    {
+      name: 'TBD - Real Estate Broker', role: 'Real Estate Broker (PRPA open-market sale)',
+      firm: '\u2014', phone: '\u2014', email: '\u2014',
+      address: '\u2014', cost: 'TBD',
+      notes: [],
+    },
+    {
+      name: 'Pacific Forensic Accounting', role: 'CPA (forensic, standby)',
+      firm: 'Pacific Forensic Accounting', phone: '(909) 555-0033', email: 'engage@pacificforensic.com',
+      address: '8945 Sierra Ave, Fontana, CA 92335', cost: 'On call',
+      notes: [
+        { date: '10/15/2025', author: 'Adeeb Djawad', text: 'Pre-engaged on standby. Will activate if accounting becomes contested at Phase 9 (multi-year offsets across 3 cotenants).' },
+      ],
+    },
   ],
   phase: 'Phase 6 · PRPA — Buyout Window Day 38 of 45',
   leadAttorney: 'Scott Talkov',
@@ -1714,26 +1825,12 @@ function SfPath({ currentPhase }) {
 // Related list sub-components
 function RelatedParticipants({ subTab, setSubTab }) {
   const SUBS = [
-    { id: 'cotenants', label: 'Cotenants', count: 3 },
-    { id: 'counsel', label: 'Counsel', count: 2 },
-    { id: 'court', label: 'Court', count: 2 },
-    { id: 'vendors', label: 'Vendors', count: 5 },
+    { id: 'cotenants', label: 'Cotenants', count: MATTER.cotenants.length, data: MATTER.cotenants, kind: 'cotenant' },
+    { id: 'counsel', label: 'Counsel', count: MATTER.counselParticipants.length, data: MATTER.counselParticipants, kind: 'counsel' },
+    { id: 'court', label: 'Court', count: MATTER.courtParticipants.length, data: MATTER.courtParticipants, kind: 'court' },
+    { id: 'vendors', label: 'Vendors', count: MATTER.vendorParticipants.length, data: MATTER.vendorParticipants, kind: 'vendor' },
   ];
-  const COUNSEL = [
-    { name: 'Scott Talkov', role: 'Partition Attorney (Plaintiff)', firm: 'Talkov Law', email: 'scott@talkovlaw.com' },
-    { name: 'J. Reyes', role: 'Defense Counsel (Maria)', firm: 'Reyes Family Law', email: 'reyes@example.com' },
-  ];
-  const COURT = [
-    { name: 'Hon. T. Velasquez', role: 'Judge', dept: 'Dept. 8', court: 'Riverside Sup. Ct.' },
-    { name: 'Riverside Sup. Ct. Clerk', role: 'Court Clerk', dept: '\u2014', court: 'Riverside Sup. Ct.' },
-  ];
-  const VENDORS = [
-    { name: 'Mendez & Co.', role: 'Court-Appointed Appraiser', firm: 'Mendez & Co. Real Estate Appraisers', amount: '$2,800' },
-    { name: 'Riverside Title', role: 'Title Officer', firm: 'Riverside Title Co.', amount: '$847' },
-    { name: 'TBD', role: 'Court-Appointed Referee', firm: '\u2014', amount: 'TBD if no buyout' },
-    { name: 'TBD', role: 'Real Estate Broker', firm: '\u2014', amount: 'TBD if open-market sale' },
-    { name: 'Pacific Forensic', role: 'CPA (forensic accounting standby)', firm: 'Pacific Forensic Accounting', amount: 'On call' },
-  ];
+  const active = SUBS.find((s) => s.id === subTab) || SUBS[0];
 
   return (
     <>
@@ -1752,79 +1849,148 @@ function RelatedParticipants({ subTab, setSubTab }) {
         ))}
       </div>
 
-      {subTab === 'cotenants' && (
-        <table className="w-full text-[12.5px]">
-          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2 text-center">Share</th><th className="py-1.5 pr-2">Counsel</th><th className="py-1.5">Status</th>
-          </tr></thead>
-          <tbody>
-            {MATTER.cotenants.map((c) => (
-              <tr key={c.name} className="border-b border-gray-100">
-                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
-                <td className="py-2 pr-2">{c.role}</td>
-                <td className="py-2 pr-2 text-center mono-num font-bold">{c.share}</td>
-                <td className="py-2 pr-2 text-[12px]">{c.counsel}</td>
-                <td className="py-2 text-[12px] text-gray-600">{c.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      {subTab === 'counsel' && (
-        <table className="w-full text-[12.5px]">
-          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Firm</th><th className="py-1.5">Email</th>
-          </tr></thead>
-          <tbody>
-            {COUNSEL.map((c) => (
-              <tr key={c.name} className="border-b border-gray-100">
-                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
-                <td className="py-2 pr-2">{c.role}</td>
-                <td className="py-2 pr-2">{c.firm}</td>
-                <td className="py-2 text-[11.5px] text-gray-600">{c.email}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      {subTab === 'court' && (
-        <table className="w-full text-[12.5px]">
-          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Dept</th><th className="py-1.5">Court</th>
-          </tr></thead>
-          <tbody>
-            {COURT.map((c) => (
-              <tr key={c.name} className="border-b border-gray-100">
-                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
-                <td className="py-2 pr-2">{c.role}</td>
-                <td className="py-2 pr-2">{c.dept}</td>
-                <td className="py-2 text-[12px]">{c.court}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      {subTab === 'vendors' && (
-        <table className="w-full text-[12.5px]">
-          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Firm</th><th className="py-1.5 text-right">Cost</th>
-          </tr></thead>
-          <tbody>
-            {VENDORS.map((c) => (
-              <tr key={c.name + c.role} className="border-b border-gray-100">
-                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
-                <td className="py-2 pr-2">{c.role}</td>
-                <td className="py-2 pr-2 text-[12px]">{c.firm}</td>
-                <td className="py-2 text-right mono-num">{c.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <div className="space-y-2.5">
+        {active.data.map((p, i) => (
+          <ParticipantCard key={i} p={p} kind={active.kind} />
+        ))}
+      </div>
     </>
   );
 }
 
+function ParticipantCard({ p, kind }) {
+  const [expanded, setExpanded] = React.useState(false);
+  const noteCount = (p.notes || []).length;
+  const subtitle = kind === 'cotenant'
+    ? `${p.role} \u00b7 ${p.share} interest`
+    : kind === 'counsel'
+      ? `${p.role} \u00b7 ${p.firm}`
+      : kind === 'court'
+        ? `${p.role} \u00b7 ${p.dept} \u00b7 ${p.court}`
+        : `${p.role}${p.firm && p.firm !== '\u2014' ? ' \u00b7 ' + p.firm : ''}`;
+
+  const phoneOk = p.phone && p.phone !== '\u2014';
+  const emailOk = p.email && p.email !== '\u2014';
+
+  return (
+    <div className="border border-sf-border rounded bg-white">
+      <div className="px-3 py-2.5 flex items-center justify-between gap-3 hover:bg-acs-light-blue cursor-pointer" onClick={() => setExpanded(!expanded)}>
+        <div className="flex-1 min-w-0">
+          <div className="font-mont font-bold text-[13px] text-sf-blue truncate">{p.name}</div>
+          <div className="text-[11.5px] text-gray-600 truncate">{subtitle}</div>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {phoneOk && (
+            <a
+              href={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mont border border-sf-border bg-white hover:bg-acs-light-blue text-sf-navy"
+              title={`Call ${p.phone}`}
+            >
+              <span className="text-acs-blue">\u260E</span>
+              <span className="hidden md:inline mono-num">{p.phone}</span>
+            </a>
+          )}
+          {emailOk && (
+            <a
+              href={`mailto:${p.email}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mont border border-sf-border bg-white hover:bg-acs-light-blue text-sf-navy"
+              title={`Email ${p.email}`}
+            >
+              <span className="text-acs-blue">\u2709</span>
+              <span className="hidden lg:inline">{p.email.split('@')[0]}</span>
+            </a>
+          )}
+          {kind === 'cotenant' && (
+            <span className="sf-pill bg-acs-light-blue text-acs-dark-blue mono-num">{p.share}</span>
+          )}
+          {p.cost && <span className="text-[11px] text-gray-600 mono-num">{p.cost}</span>}
+          <span className="text-[11px] text-gray-500 ml-1">
+            📝 {noteCount}
+          </span>
+          <span className={`text-acs-blue text-[14px] transition-transform ${expanded ? 'rotate-90' : ''}`}>\u25B6</span>
+        </div>
+      </div>
+
+      {expanded && (
+        <div className="border-t border-sf-border bg-gray-50 px-3 py-2.5 space-y-3">
+          {/* Contact details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[12px]">
+            {phoneOk && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont">Phone</div>
+                <a href={`tel:${p.phone.replace(/[^0-9+]/g, '')}`} className="text-sf-blue hover:underline mono-num">{p.phone}</a>
+              </div>
+            )}
+            {emailOk && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont">Email</div>
+                <a href={`mailto:${p.email}`} className="text-sf-blue hover:underline break-all">{p.email}</a>
+              </div>
+            )}
+            {p.address && p.address !== '\u2014' && (
+              <div className="md:col-span-1">
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont">Address</div>
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(p.address)}`} target="_blank" rel="noreferrer" className="text-sf-blue hover:underline text-[11.5px]">{p.address}</a>
+              </div>
+            )}
+            {kind === 'cotenant' && (
+              <div className="md:col-span-3">
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont">Status</div>
+                <div className="text-acs-charcoal">{p.status}</div>
+              </div>
+            )}
+            {kind === 'cotenant' && p.counsel && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mont">Counsel</div>
+                <div>{p.counsel}</div>
+              </div>
+            )}
+          </div>
+
+          {/* Notes */}
+          <div>
+            <div className="font-mont font-bold text-[11.5px] text-sf-navy mb-1.5 flex items-center gap-1.5">
+              📝 Participant Notes ({noteCount})
+              <button onClick={(e) => e.stopPropagation()} className="ml-auto text-[10.5px] font-normal text-sf-blue">+ New</button>
+            </div>
+            {noteCount === 0 ? (
+              <div className="text-[11.5px] text-gray-400 italic px-3 py-2 bg-white border border-dashed border-sf-border rounded">No notes yet.</div>
+            ) : (
+              <div className="space-y-1.5">
+                {p.notes.map((n, j) => (
+                  <div key={j} className="bg-white border-l-2 border-acs-blue px-3 py-2 rounded">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <span className="font-mont font-bold text-[11px] text-sf-navy">{n.author}</span>
+                      <span className="text-[10.5px] text-gray-500 mono-num">{n.date}</span>
+                    </div>
+                    <div className="text-[11.5px] text-acs-charcoal leading-snug">{n.text}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Quick actions */}
+          <div className="flex gap-1.5 pt-1 border-t border-sf-border">
+            {phoneOk && (
+              <a href={`tel:${p.phone.replace(/[^0-9+]/g, '')}`} className="sf-action-btn flex items-center gap-1">\u260E Call</a>
+            )}
+            {emailOk && (
+              <a href={`mailto:${p.email}`} className="sf-action-btn flex items-center gap-1">\u2709 Email</a>
+            )}
+            {phoneOk && (
+              <a href={`sms:${p.phone.replace(/[^0-9+]/g, '')}`} className="sf-action-btn flex items-center gap-1">💬 SMS</a>
+            )}
+            <button onClick={(e) => e.stopPropagation()} className="sf-action-btn">📝 Add Note</button>
+            <button onClick={(e) => e.stopPropagation()} className="sf-action-btn">📅 Log Activity</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 function RelatedActivities() {
   return (
     <table className="w-full text-[12.5px]">
