@@ -1459,12 +1459,10 @@ function MatterTab() {
     { id: 'parties', label: 'Parties Involved', icon: '👥', count: 12 },
     { id: 'conflict-checks', label: 'Conflict Checks', icon: '🔍', count: MATTER.conflictChecks.length },
     { id: 'properties', label: 'Properties', icon: '🏡', count: MATTER.properties.length },
-    { id: 'evidence', label: 'Evidence & Documentation', icon: '📁', count: MATTER.files.length },
     { id: 'lis-pendens', label: 'Lis Pendens Records', icon: '🛡', count: MATTER.lisPendensRecords.length },
     { id: 'financials', label: 'Financials', icon: '💰', count: null },
     { id: 'cotenancy', label: 'Cotenancy Ledger', icon: '⚖', count: null },
     { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
-    { id: 'related-matters', label: 'Related Matters', icon: '🔗', count: MATTER.relatedMatters.length },
     { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
     { id: 'notes', label: 'Notes', icon: '📝', count: MATTER.notes.length },
   ];
@@ -1547,12 +1545,10 @@ function MatterTab() {
           )}
           {relatedTab === 'conflict-checks' && <RelatedConflictChecks />}
           {relatedTab === 'properties' && <RelatedProperties />}
-          {relatedTab === 'evidence' && <RelatedDocuments />}
           {relatedTab === 'lis-pendens' && <RelatedLisPendens />}
           {relatedTab === 'financials' && <RelatedFinancials subTab={financialsSubTab} setSubTab={setFinancialsSubTab} />}
           {relatedTab === 'cotenancy' && <RelatedLedger />}
           {relatedTab === 'prpa' && <RelatedPrpaClocks />}
-          {relatedTab === 'related-matters' && <RelatedRelatedMatters />}
           {relatedTab === 'case-calendar' && <RelatedCaseCalendar />}
           {relatedTab === 'notes' && <RelatedNotes />}
         </div>
@@ -1563,8 +1559,7 @@ function MatterTab() {
         <div className="lg:col-span-2">
           <CaseDetailsCard />
         </div>
-        <div className="lg:col-span-1 lg:sticky lg:top-3 space-y-3" style={{ maxHeight: 'calc(100vh - 24px)', overflowY: 'auto' }}>
-          <NotesCard />
+        <div className="lg:col-span-1 lg:sticky lg:top-3" style={{ maxHeight: 'calc(100vh - 24px)', overflowY: 'auto' }}>
           <MatterTimelineCard />
         </div>
       </div>
@@ -1668,33 +1663,60 @@ function CaseOnboarding() {
 
 function FilesESignature() {
   return (
-    <div className="p-4">
-      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
-        <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> Signed Documents ({MATTER.signedFiles.length})</span>
-        <button className="sf-action-btn">+ Send for Signature</button>
+    <div className="p-4 space-y-4">
+      {/* Section 1: All Documents (evidence + documentation) */}
+      <div>
+        <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
+          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> All Documents ({MATTER.files.length})</span>
+          <button className="sf-action-btn">Upload</button>
+        </div>
+        <div className="border border-t-0 border-sf-border rounded-b">
+          <table className="w-full text-[12.5px]">
+            <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
+              <th className="py-1.5 px-2">File Name</th><th className="py-1.5 px-2">Type</th><th className="py-1.5 px-2">Date</th><th className="py-1.5 px-2 text-right">Size</th>
+            </tr></thead>
+            <tbody>
+              {MATTER.files.map((f, i) => (
+                <tr key={i} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer last:border-0">
+                  <td className="py-1.5 px-2 text-sf-blue">📄 {f.name}</td>
+                  <td className="py-1.5 px-2 text-gray-600">{f.type}</td>
+                  <td className="py-1.5 px-2 text-gray-600 mono-num">{f.date}</td>
+                  <td className="py-1.5 px-2 text-right text-gray-500 mono-num">{f.size}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="border border-t-0 border-sf-border rounded-b">
-        <table className="w-full text-[12.5px]">
-          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
-            <th className="py-1.5 px-2">Document</th><th className="py-1.5 px-2">Signed</th><th className="py-1.5 px-2">Signer</th><th className="py-1.5 px-2">Method</th><th className="py-1.5 px-2">Status</th>
-          </tr></thead>
-          <tbody>
-            {MATTER.signedFiles.map((f, i) => (
-              <tr key={i} className="border-b border-gray-100">
-                <td className="py-2 px-2 text-sf-blue">📄 {f.name}</td>
-                <td className="py-2 px-2 mono-num">{f.signed}</td>
-                <td className="py-2 px-2 text-[11.5px]">{f.signer}</td>
-                <td className="py-2 px-2 text-[11.5px]">{f.method}</td>
-                <td className="py-2 px-2"><span className={`sf-pill ${f.status === 'Complete' ? 'sf-pill-green' : 'sf-pill-gold'}`}>{f.status}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {/* Section 2: E-Signature Tracking */}
+      <div>
+        <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
+          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> E-Signature Tracking ({MATTER.signedFiles.length})</span>
+          <button className="sf-action-btn">+ Send for Signature</button>
+        </div>
+        <div className="border border-t-0 border-sf-border rounded-b">
+          <table className="w-full text-[12.5px]">
+            <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
+              <th className="py-1.5 px-2">Document</th><th className="py-1.5 px-2">Signed</th><th className="py-1.5 px-2">Signer</th><th className="py-1.5 px-2">Method</th><th className="py-1.5 px-2">Status</th>
+            </tr></thead>
+            <tbody>
+              {MATTER.signedFiles.map((f, i) => (
+                <tr key={i} className="border-b border-gray-100 last:border-0">
+                  <td className="py-2 px-2 text-sf-blue">📄 {f.name}</td>
+                  <td className="py-2 px-2 mono-num">{f.signed}</td>
+                  <td className="py-2 px-2 text-[11.5px]">{f.signer}</td>
+                  <td className="py-2 px-2 text-[11.5px]">{f.method}</td>
+                  <td className="py-2 px-2"><span className={`sf-pill ${f.status === 'Complete' ? 'sf-pill-green' : 'sf-pill-gold'}`}>{f.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 }
-
 function NotesCard() {
   return (
     <div className="sf-card">
