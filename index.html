@@ -2586,13 +2586,20 @@ function SfPath({ initialCurrentPhase = 6 }) {
     };
   };
 
-  const advance = () => {
-    if (currentPhase < PHASES.length) {
+  // If user has selected a different stage from current, button jumps current to selected.
+  // If selected === current, button advances current+1.
+  const buttonAction = () => {
+    if (selectedPhase !== currentPhase) {
+      setCurrentPhase(selectedPhase);
+    } else if (currentPhase < PHASES.length) {
       const next = currentPhase + 1;
       setCurrentPhase(next);
       setSelectedPhase(next);
     }
   };
+  const isJumpMode = selectedPhase !== currentPhase;
+  const buttonLabel = isJumpMode ? 'Mark as Current Stage' : 'Mark Stage as Complete';
+  const buttonShort = isJumpMode ? 'Set Current' : 'Mark Complete';
 
   const selected = PHASES[selectedPhase - 1];
   const guidance = PHASE_GUIDANCE[selected.id] || { keyFields: [], guidance: '' };
@@ -2630,10 +2637,10 @@ function SfPath({ initialCurrentPhase = 6 }) {
           })}
         </div>
 
-        <button onClick={advance} disabled={currentPhase >= PHASES.length} className="ml-2 bg-acs-blue hover:bg-acs-dark-blue text-white px-3 py-2 rounded font-mont font-semibold text-[11.5px] flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap disabled:bg-gray-300 disabled:cursor-not-allowed">
-          <span>✓</span>
-          <span className="hidden md:inline">Mark Stage as Complete</span>
-          <span className="md:hidden">Mark Complete</span>
+        <button onClick={buttonAction} disabled={!isJumpMode && currentPhase >= PHASES.length} className={`ml-2 text-white px-3 py-2 rounded font-mont font-semibold text-[11.5px] flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap disabled:bg-gray-300 disabled:cursor-not-allowed ${isJumpMode ? 'bg-acs-gold text-acs-charcoal hover:bg-yellow-400' : 'bg-acs-blue hover:bg-acs-dark-blue'}`} title={isJumpMode ? `Move current stage to Phase ${selectedPhase}` : 'Advance to next stage'}>
+          <span>{isJumpMode ? '⇨' : '✓'}</span>
+          <span className="hidden md:inline">{buttonLabel}</span>
+          <span className="md:hidden">{buttonShort}</span>
         </button>
       </div>
 
