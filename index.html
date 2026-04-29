@@ -280,7 +280,10 @@ const GLOSSARY = [
   { term: 'Cotenancy Accounting (Offsets)', cite: 'CCP § 872.140; Wallace v. Daley; Hunter v. Schultz', body: 'Equity-driven adjustments among cotenants. A cotenant who pays mortgage P&I, taxes, insurance, necessary repairs, or value-enhancing improvements gets credit and contribution from the others (Wallace v. Daley, Willmon v. Koyer). Often dispositive of net proceeds — a $300K case can flip to a $50K case after offsets. The "second phase" Talkov sells against.' },
   { term: 'Rental Value Offset', cite: 'Hunter v. Schultz (1966) 240 Cal.App.2d 24', body: "When one cotenant has been in exclusive possession, her contribution claims (mortgage, taxes, etc.) are reduced — defensively, dollar-for-dollar — by the reasonable rental value of the others' shares she enjoyed. Importantly, this is a defensive offset only: without ouster, the out-of-possession cotenants do not affirmatively recover rents." },
   { term: 'Ouster', cite: 'Estate of Hughes (1992) 5 Cal.App.4th 1607', body: 'An adverse act by a cotenant in possession that excludes the others — changing locks, denying access, repudiating co-ownership in writing, etc. Mere exclusive occupancy is not ouster. Without ouster pled and proven, out-of-possession cotenants cannot affirmatively recover rents from the cotenant in possession; they get only the defensive Hunter offset.' },
-  { term: 'Common Benefit / Fee Apportionment', cite: 'CCP § 874.040; Orien v. Lutz', body: '"The court shall apportion the costs of partition among the parties in proportion to their interests or make such other apportionment as may be equitable." Attorney fees expended for the common benefit of all cotenants are recoverable; non-common-benefit work (litigating contested offsets, fighting ouster claims) is not. Realizing fee shifting requires tagging time entries at entry, not retrofitting at the end.' },
+  { term: 'Common Benefit / Fee Apportionment', cite: 'CCP § 874.040; Orien v. Lutz; Lin v. Jeng', body: '"The court shall apportion the costs of partition among the parties in proportion to their interests or make such other apportionment as may be equitable." Attorney fees expended for the common benefit of all cotenants are recoverable as costs of partition (paid from proceeds before distribution); non-common-benefit work (litigating contested offsets, fighting ouster claims, client-specific equity work) is not. THE OPERATIONAL TRIGGER: tagging at entry, not retrofit. Firm-wide tag rates of 40-50% mean half the recoverable fees are systematically forfeited. See also Common-Benefit Tagging (at entry) entry below.' },
+  { term: 'Activity Plan (CaseCloud)', cite: 'advpm__Activity_Plan_Template__c → advpm__Activity_Plan__c → advpm__Activity__c', body: "CaseCloud's native workflow engine. A Plan Template is a reusable bundle of tasks (Activities) with calculated due dates and predecessor/successor links via advpm__Activity_Dependency__c. Activate the template on a Matter and all child Activities auto-create with rolling deadlines. The right architectural pattern for partition: one Plan Template per phase (P1 Intake, P2 Consult, ... P11 Closeout). Triggered on Stage transition, fires the next phase's tasks." },
+  { term: 'Lodestar Cross-Check', cite: 'CRPC 1.5; common in California fee disputes', body: "California courts often apply a 'lodestar cross-check' against contingency fees, especially in partition where § 874.040 governs apportionment. The cross-check divides the contingency take by the hours worked × reasonable rate; an outlier ratio can prompt the court to reduce the fee. For Talkov this means time records must be defensible even on contingency — every entry tagged with activity, hours, and (critically) Common-Benefit Y/N at entry." },
+  { term: 'Common-Benefit Tagging (at entry)', cite: 'CCP § 874.040; Orien v. Lutz (2017); Lin v. Jeng (2012)', body: "The operational discipline behind § 874.040 fee recovery. Time entries must be tagged Common-Benefit Y / N / Mixed at the moment they're entered, not retrofit at the end of the case. Common-benefit work is recoverable from all cotenants' shares; non-common-benefit (e.g. fighting client-specific offsets, ouster claims) is not. Without at-entry tagging, fee declarations can't pass court scrutiny. Industry firm-wide tag rate is ~40%; the build that gets it to 100% is the headline ACS custom for partition firms." },
   { term: 'Overbid Procedure', cite: 'CCP § 873.740', body: "At the sale-confirmation hearing, the court can accept a higher bid from anyone present in court, not just the original buyer. Statutory minimum overbid: 10% over the first $10,000, plus 5% over the balance. If accepted, the original buyer's deposit is returned and the sale closes with the overbidder. Easy to automate; easy to get wrong by hand." },
   { term: 'MSA — Motion for Summary Adjudication', cite: 'CCP §§ 437c, 872.710', body: 'The workhorse motion in partition. Establishes the absolute right to partition (Capuccio v. Caire, LEG Investments v. Boxler) without trial — the court can move directly to interlocutory judgment when no triable issue exists on the right to partition (Summers v. Superior Court). Cuts months of litigation off the front of every contested case.' },
 ];
@@ -408,6 +411,14 @@ direction TB
   C1 --> C2 --> C3 --> C4
 end
 
+subgraph STATUS["MATTER STATUS -- closure reasons"]
+direction TB
+  ST_S[Closed: Settled]
+  ST_W[Closed: Withdrawn]
+  ST_ST[Closed: Stipulated]
+  ST_C[Closed: Completed]
+end
+
 I6 --> CN1
 CN5 --> PL1
 PL4 -->|No| P1
@@ -422,6 +433,14 @@ S7 --> A1
 S8 --> A1
 A5 --> F1
 F3 --> C1
+C4 --> ST_C
+CN6 -.->|Decline/Refer| ST_W
+PL4 -.->|Settle pre-suit| ST_S
+P4 -.->|Stipulated dismissal| ST_ST
+D5 -.->|Settle in discovery| ST_S
+PR8 -.->|Buyout closes| ST_S
+S7 -.->|Sale closes| ST_C
+A5 -.->|Stipulated accounting| ST_ST
 
 classDef intake fill:#E8F0FE,stroke:#0057B8,stroke-width:2px,color:#1A1A1A
 classDef consult fill:#E8F0FE,stroke:#003D80,stroke-width:2px,color:#1A1A1A
@@ -434,6 +453,7 @@ classDef sale fill:#D4EDDA,stroke:#28A745,stroke-width:2px,color:#1A1A1A
 classDef acct fill:#E8F0FE,stroke:#0057B8,stroke-width:2px,color:#1A1A1A
 classDef fees fill:#FFF4D1,stroke:#FFD700,stroke-width:2px,color:#1A1A1A
 classDef close fill:#F5F5F5,stroke:#ADADAD,stroke-width:2px,color:#1A1A1A
+classDef status fill:#E8E8E8,stroke:#616161,stroke-width:2px,color:#1A1A1A,stroke-dasharray: 5 3
 classDef decision fill:#FFD700,stroke:#003D80,stroke-width:2.5px,color:#1A1A1A
 
 class I1,I2,I3,I4,I5,I6 intake
@@ -447,7 +467,8 @@ class S1,S2,S3,S4,S5,S6,S7,S8 sale
 class A1,A2,A3,A4,A5 acct
 class F1,F2,F3 fees
 class C1,C2,C3,C4 close
-class PL4,PR0,PR6,S0,CN2 decision`;
+class PL4,PR0,PR6,S0,CN2 decision
+class ST_S,ST_W,ST_ST,ST_C status`;
 
 const MATTER = {
   caption: 'Hernandez v. Hernandez — Partition Action',
@@ -1462,7 +1483,7 @@ function WorkflowTab() {
       </div>
 
       <div className="bg-white p-3.5 rounded-md text-[12.5px] border-l-[3px] border-acs-gold shadow-sm">
-        <strong className="font-mont text-acs-blue">How to use:</strong> drag to pan · scroll-wheel or +/− to zoom · click any phase chip above to fly to that swim-lane · ⤢ Full goes fullscreen. Decision diamonds are gold; PRPA swim-lane is dashed (conditional). For task-level breakdown of any phase, jump to <em>Partition Lifecycle</em> and expand the phase card.
+        <strong className="font-mont text-acs-blue">How to use:</strong> drag to pan · scroll-wheel or +/− to zoom · click any phase chip above to fly to that swim-lane · ⤢ Full goes fullscreen. Decision diamonds are gold; PRPA swim-lane is dashed (conditional). The Matter Status subgraph (bottom) shows the orthogonal closure axis — matters can close from any phase via Status change (Settled / Withdrawn / Stipulated / Completed); dashed edges show the most common closure paths. For task-level breakdown of any phase, jump to <em>Partition Lifecycle</em> and expand the phase card.
       </div>
 
       <div className="bg-white p-3 px-4 rounded shadow-sm flex flex-wrap gap-3.5 text-[12px]">
@@ -1493,8 +1514,9 @@ function AnalyticsTab() {
     { label: 'Avg Days to Sale Confirmation', value: '312', sub: 'From complaint filing' },
     { label: 'Sale-Track Outcome', value: '87%', sub: 'vs. in-kind 6%, buyout/settlement 7%', gold: true },
     { label: 'Avg Net Recovery to Plaintiff', value: '68%', sub: 'Of fractional FMV after offsets & fees' },
-    { label: '§ 874.040 Fee Recovery Rate', value: '31%', sub: 'Pct of matters where court ordered non-pro-rata' },
-    { label: 'Common-Benefit Tagging Rate', value: '42%', sub: 'Time entries tagged at entry — opportunity ↑', gold: true },
+    { label: '§ 874.040 Fee Recovery Rate', value: '31%', sub: 'Pct of matters where court ordered fee shift' },
+    { label: 'Lodestar Realization', value: '54%', sub: 'CB-tagged hours × rate ÷ contingency take' },
+    { label: 'Common-Benefit Tag Rate (firm)', value: '42%', sub: 'At-entry tagging on advpm__Time__c — gap to close', gold: true },
   ];
   const officeRows = [
     { name: 'Riverside', active: 31, age: '142d', recovery: '$4.2M' },
@@ -1513,7 +1535,7 @@ function AnalyticsTab() {
     { matter: 'Brown v. Brown', phase: 'P4 Service', days: 68, owner: 'Williamson' },
   ];
   const pipeline = [
-    ['Intake', 14], ['Consult', 8], ['Pre-Lit', 11], ['Pleadings', 9], ['Discovery', 28], ['PRPA', 15], ['Interlocutory', 12], ['Sale', 22], ['Accounting', 17], ['Final/Closing', 14],
+    ['Intake', 14], ['Consult', 8], ['Pre-Lit', 11], ['Pleadings', 9], ['Discovery', 28], ['PRPA', 15], ['Interlocutory', 12], ['Sale/Manner', 22], ['Accounting', 17], ['Final Judgment', 8], ['Closeout', 6],
   ];
 
   return (
@@ -1522,7 +1544,7 @@ function AnalyticsTab() {
         <strong className="font-mont text-acs-blue">Sample dashboard</strong> tuned to a 12-attorney California partition practice. Numbers are illustrative — these are the metrics that would be live in CaseCloud once the data model is in place.
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {kpis.map((k, i) => (
           <div key={i} className={`bg-white p-4 rounded-lg shadow-sm border-t-[3px] ${k.gold ? 'border-acs-gold' : 'border-acs-blue'}`}>
             <div className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">{k.label}</div>
@@ -3273,23 +3295,24 @@ function BuildPlanTab() {
   ];
 
   const customs = [
+    { name: 'Property__c', justification: 'Subject property record (one per parcel). Multi-parcel matters get one row per. Holds address, APN, FMV, vesting, mortgage status, occupancy, lis pendens linkage. CaseCloud has no native Property object — verify with Bellopede whether Mitratech AppExchange has one before building.' },
     { name: 'Lis_Pendens_Record__c', justification: 'Multi-county recording tracker. Each county where a parcel sits gets its own row with cert-mail proof, recording date, expungement status, release date. Powers § 405.38 risk dashboard. No CaseCloud native equivalent.' },
     { name: 'PRPA_Clock__c', justification: 'The four cascading PRPA clocks (10/30/45/60) keyed to the appraisal-receipt date. Auto-creates four child clock records with calculated due dates + escalation rules. CaseCloud Date_Calculation supports single-trigger calcs but not the cascade pattern PRPA requires.' },
   ];
 
   const recommendedAdds = [
-    { name: 'Offers / Demands tracking', note: 'Not native to CaseCloud (these are Litify-native). Recommend Mitratech AppExchange evaluation, or build as a small custom object on the Matter (essentially a Demand_Position__c or use an Activity record + custom fields). Verify with Bellopede whether Mitratech has a native add-on before building.' },
-    { name: 'Settlement Calculator', note: 'Not native to CaseCloud as a packaged feature. The Cotenancy Ledger on advpm__Participant__c (see above) IS effectively the partition settlement calculator — it computes per-party net distribution. Surface as an LWC on the Matter page.' },
+    { name: 'Offer & Demands (combined object)', note: 'CaseCloud may already track this via Activity records or as part of the Settlement Calculator parties — verify with Bellopede first. If not native, build as Offer_Demand__c with kind picklist (Offer / Demand / Counter-Offer), date, from/to participants, amount, type, deadline, status. Talkov needs this to roll up into Settlement Calculator scenarios.' },
+    { name: 'Settlement Calculator field-set', note: 'CaseCloud likely has a Settlement Calculator component pattern (we mirrored the field grid Talkov uses today). Confirm with Bellopede whether it ships pre-built or is configured per-firm — partition implementation is a fields-and-rollup customization on top of advpm__Participant__c.' },
   ];
 
   const sprints = [
     ['Sprint 0', '1', 'Org assessment, sandbox, brand pack, governance kickoff', 'Foundation'],
-    ['Sprint 1', '2-3', 'Configure advpm__Matter__c page layouts; configure Stage values; advpm__Participant__c custom fields for cotenancy ledger', 'Data model live'],
-    ['Sprint 2', '4-5', 'Activity Plan Templates P1-P4 (Intake, Consult, Pre-Lit, Pleadings); Conflict Check workflow; Intake form portal', 'Front of pipeline runs'],
+    ['Sprint 1', '2-3', 'Configure advpm__Matter__c page layouts; advpm__Participant__c custom fields for cotenancy ledger; Property__c custom build with multi-parcel support', 'Data model live'],
+    ['Sprint 2', '4-5', 'Activity Plan Templates P1-P4 (Intake, Consult, Pre-Lit, Pleadings); Conflict Check workflow; intake form portal', 'Front of pipeline runs'],
     ['Sprint 3', '6-7', 'Multi-county Lis_Pendens_Record__c custom + § 405.38 risk dashboard; document templates (15 partition forms)', 'Compliance moat live'],
-    ['Sprint 4', '8-9', 'PRPA_Clock__c custom + buyout tracker; Activity Plan Template P6 (PRPA cascading orchestrator)', 'PRPA practice fully automated'],
-    ['Sprint 5', '10', 'Cotenancy ledger LWC on advpm__Participant__c; advpm__Time__c common-benefit tagger; final accounting schedule generator', 'Phase-2 (proceeds) automated'],
-    ['Sprint 6', '11', 'Dashboards (matters by stage age, by referee, by court); contingency-fee revenue forecast; geo-routing intake', 'Reporting at the partner level'],
+    ['Sprint 4', '8-9', 'PRPA_Clock__c custom + buyout tracker; Activity Plan Template P6 (PRPA cascading orchestrator); Time Logs timer LWC', 'PRPA practice fully automated'],
+    ['Sprint 5', '10', '★ Common-Benefit Time-Entry Tagger on advpm__Time__c (the headline build); Lodestar Report generator from tagged hours; Settlement Calculator field-set + Cotenancy Ledger LWC', 'Phase-2 (proceeds) automated'],
+    ['Sprint 6', '11', 'Dashboards (matters by stage age, by referee, by court, by office); contingency-fee revenue forecast; geo-routing intake; tag-rate by attorney scorecard', 'Reporting at the partner level'],
     ['Sprint 7', '12', 'UAT, training (cohort by office), production cutover', 'Live in 7 offices'],
   ];
 
@@ -3298,6 +3321,11 @@ function BuildPlanTab() {
       <div className="bg-white p-5 rounded-lg shadow-sm border-l-4 border-acs-gold">
         <div className="font-mont text-[15px] font-bold text-acs-blue mb-1.5">CaseCloud-native first — build only what doesn't exist</div>
         <div className="text-[13px] text-acs-charcoal leading-relaxed">Mitratech CaseCloud already ships most of what a partition practice needs. The right ACS build leans hard on native objects (Matter, Participant, Activity Plan, Fee Arrangement, Budget) and adds only two genuine customs: <strong>Lis_Pendens_Record__c</strong> for multi-county recording compliance, and <strong>PRPA_Clock__c</strong> for the four cascading PRPA deadlines. Everything else is configuration, not code.</div>
+      </div>
+
+      <div className="bg-gradient-to-r from-acs-gold to-yellow-300 text-acs-charcoal p-5 rounded-lg shadow-md border-l-4 border-acs-charcoal">
+        <div className="font-mont text-[14px] font-bold mb-1.5">★ Headline custom build — Common-Benefit Time-Entry Tagger</div>
+        <div className="text-[13px] leading-relaxed">Required field on every <code className="text-[11.5px] bg-white/40 px-1 rounded">advpm__Time__c</code> entry: <code className="text-[11.5px] bg-white/40 px-1 rounded">Common_Benefit__c</code> picklist (Y / N / Mixed) + <code className="text-[11.5px] bg-white/40 px-1 rounded">Common_Benefit_Reason__c</code> text. Save blocked unless populated. At fee-motion time, a single SOQL roll-up generates the § 874.040 fee declaration. <strong>This is the build that turns contingency partition from a marketing pitch into recoverable revenue</strong> — every untagged hour at month-end is a fee dollar Talkov leaves on the table. Firm-wide tag rate today: 42%; goal post-build: 100%.</div>
       </div>
 
       <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">CaseCloud native objects — Talkov uses these out of the box</h3>
@@ -3311,7 +3339,7 @@ function BuildPlanTab() {
         ))}
       </div>
 
-      <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">Custom objects — only these two are genuinely novel</h3>
+      <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">Custom objects — three genuinely novel builds</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {customs.map((c, i) => (
           <div key={i} className="bg-white p-4 rounded-md border-l-4 border-acs-gold shadow-sm">
@@ -3354,8 +3382,14 @@ function BuildPlanTab() {
       </div>
 
       <div className="bg-acs-charcoal text-white p-5 rounded-lg border-l-4 border-acs-gold">
-        <div className="font-mont text-[14px] font-bold text-acs-gold mb-1.5">The thesis in one sentence</div>
-        <div className="text-[13px] leading-relaxed">Talkov is already running a productized practice — 12 attorneys, mono-practice, dedicated technology director (Lexi Scott), 575+ matters, registered "Ending Co-Ownership Disputes®" mark. The right system isn't generic case management — it's a CaseCloud build that uses every native object Mitratech ships, plus exactly two custom objects (Lis_Pendens_Record + PRPA_Clock) for the partition-specific compliance work nothing else automates. ACS builds that.</div>
+        <div className="font-mont text-[14px] font-bold text-acs-gold mb-2">The thesis — four pillars of contingency partition at scale</div>
+        <ol className="text-[12.5px] leading-relaxed space-y-1.5 list-decimal list-inside">
+          <li><strong className="text-acs-gold">Right is absolute</strong> — Capuccio / LEG Investments mean the firm rarely loses on liability. Contingency risk is cycle-time, not outcome.</li>
+          <li><strong className="text-acs-gold">PRPA short-fuse</strong> — § 874.317 buyout closes filing-to-escrow in 8–10 months. Compresses contingency cycle dramatically vs. classic 18–24 month sale track.</li>
+          <li><strong className="text-acs-gold">§ 874.040 fee shift</strong> — common-benefit fees come out of all cotenants&apos; shares as costs of partition. Firm gets paid by client AND by defendants. Only realizes if time entries are tagged at entry.</li>
+          <li><strong className="text-acs-gold">Time discipline</strong> — Common-Benefit tagging + lodestar reporting on advpm__Time__c is the operational pillar that makes pillars 1–3 cash. Without it, contingency partition is unprofitable.</li>
+        </ol>
+        <div className="text-[12px] mt-3 leading-relaxed">Talkov already has 12 attorneys, 7 offices, 575+ matters, registered &quot;Ending Co-Ownership Disputes®&quot; mark, and a dedicated technology director. The right system isn&apos;t generic case management — it&apos;s a CaseCloud build that operationalizes all four pillars. ACS builds that.</div>
       </div>
     </div>
   );
