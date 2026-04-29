@@ -535,6 +535,51 @@ const MATTER = {
     { clock: '45-day buyout election', trigger: 'Buyout notice 3/22/2026', deadline: '5/06/2026', status: 'urgent', statusText: 'Day 38 of 45 — pending', cite: '§ 874.317(b)' },
     { clock: '60-day buyout funding', trigger: 'Election filing (TBD)', deadline: '+60 days post-election', status: 'pending', statusText: 'Not started', cite: '§ 874.317(d)' },
   ],
+
+  offers: [
+    { id: 'OFF-2025-001', from: 'Carlos (Pl.)', to: 'Maria + Luis', date: '10/10/2025', amount: 270667, type: 'Sale & Distribute', status: 'Rejected', note: 'Pre-suit demand letter; force sale via partition.' },
+    { id: 'OFF-2026-001', from: 'Maria', to: 'Carlos', date: '4/10/2026', amount: 220000, type: 'Buyout (informal)', status: 'Rejected', note: 'Below appraised value; rejected pending PRPA appraisal.' },
+    { id: 'OFF-2026-002', from: 'Maria', to: 'Carlos', date: '4/28/2026', amount: 270667, type: 'PRPA § 874.317 buyout', status: 'Pending', note: 'At appraised value × 1/3. 8 days remaining on election window.' },
+  ],
+  demands: [
+    { id: 'DEM-2025-001', date: '10/10/2025', from: 'Talkov Law', to: 'Maria + Luis', amount: 270667, type: 'Settlement Demand (pre-suit)', deadline: '10/24/2025', status: 'Expired - Suit Filed', note: 'Cited LEG Investments v. Boxler (absolute right). 14-day window expired without response.' },
+  ],
+  settlementCalc: {
+    fmv: 812000,
+    closingCosts: 48720, // 6%
+    netProceeds: 763280,
+    perShareBase: 254427,
+    scenarios: [
+      { name: 'Open-market sale (no buyout)', carlos: 227955, maria: 307371, luis: 227955, recovery: 763281, attorneyFee: 0, note: 'Plaintiff net before § 874.040 fee motion' },
+      { name: 'Maria elects PRPA buyout @ FMV', carlos: 270667, maria: 'Acquires Carlos 1/3', luis: 'Pending separate accounting', recovery: 270667, attorneyFee: 0, note: 'Plaintiff exit at $270,667; Maria/Luis accounting runs separately' },
+      { name: 'Sale + § 874.040 common-benefit fee award (35%)', carlos: 148171, maria: 307371, luis: 227955, recovery: 763281, attorneyFee: 79784, note: 'Contingency fee on plaintiff recovery only — common-benefit portion' },
+    ],
+  },
+  activities: [
+    { id: 'ACT-001', name: 'File Verified Complaint', plan: 'Pleadings & Lis Pendens', status: 'Complete', due: '10/14/2025', owner: 'Lexi Scott' },
+    { id: 'ACT-002', name: 'Record lis pendens (Riverside)', plan: 'Pleadings & Lis Pendens', status: 'Complete', due: '10/14/2025', owner: 'Lexi Scott' },
+    { id: 'ACT-003', name: 'Court determines PRPA applicability', plan: 'PRPA Track', status: 'Complete', due: '2/4/2026', owner: 'Court' },
+    { id: 'ACT-004', name: 'Court-ordered appraisal', plan: 'PRPA Track', status: 'Complete', due: '3/8/2026', owner: 'Mendez & Co.' },
+    { id: 'ACT-005', name: 'Notice of FMV', plan: 'PRPA Track', status: 'Complete', due: '3/16/2026', owner: 'Court Clerk' },
+    { id: 'ACT-006', name: 'FMV objection hearing', plan: 'PRPA Track', status: 'Complete', due: '4/22/2026', owner: 'Scott Talkov' },
+    { id: 'ACT-007', name: 'Buyout election deadline', plan: 'PRPA Track', status: 'In Progress', due: '5/6/2026', owner: 'Maria Hernandez', urgent: true },
+    { id: 'ACT-008', name: 'Buyout funding instructions draft', plan: 'PRPA Track', status: 'Pending', due: '5/3/2026', owner: 'Adeeb Djawad' },
+    { id: 'ACT-009', name: 'If no buyout: § 874.318 manner motion', plan: 'PRPA Track', status: 'Conditional', due: '5/13/2026', owner: 'Scott Talkov' },
+    { id: 'ACT-010', name: 'Final accounting schedule', plan: 'Accounting & Offsets', status: 'Not Started', due: 'TBD', owner: 'Adeeb Djawad' },
+  ],
+  notes: [
+    { date: '4/28/2026', author: 'Scott Talkov', text: 'Defense counsel J. Reyes confirmed Maria intent to elect buyout. Awaiting written election. Funding source: Maria has pre-approval letter from Wells Fargo for $300K HELOC.' },
+    { date: '4/22/2026', author: 'Adeeb Djawad', text: 'FMV hearing went well. Defense did not object to appraisal methodology. Court confirmed $812,000.' },
+    { date: '3/22/2026', author: 'Lexi Scott', text: 'Buyout right notice mailed certified to all cotenants. 45-day clock starts today.' },
+    { date: '2/4/2026', author: 'Scott Talkov', text: 'Court determined PRPA applies — TIC arose by deed of distribution 8/2021, no written agreement. Filed post-1/1/2023.' },
+  ],
+  tasks: [
+    { id: 'T-001', name: 'Confirm Maria written buyout election', due: '5/3/2026', owner: 'Scott Talkov', priority: 'High', status: 'Open' },
+    { id: 'T-002', name: 'Draft buyout funding court order', due: '5/3/2026', owner: 'Adeeb Djawad', priority: 'High', status: 'Open' },
+    { id: 'T-003', name: 'Update cotenant ledger — March mortgage', due: '4/30/2026', owner: 'Lexi Scott', priority: 'Med', status: 'Open' },
+    { id: 'T-004', name: 'Tag Q1 time entries common-benefit Y/N', due: '5/15/2026', owner: 'All timekeepers', priority: 'Med', status: 'Open' },
+    { id: 'T-005', name: 'CONTINGENCY — § 874.318 manner motion template', due: '5/10/2026', owner: 'Adeeb Djawad', priority: 'Low', status: 'Open' },
+  ],
 };
 
 const fmt = (n) => typeof n === 'number' ? '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : n;
@@ -1178,6 +1223,29 @@ function AnalyticsTab() {
 // ----- Sample Matter tab (Salesforce-style redesign) --------------------
 
 function MatterTab() {
+  const [relatedTab, setRelatedTab] = useState('participants');
+  const [participantSubTab, setParticipantSubTab] = useState('cotenants');
+
+  const PARTICIPANT_GROUPS = {
+    cotenants: { label: 'Cotenants', filter: (p) => p.role.includes('Plaintiff') || p.role.includes('Defendant') },
+    counsel: { label: 'Counsel', filter: (p) => p.counsel && p.counsel !== '\u2014' },
+    court: { label: 'Court', filter: () => false },
+    vendors: { label: 'Vendors', filter: () => false },
+  };
+
+  const RELATED_LISTS = [
+    { id: 'participants', label: 'Participants', count: 12, sub: ['cotenants', 'counsel', 'court', 'vendors'] },
+    { id: 'activities', label: 'Activities', count: MATTER.activities.length },
+    { id: 'offers', label: 'Offers', count: MATTER.offers.length },
+    { id: 'demands', label: 'Demands', count: MATTER.demands.length },
+    { id: 'settlement', label: 'Settlement Calculator', count: null },
+    { id: 'documents', label: 'Documents', count: MATTER.files.length },
+    { id: 'ledger', label: 'Cotenancy Ledger', count: null },
+    { id: 'prpa', label: 'PRPA Clocks', count: 4 },
+    { id: 'tasks', label: 'Tasks', count: MATTER.tasks.length },
+    { id: 'notes', label: 'Notes', count: MATTER.notes.length },
+  ];
+
   return (
     <div className="space-y-3">
       {/* SF App Bar */}
@@ -1186,11 +1254,11 @@ function MatterTab() {
           <div className="w-7 h-7 bg-acs-blue rounded flex items-center justify-center text-white font-bold">T</div>
           <span className="font-bold text-sf-navy">Talkov Law</span>
         </div>
-        {['Home','Matters','Contacts','Calendar','Tasks','Reports','Dashboards'].map((t, i) => (
+        {['Home', 'Matters', 'Contacts', 'Calendar', 'Tasks', 'Reports', 'Dashboards'].map((t) => (
           <div key={t} className={`px-3 py-2 cursor-pointer ${t === 'Matters' ? 'sf-tab-active' : 'text-gray-600 hover:text-sf-navy'}`}>{t}</div>
         ))}
         <div className="ml-auto flex gap-3 items-center text-gray-500">
-          <span>🔍</span><span>?</span><span>⚙</span>
+          <span>🔍</span><span>?</span><span>\u2699</span>
           <div className="w-7 h-7 bg-gray-300 rounded-full"></div>
         </div>
       </div>
@@ -1200,11 +1268,11 @@ function MatterTab() {
         <div className="px-5 py-3 border-b border-sf-border bg-gradient-to-b from-white to-gray-50">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-acs-blue rounded flex items-center justify-center text-white font-bold text-lg">⚖</div>
+              <div className="w-10 h-10 bg-acs-blue rounded flex items-center justify-center text-white font-bold text-lg">\u2696</div>
               <div>
                 <div className="text-[11px] text-gray-500 font-mont uppercase tracking-wider">Matter</div>
                 <div className="text-[18px] font-mont font-bold text-sf-navy leading-tight">{MATTER.caption}</div>
-                <div className="text-[12px] text-gray-500 mt-0.5">{MATTER.court} · Case No. {MATTER.caseNumber} · Filed {MATTER.filed} · {MATTER.track}</div>
+                <div className="text-[12px] text-gray-500 mt-0.5">{MATTER.court} \u00b7 Case No. {MATTER.caseNumber} \u00b7 Filed {MATTER.filed} \u00b7 {MATTER.track}</div>
               </div>
             </div>
             <div className="flex gap-1.5 flex-wrap">
@@ -1217,10 +1285,10 @@ function MatterTab() {
             </div>
           </div>
         </div>
-        {/* Highlights row */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-x-5 gap-y-2 px-5 py-3 text-[12px]">
+        <div className="grid grid-cols-2 md:grid-cols-7 gap-x-5 gap-y-2 px-5 py-3 text-[12px]">
           <Highlight label="Matter Type" value="Partition" />
-          <Highlight label="Stage" valueNode={<span className="sf-pill sf-pill-gold">PHASE 6 · PRPA</span>} />
+          <Highlight label="Status" valueNode={<span className="sf-pill sf-pill-green">Active</span>} />
+          <Highlight label="Stage" valueNode={<span className="sf-pill sf-pill-gold">PHASE 6 \u00b7 PRPA</span>} />
           <Highlight label="Buyout Window" valueNode={<span className="sf-pill sf-pill-red">Day 38 of 45</span>} />
           <Highlight label="FMV" value={fmt(MATTER.fmv)} />
           <Highlight label="Lead Attorney" value={MATTER.leadAttorney} />
@@ -1228,182 +1296,68 @@ function MatterTab() {
         </div>
       </div>
 
-      {/* 3-column body: Case Details + Onboarding + Files (left), Timeline (right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* LEFT — main content */}
-        <div className="lg:col-span-2 space-y-3">
-          {/* Case Details */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>📋 Case Details</span>
-              <button className="text-[11px] font-normal text-sf-blue">Edit</button>
-            </div>
-            <div className="sf-card-body grid grid-cols-1 md:grid-cols-2 gap-x-5">
-              {MATTER.caseDetails.map((d) => (
-                <div key={d.label} className="sf-detail-row">
-                  <div className="sf-detail-label">{d.label}</div>
-                  <div className="sf-detail-value">{d.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* PATH (Lightning chevron stages) */}
+      <SfPath currentPhase={6} />
 
-          {/* Cotenants (Participants) */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>👥 Participants <span className="text-[11px] font-normal text-gray-500">· advpm__Participant__c (3)</span></span>
-              <button className="text-[11px] font-normal text-sf-blue">New</button>
-            </div>
-            <div className="sf-card-body">
-              <table className="w-full text-[12.5px]">
-                <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-                  <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2 text-center">Share</th><th className="py-1.5 pr-2">Counsel</th><th className="py-1.5">Status</th>
-                </tr></thead>
-                <tbody>
-                  {MATTER.cotenants.map((c) => (
-                    <tr key={c.name} className="border-b border-gray-100">
-                      <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
-                      <td className="py-2 pr-2">{c.role}</td>
-                      <td className="py-2 pr-2 text-center mono-num font-bold">{c.share}</td>
-                      <td className="py-2 pr-2 text-[12px]">{c.counsel}</td>
-                      <td className="py-2 text-[12px] text-gray-600">{c.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Case Onboarding */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>✓ Case Onboarding <span className="text-[11px] font-normal text-gray-500">· advpm__Activity_Plan__c "Intake & Engagement"</span></span>
-              <span className="text-[11px] font-normal text-gray-500">{MATTER.onboarding.filter(o=>o.complete).length}/{MATTER.onboarding.length} complete</span>
-            </div>
-            <div className="sf-card-body">
-              <div className="space-y-1.5">
-                {MATTER.onboarding.map((o, i) => (
-                  <div key={i} className="flex items-start gap-3 py-1.5 border-b border-gray-100 last:border-0">
-                    <div className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[11px] font-bold ${o.complete ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
-                      {o.complete ? '✓' : ''}
-                    </div>
-                    <div className="flex-1 text-[12.5px]">
-                      <div className={o.complete ? 'text-gray-700' : 'text-acs-charcoal font-medium'}>{o.task}</div>
-                      <div className="text-[11px] text-gray-500 mt-0.5">{o.owner} · {o.date}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Files */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>📁 Files <span className="text-[11px] font-normal text-gray-500">· advpm__Document__c ({MATTER.files.length})</span></span>
-              <button className="text-[11px] font-normal text-sf-blue">Upload</button>
-            </div>
-            <div className="sf-card-body">
-              <table className="w-full text-[12.5px]">
-                <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-                  <th className="py-1.5 pr-2">File Name</th><th className="py-1.5 pr-2">Type</th><th className="py-1.5 pr-2">Date</th><th className="py-1.5 text-right">Size</th>
-                </tr></thead>
-                <tbody>
-                  {MATTER.files.map((f, i) => (
-                    <tr key={i} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer">
-                      <td className="py-1.5 pr-2 text-sf-blue">📄 {f.name}</td>
-                      <td className="py-1.5 pr-2 text-gray-600">{f.type}</td>
-                      <td className="py-1.5 pr-2 text-gray-600">{f.date}</td>
-                      <td className="py-1.5 text-right text-gray-500 mono-num">{f.size}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Cotenancy Ledger - keep as critical content */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>📊 Cotenancy Ledger <span className="text-[11px] font-normal text-gray-500">· live from advpm__Participant__c</span></span>
-            </div>
-            <div className="sf-card-body">
-              <div className="text-[12px] text-gray-500 mb-2">Net adjustments sum to zero (internal transfer). Per Hunter v. Schultz / Wallace v. Daley.</div>
-              <table className="w-full text-[12px]">
-                <thead><tr className="bg-acs-blue text-white text-left">
-                  <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase">Item</th>
-                  <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase">Authority</th>
-                  <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Carlos</th>
-                  <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Maria</th>
-                  <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Luis</th>
-                </tr></thead>
-                <tbody>
-                  {MATTER.ledger.map((row, i) => {
-                    const cls = row.isFinal ? 'bg-acs-charcoal text-white font-bold border-t-2 border-acs-gold'
-                      : row.isTotal ? 'bg-acs-light-blue font-bold'
-                      : row.isHeader ? '' : (i % 2 ? 'bg-acs-light-silver' : '');
-                    const cellNum = (v) => {
-                      if (typeof v !== 'number') return v;
-                      const cls = v > 0 ? 'text-acs-success' : v < 0 ? 'text-acs-error' : '';
-                      return <span className={`mono-num ${cls}`}>{fmtSigned(v)}</span>;
-                    };
-                    const cellFinal = (v) => typeof v === 'number' ? <span className="mono-num">{fmt(v)}</span> : v;
-                    return (
-                      <tr key={i} className={cls}>
-                        <td className="px-2 py-1.5 border-b border-gray-100">{row.item}</td>
-                        <td className="px-2 py-1.5 border-b border-gray-100 text-[11px]">{row.authority}</td>
-                        <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.carlos) : cellNum(row.carlos)}</td>
-                        <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.maria) : cellNum(row.maria)}</td>
-                        <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.luis) : cellNum(row.luis)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              <div className="bg-acs-light-blue px-3 py-2.5 mt-3 rounded text-[12px] leading-relaxed">
-                <strong className="text-acs-blue">Read:</strong> Maria paid 100% of carrying costs since 2021. Per <em>Hunter v. Schultz</em> / <em>Willmon v. Koyer</em>, she gets contribution from Carlos &amp; Luis for their 2/3 share. Because Maria has been in <em>exclusive</em> possession, that contribution is offset by reasonable rental value of Carlos &amp; Luis's share. Without ouster (<em>Estate of Hughes</em>), they get only the defensive offset, not affirmative rents. If Maria elects buyout, she pays Carlos $270,667 (FMV × 1/3) and Maria/Luis accounting runs separately on the remaining 2/3.
-              </div>
-            </div>
-          </div>
-
-          {/* PRPA Clocks */}
-          <div className="sf-card">
-            <div className="sf-card-header">
-              <span>⏱ PRPA Cascading Clocks <span className="text-[11px] font-normal text-gray-500">· custom PRPA_Clock__c</span></span>
-            </div>
-            <div className="sf-card-body">
-              <table className="w-full text-[12.5px]">
-                <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
-                  <th className="py-1.5 pr-2">Clock</th><th className="py-1.5 pr-2">Trigger</th><th className="py-1.5 pr-2">Deadline</th><th className="py-1.5 pr-2">Status</th><th className="py-1.5">Authority</th>
-                </tr></thead>
-                <tbody>
-                  {MATTER.prpaClocks.map((c, i) => (
-                    <tr key={i} className="border-b border-gray-100">
-                      <td className="py-2 pr-2 font-medium">{c.clock}</td>
-                      <td className="py-2 pr-2 text-[11.5px] text-gray-600">{c.trigger}</td>
-                      <td className="py-2 pr-2 mono-num">{c.deadline}</td>
-                      <td className="py-2 pr-2 text-[11.5px]">
-                        <span className={c.status === 'urgent' ? 'sf-pill sf-pill-red' : c.status === 'met' ? 'sf-pill sf-pill-green' : 'sf-pill bg-gray-200 text-gray-700'}>
-                          {c.statusText}
-                        </span>
-                      </td>
-                      <td className="py-2 pr-2 font-mont text-[10.5px] text-acs-dark-blue">{c.cite}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      {/* RELATED LISTS - full width tabs */}
+      <div className="bg-white border border-sf-border shadow-sm rounded">
+        <div className="border-b border-sf-border bg-gray-50 px-2 flex items-center overflow-x-auto">
+          {RELATED_LISTS.map((rl) => (
+            <button
+              key={rl.id}
+              onClick={() => setRelatedTab(rl.id)}
+              className={`px-3 py-2.5 font-mont text-[12px] font-semibold whitespace-nowrap border-b-2 transition-colors ${
+                relatedTab === rl.id ? 'border-sf-blue text-sf-navy bg-white' : 'border-transparent text-gray-600 hover:text-sf-navy'
+              }`}
+            >
+              {rl.label}{rl.count !== null && <span className="ml-1.5 text-gray-500">({rl.count})</span>}
+            </button>
+          ))}
         </div>
 
-        {/* RIGHT — Timeline rail */}
+        {/* Tab content */}
+        <div className="p-4">
+          {relatedTab === 'participants' && (
+            <RelatedParticipants
+              subTab={participantSubTab}
+              setSubTab={setParticipantSubTab}
+            />
+          )}
+          {relatedTab === 'activities' && <RelatedActivities />}
+          {relatedTab === 'offers' && <RelatedOffers />}
+          {relatedTab === 'demands' && <RelatedDemands />}
+          {relatedTab === 'settlement' && <RelatedSettlement />}
+          {relatedTab === 'documents' && <RelatedDocuments />}
+          {relatedTab === 'ledger' && <RelatedLedger />}
+          {relatedTab === 'prpa' && <RelatedPrpaClocks />}
+          {relatedTab === 'tasks' && <RelatedTasks />}
+          {relatedTab === 'notes' && <RelatedNotes />}
+        </div>
+      </div>
+
+      {/* CASE DETAILS + TIMELINE (2-column, timeline sticks) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
+        <div className="lg:col-span-2 sf-card">
+          <div className="sf-card-header">
+            <span>📋 Case Details</span>
+            <button className="text-[11px] font-normal text-sf-blue">Edit</button>
+          </div>
+          <div className="sf-card-body grid grid-cols-1 md:grid-cols-2 gap-x-5">
+            {MATTER.caseDetails.map((d) => (
+              <div key={d.label} className="sf-detail-row">
+                <div className="sf-detail-label">{d.label}</div>
+                <div className="sf-detail-value">{d.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="lg:col-span-1">
-          <div className="sf-card sticky top-3">
+          <div className="sf-card lg:sticky lg:top-3">
             <div className="sf-card-header">
               <span>📅 Timeline</span>
               <span className="text-[11px] font-normal text-gray-500">{MATTER.timeline.length} events</span>
             </div>
-            <div className="sf-card-body">
+            <div className="sf-card-body" style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
               <div className="space-y-3">
                 {MATTER.timeline.map((t, i) => {
                   const dotCls = t.type === 'urgent' ? 'bg-acs-error' : t.type === 'milestone' ? 'bg-acs-gold' : t.type === 'future' ? 'bg-gray-300' : t.type === 'consult' ? 'bg-pink-400' : 'bg-acs-blue';
@@ -1425,6 +1379,403 @@ function MatterTab() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// SF Path component (chevron stages)
+function SfPath({ currentPhase }) {
+  return (
+    <div className="bg-white border border-sf-border shadow-sm rounded overflow-x-auto">
+      <div className="flex items-stretch min-w-fit">
+        {PHASES.map((p) => {
+          const completed = p.num < currentPhase;
+          const current = p.num === currentPhase;
+          const cls = current
+            ? 'bg-acs-blue text-white font-bold'
+            : completed
+              ? 'bg-acs-success text-white'
+              : 'bg-white text-gray-600';
+          const chev = current
+            ? 'border-l-acs-blue'
+            : completed
+              ? 'border-l-acs-success'
+              : 'border-l-white';
+          return (
+            <div key={p.id} className="flex items-stretch flex-shrink-0">
+              <div className={`px-4 py-2 ${cls} font-mont text-[11.5px] flex items-center min-w-[110px] border-y border-sf-border ${p.num === 1 ? 'border-l rounded-l' : ''}`}>
+                <span className="opacity-70 mr-1.5">{p.num}.</span>
+                <span className="truncate">{p.title.split('\u2014')[0].split('&')[0].trim().split(' ').slice(0, 2).join(' ')}</span>
+                {current && <span className="ml-1.5">\u2192</span>}
+              </div>
+              <div className={`w-0 h-auto border-y-[19px] border-y-transparent border-l-[12px] ${chev}`}></div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="px-4 py-2 border-t border-sf-border bg-gray-50 flex justify-between items-center text-[11.5px]">
+        <div>
+          <span className="text-gray-500 font-mont uppercase mr-2">Current Phase:</span>
+          <span className="font-bold text-sf-navy">Phase {currentPhase}: {PHASES[currentPhase - 1]?.title}</span>
+        </div>
+        <button className="sf-action-btn primary">Mark Stage Complete</button>
+      </div>
+    </div>
+  );
+}
+
+// Related list sub-components
+function RelatedParticipants({ subTab, setSubTab }) {
+  const SUBS = [
+    { id: 'cotenants', label: 'Cotenants', count: 3 },
+    { id: 'counsel', label: 'Counsel', count: 2 },
+    { id: 'court', label: 'Court', count: 2 },
+    { id: 'vendors', label: 'Vendors', count: 5 },
+  ];
+  const COUNSEL = [
+    { name: 'Scott Talkov', role: 'Partition Attorney (Plaintiff)', firm: 'Talkov Law', email: 'scott@talkovlaw.com' },
+    { name: 'J. Reyes', role: 'Defense Counsel (Maria)', firm: 'Reyes Family Law', email: 'reyes@example.com' },
+  ];
+  const COURT = [
+    { name: 'Hon. T. Velasquez', role: 'Judge', dept: 'Dept. 8', court: 'Riverside Sup. Ct.' },
+    { name: 'Riverside Sup. Ct. Clerk', role: 'Court Clerk', dept: '\u2014', court: 'Riverside Sup. Ct.' },
+  ];
+  const VENDORS = [
+    { name: 'Mendez & Co.', role: 'Court-Appointed Appraiser', firm: 'Mendez & Co. Real Estate Appraisers', amount: '$2,800' },
+    { name: 'Riverside Title', role: 'Title Officer', firm: 'Riverside Title Co.', amount: '$847' },
+    { name: 'TBD', role: 'Court-Appointed Referee', firm: '\u2014', amount: 'TBD if no buyout' },
+    { name: 'TBD', role: 'Real Estate Broker', firm: '\u2014', amount: 'TBD if open-market sale' },
+    { name: 'Pacific Forensic', role: 'CPA (forensic accounting standby)', firm: 'Pacific Forensic Accounting', amount: 'On call' },
+  ];
+
+  return (
+    <>
+      {/* SUB-TABS */}
+      <div className="flex gap-1 mb-3 border-b border-gray-200">
+        {SUBS.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => setSubTab(s.id)}
+            className={`px-3 py-1.5 text-[11.5px] font-mont font-semibold rounded-t border-b-2 transition-colors ${
+              subTab === s.id ? 'border-sf-blue text-sf-navy bg-acs-light-blue' : 'border-transparent text-gray-500 hover:text-sf-navy'
+            }`}
+          >
+            {s.label} ({s.count})
+          </button>
+        ))}
+      </div>
+
+      {subTab === 'cotenants' && (
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2 text-center">Share</th><th className="py-1.5 pr-2">Counsel</th><th className="py-1.5">Status</th>
+          </tr></thead>
+          <tbody>
+            {MATTER.cotenants.map((c) => (
+              <tr key={c.name} className="border-b border-gray-100">
+                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
+                <td className="py-2 pr-2">{c.role}</td>
+                <td className="py-2 pr-2 text-center mono-num font-bold">{c.share}</td>
+                <td className="py-2 pr-2 text-[12px]">{c.counsel}</td>
+                <td className="py-2 text-[12px] text-gray-600">{c.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {subTab === 'counsel' && (
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Firm</th><th className="py-1.5">Email</th>
+          </tr></thead>
+          <tbody>
+            {COUNSEL.map((c) => (
+              <tr key={c.name} className="border-b border-gray-100">
+                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
+                <td className="py-2 pr-2">{c.role}</td>
+                <td className="py-2 pr-2">{c.firm}</td>
+                <td className="py-2 text-[11.5px] text-gray-600">{c.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {subTab === 'court' && (
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Dept</th><th className="py-1.5">Court</th>
+          </tr></thead>
+          <tbody>
+            {COURT.map((c) => (
+              <tr key={c.name} className="border-b border-gray-100">
+                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
+                <td className="py-2 pr-2">{c.role}</td>
+                <td className="py-2 pr-2">{c.dept}</td>
+                <td className="py-2 text-[12px]">{c.court}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {subTab === 'vendors' && (
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+            <th className="py-1.5 pr-2">Name</th><th className="py-1.5 pr-2">Role</th><th className="py-1.5 pr-2">Firm</th><th className="py-1.5 text-right">Cost</th>
+          </tr></thead>
+          <tbody>
+            {VENDORS.map((c) => (
+              <tr key={c.name + c.role} className="border-b border-gray-100">
+                <td className="py-2 pr-2 font-medium text-sf-blue">{c.name}</td>
+                <td className="py-2 pr-2">{c.role}</td>
+                <td className="py-2 pr-2 text-[12px]">{c.firm}</td>
+                <td className="py-2 text-right mono-num">{c.amount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+}
+
+function RelatedActivities() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">Activity</th><th className="py-1.5 pr-2">Plan</th><th className="py-1.5 pr-2">Status</th><th className="py-1.5 pr-2">Due</th><th className="py-1.5">Owner</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.activities.map((a) => (
+          <tr key={a.id} className={`border-b border-gray-100 ${a.urgent ? 'bg-red-50' : ''}`}>
+            <td className="py-2 pr-2 font-medium text-sf-blue">{a.name}</td>
+            <td className="py-2 pr-2 text-gray-600 text-[11.5px]">{a.plan}</td>
+            <td className="py-2 pr-2">
+              <span className={`sf-pill ${a.status === 'Complete' ? 'sf-pill-green' : a.status === 'In Progress' ? 'sf-pill-gold' : a.status === 'Pending' ? 'sf-pill-blue' : 'bg-gray-200 text-gray-700'}`}>
+                {a.status}
+              </span>
+            </td>
+            <td className="py-2 pr-2 mono-num">{a.due}</td>
+            <td className="py-2 text-[12px]">{a.owner}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedOffers() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">ID</th><th className="py-1.5 pr-2">Date</th><th className="py-1.5 pr-2">From</th><th className="py-1.5 pr-2">To</th><th className="py-1.5 pr-2 text-right">Amount</th><th className="py-1.5 pr-2">Type</th><th className="py-1.5 pr-2">Status</th><th className="py-1.5">Notes</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.offers.map((o) => (
+          <tr key={o.id} className="border-b border-gray-100">
+            <td className="py-2 pr-2 font-mono text-[11px] text-sf-blue">{o.id}</td>
+            <td className="py-2 pr-2 mono-num">{o.date}</td>
+            <td className="py-2 pr-2">{o.from}</td>
+            <td className="py-2 pr-2">{o.to}</td>
+            <td className="py-2 pr-2 text-right mono-num font-bold">{fmt(o.amount)}</td>
+            <td className="py-2 pr-2 text-[11.5px]">{o.type}</td>
+            <td className="py-2 pr-2"><span className={`sf-pill ${o.status === 'Accepted' ? 'sf-pill-green' : o.status === 'Pending' ? 'sf-pill-gold' : 'sf-pill-red'}`}>{o.status}</span></td>
+            <td className="py-2 text-[11.5px] text-gray-600">{o.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedDemands() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">ID</th><th className="py-1.5 pr-2">Date</th><th className="py-1.5 pr-2">From</th><th className="py-1.5 pr-2">To</th><th className="py-1.5 pr-2 text-right">Amount</th><th className="py-1.5 pr-2">Type</th><th className="py-1.5 pr-2">Deadline</th><th className="py-1.5 pr-2">Status</th><th className="py-1.5">Notes</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.demands.map((d) => (
+          <tr key={d.id} className="border-b border-gray-100">
+            <td className="py-2 pr-2 font-mono text-[11px] text-sf-blue">{d.id}</td>
+            <td className="py-2 pr-2 mono-num">{d.date}</td>
+            <td className="py-2 pr-2">{d.from}</td>
+            <td className="py-2 pr-2">{d.to}</td>
+            <td className="py-2 pr-2 text-right mono-num font-bold">{fmt(d.amount)}</td>
+            <td className="py-2 pr-2 text-[11.5px]">{d.type}</td>
+            <td className="py-2 pr-2 mono-num">{d.deadline}</td>
+            <td className="py-2 pr-2"><span className="sf-pill sf-pill-red">{d.status}</span></td>
+            <td className="py-2 text-[11.5px] text-gray-600">{d.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedSettlement() {
+  const calc = MATTER.settlementCalc;
+  return (
+    <div>
+      <div className="bg-acs-light-blue p-3 rounded mb-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-[12px]">
+        <div><div className="text-gray-500 text-[11px] uppercase font-mont">FMV (appraised)</div><div className="text-[16px] font-bold mono-num text-sf-navy">{fmt(calc.fmv)}</div></div>
+        <div><div className="text-gray-500 text-[11px] uppercase font-mont">Closing costs (~6%)</div><div className="text-[16px] font-bold mono-num text-acs-error">{'\u2212' + fmt(calc.closingCosts).slice(1)}</div></div>
+        <div><div className="text-gray-500 text-[11px] uppercase font-mont">Net proceeds</div><div className="text-[16px] font-bold mono-num text-acs-success">{fmt(calc.netProceeds)}</div></div>
+        <div><div className="text-gray-500 text-[11px] uppercase font-mont">Per-share base (1/3)</div><div className="text-[16px] font-bold mono-num text-sf-navy">{fmt(calc.perShareBase)}</div></div>
+      </div>
+      <div className="text-[12px] text-gray-500 mb-2 font-mont">Scenario comparison:</div>
+      <table className="w-full text-[12.5px]">
+        <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+          <th className="py-1.5 pr-2">Scenario</th>
+          <th className="py-1.5 pr-2 text-right">Carlos (Pl.)</th>
+          <th className="py-1.5 pr-2 text-right">Maria</th>
+          <th className="py-1.5 pr-2 text-right">Luis</th>
+          <th className="py-1.5 pr-2 text-right">Atty fee</th>
+          <th className="py-1.5">Note</th>
+        </tr></thead>
+        <tbody>
+          {calc.scenarios.map((s, i) => {
+            const cell = (v) => typeof v === 'number' ? <span className="mono-num">{fmt(v)}</span> : <span className="text-[11.5px] text-gray-600">{v}</span>;
+            return (
+              <tr key={i} className="border-b border-gray-100">
+                <td className="py-2 pr-2 font-medium text-sf-blue">{s.name}</td>
+                <td className="py-2 pr-2 text-right">{cell(s.carlos)}</td>
+                <td className="py-2 pr-2 text-right">{cell(s.maria)}</td>
+                <td className="py-2 pr-2 text-right">{cell(s.luis)}</td>
+                <td className="py-2 pr-2 text-right">{cell(s.attorneyFee)}</td>
+                <td className="py-2 text-[11.5px] text-gray-600">{s.note}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div className="mt-3 bg-yellow-50 px-3 py-2 rounded text-[11.5px] text-gray-700 border-l-2 border-acs-gold">
+        <strong className="text-acs-charcoal">Note:</strong> The Settlement Calculator is built on top of the Cotenancy Ledger (`advpm__Participant__c` rollups). When buyout closes, scenario 2 fires; otherwise scenario 1 + 3 govern post-sale distribution.
+      </div>
+    </div>
+  );
+}
+
+function RelatedDocuments() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">File Name</th><th className="py-1.5 pr-2">Type</th><th className="py-1.5 pr-2">Date</th><th className="py-1.5 text-right">Size</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.files.map((f, i) => (
+          <tr key={i} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer">
+            <td className="py-1.5 pr-2 text-sf-blue">📄 {f.name}</td>
+            <td className="py-1.5 pr-2 text-gray-600">{f.type}</td>
+            <td className="py-1.5 pr-2 text-gray-600">{f.date}</td>
+            <td className="py-1.5 text-right text-gray-500 mono-num">{f.size}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedLedger() {
+  return (
+    <div>
+      <div className="text-[12px] text-gray-500 mb-2">Net adjustments sum to zero (internal transfer). Per Hunter v. Schultz / Wallace v. Daley.</div>
+      <table className="w-full text-[12px]">
+        <thead><tr className="bg-acs-blue text-white text-left">
+          <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase">Item</th>
+          <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase">Authority</th>
+          <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Carlos</th>
+          <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Maria</th>
+          <th className="px-2 py-1.5 font-mont text-[10.5px] uppercase text-right">Luis</th>
+        </tr></thead>
+        <tbody>
+          {MATTER.ledger.map((row, i) => {
+            const cls = row.isFinal ? 'bg-acs-charcoal text-white font-bold border-t-2 border-acs-gold'
+              : row.isTotal ? 'bg-acs-light-blue font-bold'
+              : row.isHeader ? '' : (i % 2 ? 'bg-acs-light-silver' : '');
+            const cellNum = (v) => {
+              if (typeof v !== 'number') return v;
+              const c = v > 0 ? 'text-acs-success' : v < 0 ? 'text-acs-error' : '';
+              return <span className={`mono-num ${c}`}>{fmtSigned(v)}</span>;
+            };
+            const cellFinal = (v) => typeof v === 'number' ? <span className="mono-num">{fmt(v)}</span> : v;
+            return (
+              <tr key={i} className={cls}>
+                <td className="px-2 py-1.5 border-b border-gray-100">{row.item}</td>
+                <td className="px-2 py-1.5 border-b border-gray-100 text-[11px]">{row.authority}</td>
+                <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.carlos) : cellNum(row.carlos)}</td>
+                <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.maria) : cellNum(row.maria)}</td>
+                <td className="px-2 py-1.5 border-b border-gray-100 text-right">{row.isFinal ? cellFinal(row.luis) : cellNum(row.luis)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function RelatedPrpaClocks() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">Clock</th><th className="py-1.5 pr-2">Trigger</th><th className="py-1.5 pr-2">Deadline</th><th className="py-1.5 pr-2">Status</th><th className="py-1.5">Authority</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.prpaClocks.map((c, i) => (
+          <tr key={i} className="border-b border-gray-100">
+            <td className="py-2 pr-2 font-medium">{c.clock}</td>
+            <td className="py-2 pr-2 text-[11.5px] text-gray-600">{c.trigger}</td>
+            <td className="py-2 pr-2 mono-num">{c.deadline}</td>
+            <td className="py-2 pr-2 text-[11.5px]">
+              <span className={c.status === 'urgent' ? 'sf-pill sf-pill-red' : c.status === 'met' ? 'sf-pill sf-pill-green' : 'sf-pill bg-gray-200 text-gray-700'}>
+                {c.statusText}
+              </span>
+            </td>
+            <td className="py-2 pr-2 font-mont text-[10.5px] text-acs-dark-blue">{c.cite}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedTasks() {
+  return (
+    <table className="w-full text-[12.5px]">
+      <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px]">
+        <th className="py-1.5 pr-2">Task</th><th className="py-1.5 pr-2">Due</th><th className="py-1.5 pr-2">Owner</th><th className="py-1.5 pr-2">Priority</th><th className="py-1.5">Status</th>
+      </tr></thead>
+      <tbody>
+        {MATTER.tasks.map((t) => (
+          <tr key={t.id} className="border-b border-gray-100">
+            <td className="py-2 pr-2 font-medium text-sf-blue">{t.name}</td>
+            <td className="py-2 pr-2 mono-num">{t.due}</td>
+            <td className="py-2 pr-2">{t.owner}</td>
+            <td className="py-2 pr-2">
+              <span className={`sf-pill ${t.priority === 'High' ? 'sf-pill-red' : t.priority === 'Med' ? 'sf-pill-gold' : 'bg-gray-200 text-gray-700'}`}>
+                {t.priority}
+              </span>
+            </td>
+            <td className="py-2"><span className="sf-pill sf-pill-blue">{t.status}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function RelatedNotes() {
+  return (
+    <div className="space-y-3">
+      {MATTER.notes.map((n, i) => (
+        <div key={i} className="border-l-3 border-acs-blue bg-acs-light-blue px-4 py-3 rounded">
+          <div className="flex justify-between items-baseline mb-1.5">
+            <span className="font-mont font-bold text-[12px] text-sf-navy">{n.author}</span>
+            <span className="text-[11px] text-gray-500 mono-num">{n.date}</span>
+          </div>
+          <div className="text-[12.5px] text-acs-charcoal leading-relaxed">{n.text}</div>
+        </div>
+      ))}
     </div>
   );
 }
