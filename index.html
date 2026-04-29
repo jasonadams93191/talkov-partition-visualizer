@@ -1664,35 +1664,10 @@ function CaseOnboarding() {
 function FilesESignature() {
   return (
     <div className="p-4 space-y-4">
-      {/* Section 1: All Documents (evidence + documentation) */}
+      {/* Section 1: Signed Documents (E-Signature Tracking) - TOP */}
       <div>
         <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
-          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> All Documents ({MATTER.files.length})</span>
-          <button className="sf-action-btn">Upload</button>
-        </div>
-        <div className="border border-t-0 border-sf-border rounded-b">
-          <table className="w-full text-[12.5px]">
-            <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
-              <th className="py-1.5 px-2">File Name</th><th className="py-1.5 px-2">Type</th><th className="py-1.5 px-2">Date</th><th className="py-1.5 px-2 text-right">Size</th>
-            </tr></thead>
-            <tbody>
-              {MATTER.files.map((f, i) => (
-                <tr key={i} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer last:border-0">
-                  <td className="py-1.5 px-2 text-sf-blue">📄 {f.name}</td>
-                  <td className="py-1.5 px-2 text-gray-600">{f.type}</td>
-                  <td className="py-1.5 px-2 text-gray-600 mono-num">{f.date}</td>
-                  <td className="py-1.5 px-2 text-right text-gray-500 mono-num">{f.size}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Section 2: E-Signature Tracking */}
-      <div>
-        <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
-          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> E-Signature Tracking ({MATTER.signedFiles.length})</span>
+          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> Signed Documents ({MATTER.signedFiles.length})</span>
           <button className="sf-action-btn">+ Send for Signature</button>
         </div>
         <div className="border border-t-0 border-sf-border rounded-b">
@@ -1708,6 +1683,31 @@ function FilesESignature() {
                   <td className="py-2 px-2 text-[11.5px]">{f.signer}</td>
                   <td className="py-2 px-2 text-[11.5px]">{f.method}</td>
                   <td className="py-2 px-2"><span className={`sf-pill ${f.status === 'Complete' ? 'sf-pill-green' : 'sf-pill-gold'}`}>{f.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Section 2: Evidence & Documentation - BOTTOM */}
+      <div>
+        <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
+          <span className="flex items-center gap-1.5"><span className="text-acs-blue">▼</span> Evidence & Documentation ({MATTER.files.length})</span>
+          <button className="sf-action-btn">Upload</button>
+        </div>
+        <div className="border border-t-0 border-sf-border rounded-b">
+          <table className="w-full text-[12.5px]">
+            <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
+              <th className="py-1.5 px-2">File Name</th><th className="py-1.5 px-2">Type</th><th className="py-1.5 px-2">Date</th><th className="py-1.5 px-2 text-right">Size</th>
+            </tr></thead>
+            <tbody>
+              {MATTER.files.map((f, i) => (
+                <tr key={i} className="border-b border-gray-100 hover:bg-acs-light-blue cursor-pointer last:border-0">
+                  <td className="py-1.5 px-2 text-sf-blue">📄 {f.name}</td>
+                  <td className="py-1.5 px-2 text-gray-600">{f.type}</td>
+                  <td className="py-1.5 px-2 text-gray-600 mono-num">{f.date}</td>
+                  <td className="py-1.5 px-2 text-right text-gray-500 mono-num">{f.size}</td>
                 </tr>
               ))}
             </tbody>
