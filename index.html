@@ -1513,4 +1513,60 @@ function BuildPlanTab() {
       </div>
 
       <h3 className="text-[18px] font-bold text-acs-blue mt-3 font-mont">12-week sprint plan</h3>
-      <div clas
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="bg-acs-blue text-white text-left">
+            <th className="px-3 py-2 font-mont text-[11px] uppercase">Sprint</th>
+            <th className="px-3 py-2 font-mont text-[11px] uppercase">Weeks</th>
+            <th className="px-3 py-2 font-mont text-[11px] uppercase">Build</th>
+            <th className="px-3 py-2 font-mont text-[11px] uppercase">Outcome</th>
+          </tr></thead>
+          <tbody>
+            {sprints.map((s, i) => (
+              <tr key={i} className={i % 2 ? 'bg-acs-light-silver' : ''}>
+                <td className="px-3 py-2 border-b font-mont font-bold text-acs-blue">{s[0]}</td>
+                <td className="px-3 py-2 border-b mono-num text-center">{s[1]}</td>
+                <td className="px-3 py-2 border-b">{s[2]}</td>
+                <td className="px-3 py-2 border-b text-acs-success font-medium">{s[3]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="bg-acs-charcoal text-white p-5 rounded-lg border-l-4 border-acs-gold">
+        <div className="font-mont text-[14px] font-bold text-acs-gold mb-1.5">The thesis in one sentence</div>
+        <div className="text-[13px] leading-relaxed">Talkov is already running a productized practice — 12 attorneys, mono-practice, dedicated technology director (Lexi Scott), 575+ matters, registered "Ending Co-Ownership Disputes\u00ae" mark. The right system isn't generic case management — it's a CaseCloud build that uses every native object Mitratech ships, plus exactly two custom objects (Lis_Pendens_Record + PRPA_Clock) for the partition-specific compliance work nothing else automates. ACS builds that.</div>
+      </div>
+    </div>
+  );
+}
+
+// =================================================================
+// APP
+// =================================================================
+
+function App() {
+  const [tab, setTab] = useState(0);
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <div className="flex-1 max-w-[1500px] w-full mx-auto px-4 pb-6">
+        <TabNav tab={tab} setTab={setTab} />
+        <main className="pt-5">
+          {tab === 0 && <LifecycleTab />}
+          {tab === 1 && <WorkflowTab />}
+          {tab === 2 && <AnalyticsTab />}
+          {tab === 3 && <MatterTab />}
+          {tab === 4 && <BuildPlanTab />}
+        </main>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
