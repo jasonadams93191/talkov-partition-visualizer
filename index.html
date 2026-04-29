@@ -1796,29 +1796,36 @@ function CaseDevelopment() {
     </div>
   );
 }
-function FieldGroup({ title, rows }) {
+function FieldGroup({ title, rows, defaultOpen = true }) {
+  const [open, setOpen] = React.useState(defaultOpen);
   return (
     <div>
-      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5">
-        <span className="text-acs-blue">▼</span> {title}
+      <div
+        onClick={() => setOpen(!open)}
+        className={`bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border ${open ? 'rounded-t' : 'rounded'} flex items-center gap-1.5 cursor-pointer hover:bg-acs-light-blue select-none`}
+      >
+        <span className={`text-acs-blue inline-block transition-transform ${open ? 'rotate-0' : '-rotate-90'}`}>▼</span>
+        <span className="flex-1">{title}</span>
+        <span className="text-[10px] text-gray-400 font-normal">{rows.length} fields</span>
       </div>
-      <div className="border border-t-0 border-sf-border rounded-b p-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
-        {rows.map((r, i) => (
-          <div key={i} className="text-[12.5px]">
-            <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{r.label}</div>
-            <div className="text-sf-navy font-medium mt-0.5 flex items-center gap-1.5">
-              {r.valueNode === 'PHASE_6_PRPA'
-                ? <span className="sf-pill sf-pill-gold">PHASE 6 · PRPA</span>
-                : <span>{r.value}</span>}
-              <span className="text-gray-400 text-[11px] hover:text-acs-blue cursor-pointer">✏</span>
+      {open && (
+        <div className="border border-t-0 border-sf-border rounded-b p-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
+          {rows.map((r, i) => (
+            <div key={i} className="text-[12.5px]">
+              <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{r.label}</div>
+              <div className="text-sf-navy font-medium mt-0.5 flex items-center gap-1.5">
+                {r.valueNode === 'PHASE_6_PRPA'
+                  ? <span className="sf-pill sf-pill-gold">PHASE 6 · PRPA</span>
+                  : <span>{r.value}</span>}
+                <span className="text-gray-400 text-[11px] hover:text-acs-blue cursor-pointer">✏</span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
 function CaseOnboarding() {
   return (
     <div className="p-4 space-y-4">
@@ -1834,26 +1841,42 @@ function CaseOnboarding() {
       <FieldGroup title="Pre-Engagement Compliance & Fee" rows={MATTER.intakeFields.preEngagement} />
 
       {/* ===== ONBOARDING CHECKLIST ===== */}
-      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5 mt-4">
-        <span className="text-acs-blue">▼</span> Onboarding Checklist
-        <span className="ml-auto text-[11px] font-normal text-gray-500">{MATTER.onboarding.filter(o => o.complete).length}/{MATTER.onboarding.length} complete</span>
-      </div>
-      <div className="border border-t-0 border-sf-border rounded-b" style={{marginTop: 0}}>
-        {MATTER.onboarding.map((o, i) => (
-          <div key={i} className="flex items-start gap-3 px-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-acs-light-blue">
-            <div className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[11px] font-bold ${o.complete ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
-              {o.complete ? '✓' : ''}
-            </div>
-            <div className="flex-1 text-[12.5px]">
-              <div className={o.complete ? 'text-gray-700' : 'text-acs-charcoal font-medium'}>{o.task}</div>
-              <div className="text-[11px] text-gray-500 mt-0.5">{o.owner} · {o.date}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <CollapsibleChecklist />
     </div>
   );
 }
+
+function CollapsibleChecklist() {
+  const [open, setOpen] = React.useState(true);
+  return (
+    <div>
+      <div
+        onClick={() => setOpen(!open)}
+        className={`bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border ${open ? 'rounded-t' : 'rounded'} flex items-center gap-1.5 cursor-pointer hover:bg-acs-light-blue select-none`}
+      >
+        <span className={`text-acs-blue inline-block transition-transform ${open ? 'rotate-0' : '-rotate-90'}`}>▼</span>
+        <span className="flex-1">Onboarding Checklist</span>
+        <span className="text-[11px] font-normal text-gray-500">{MATTER.onboarding.filter(o => o.complete).length}/{MATTER.onboarding.length} complete</span>
+      </div>
+      {open && (
+        <div className="border border-t-0 border-sf-border rounded-b">
+          {MATTER.onboarding.map((o, i) => (
+            <div key={i} className="flex items-start gap-3 px-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-acs-light-blue">
+              <div className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[11px] font-bold ${o.complete ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
+                {o.complete ? '✓' : ''}
+              </div>
+              <div className="flex-1 text-[12.5px]">
+                <div className={o.complete ? 'text-gray-700' : 'text-acs-charcoal font-medium'}>{o.task}</div>
+                <div className="text-[11px] text-gray-500 mt-0.5">{o.owner} · {o.date}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FilesESignature() {
   return (
     <div className="p-4 space-y-4">
