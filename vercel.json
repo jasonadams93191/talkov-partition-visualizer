@@ -1,7 +1,3 @@
 {
-  "version": 2,
-  "name": "talkov-partition-visualizer",
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }
