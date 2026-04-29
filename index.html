@@ -1464,7 +1464,6 @@ function MatterTab() {
     { id: 'cotenancy', label: 'Cotenancy Ledger', icon: '⚖', count: null },
     { id: 'prpa', label: 'PRPA Clocks', icon: '⏱', count: MATTER.prpaClocks.length },
     { id: 'case-calendar', label: 'Case Calendar', icon: '📅', count: MATTER.caseCalendar.length },
-    { id: 'notes', label: 'Notes', icon: '📝', count: MATTER.notes.length },
   ];
 
   return (
@@ -1550,7 +1549,7 @@ function MatterTab() {
           {relatedTab === 'cotenancy' && <RelatedLedger />}
           {relatedTab === 'prpa' && <RelatedPrpaClocks />}
           {relatedTab === 'case-calendar' && <RelatedCaseCalendar />}
-          {relatedTab === 'notes' && <RelatedNotes />}
+          
         </div>
       </div>
 
