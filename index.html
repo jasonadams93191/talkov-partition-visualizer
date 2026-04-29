@@ -1544,7 +1544,7 @@ function LifecycleTab() {
   return (
     <div className="space-y-5">
       <div className="bg-white p-7 rounded-lg shadow-sm border-l-4 border-acs-gold">
-        <h2 className="text-[22px] font-bold text-acs-blue tracking-tight mb-3">What is partition law?</h2>
+        <div className="flex items-center justify-between mb-3"><h2 className="text-[22px] font-bold text-acs-blue tracking-tight">What is partition law?</h2><Feedback section="lifecycle.intro" label="Lifecycle: Intro" /></div>
         <p className="text-[14px] leading-relaxed text-acs-charcoal mb-3"><strong>A partition action is the legal mechanism for ending real-property co-ownership when the co-owners can't agree.</strong> Two siblings inherit a house and one wants to sell while the other won't. A divorcing couple holds title together. Three business partners bought a building and now disagree on what to do with it. Whenever co-owners reach an impasse, California gives any one of them the right to ask the court to either (a) physically divide the property, (b) order it sold and split the proceeds, or (c) under the right circumstances, let one cotenant buy out the others.</p>
         <p className="text-[14px] leading-relaxed text-acs-charcoal mb-3">California codifies partition at <strong>Code of Civil Procedure §§ 872.010 through 874.323</strong>. The statute is materially the same it has been since the 1976 reorganization, with one major addition: the <strong>Partition of Real Property Act (PRPA)</strong>, effective January 1, 2023, which fundamentally restructures partition for any tenancy-in-common without a written partition agreement — most of Talkov's caseload.</p>
         <p className="text-[14px] leading-relaxed text-acs-charcoal mb-3">Two things make partition unusual relative to general real-estate litigation:</p>
@@ -1557,7 +1557,7 @@ function LifecycleTab() {
         <p className="text-[14px] leading-relaxed text-acs-charcoal">For the visual lifecycle map, switch to the <strong>Workflow Diagram</strong> tab. For the task-level breakdown of any phase, expand a phase card below.</p>
       </div>
 
-      <h3 className="text-[19px] font-bold text-acs-blue mt-7">Key terminology</h3>
+      <div className="flex items-center justify-between mt-7"><h3 className="text-[19px] font-bold text-acs-blue">Key terminology</h3><Feedback section="lifecycle.glossary" label="Lifecycle: Glossary" /></div>
       <div className="text-[13px] text-gray-500 leading-snug">The vocabulary a California partition lawyer uses every day. Click any term to expand. Each term is cite-tagged so you can verify in seconds.</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
@@ -1581,7 +1581,7 @@ function LifecycleTab() {
         ))}
       </div>
 
-      <h3 className="text-[19px] font-bold text-acs-blue mt-7">Phase-by-phase deep dive</h3>
+      <div className="flex items-center justify-between mt-7"><h3 className="text-[19px] font-bold text-acs-blue">Phase-by-phase deep dive</h3><Feedback section="lifecycle.phases" label="Lifecycle: Phase Cards" /></div>
       <div className="text-[13px] text-gray-500 leading-snug">Click any phase to expand task list, exit criteria, role assignments, and statutory authority. Phase 6 (PRPA) is conditional — only fires for matters filed on/after 1/1/2023 on TIC property without a written partition agreement.</div>
 
       <div className="space-y-1.5">
@@ -2034,7 +2034,7 @@ function AnalyticsTab() {
   return (
     <div className="space-y-4">
       <div className="bg-white p-3.5 px-4 rounded-md text-[13px] border-l-[3px] border-acs-gold shadow-sm">
-        <strong className="font-mont text-acs-blue">Sample dashboard</strong> tuned to a 12-attorney California partition practice. Numbers are illustrative — these are the metrics that would be live in CaseCloud once the data model is in place.
+        <div className="flex items-start gap-3"><div className="flex-1"><strong className="font-mont text-acs-blue">Sample dashboard</strong> tuned to a 12-attorney California partition practice. Numbers are illustrative — these are the metrics that would be live in CaseCloud once the data model is in place.</div><Feedback section="analytics.dashboard" label="Analytics: Dashboard" /></div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -2048,7 +2048,7 @@ function AnalyticsTab() {
       </div>
 
       <div className="bg-white p-5 rounded-lg shadow-sm">
-        <div className="font-mont font-bold text-[14px] text-acs-blue mb-3">Pipeline — Active matters by phase</div>
+        <div className="flex justify-between items-center mb-3"><div className="font-mont font-bold text-[14px] text-acs-blue">Pipeline — Active matters by phase</div><Feedback section="analytics.pipeline" label="Analytics: Pipeline" /></div>
         <div className="flex gap-2 overflow-x-auto py-1">
           {pipeline.map(([name, count]) => (
             <div key={name} className="bg-acs-light-blue px-3 py-3 rounded min-w-[110px] text-center border-t-[3px] border-acs-blue">
@@ -2061,7 +2061,7 @@ function AnalyticsTab() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="bg-white p-5 rounded-lg shadow-sm">
-          <div className="font-mont font-bold text-[14px] text-acs-blue mb-3">Matters by office</div>
+          <div className="flex justify-between items-center mb-3"><div className="font-mont font-bold text-[14px] text-acs-blue">Matters by office</div><Feedback section="analytics.byoffice" label="Analytics: By Office" /></div>
           <table className="w-full text-[12.5px]">
             <thead><tr className="bg-acs-blue text-white text-left">
               <th className="px-2.5 py-2 font-mont text-[11px] uppercase">Office</th>
@@ -2088,7 +2088,7 @@ function AnalyticsTab() {
           </table>
         </div>
         <div className="bg-white p-5 rounded-lg shadow-sm">
-          <div className="font-mont font-bold text-[14px] text-acs-blue mb-3">Matters at risk — stage age exceeds norm</div>
+          <div className="flex justify-between items-center mb-3"><div className="font-mont font-bold text-[14px] text-acs-blue">Matters at risk — stage age exceeds norm</div><Feedback section="analytics.risk" label="Analytics: Matters at Risk" /></div>
           <table className="w-full text-[12.5px]">
             <thead><tr className="bg-acs-blue text-white text-left">
               <th className="px-2.5 py-2 font-mont text-[11px] uppercase">Matter</th>
@@ -4191,16 +4191,16 @@ function BuildPlanTab() {
   return (
     <div className="space-y-4">
       <div className="bg-white p-5 rounded-lg shadow-sm border-l-4 border-acs-gold">
-        <div className="font-mont text-[15px] font-bold text-acs-blue mb-1.5">CaseCloud-native first — build only what doesn't exist</div>
+        <div className="flex items-center justify-between mb-1.5"><div className="font-mont text-[15px] font-bold text-acs-blue">CaseCloud-native first — build only what doesn't exist</div><Feedback section="buildplan.thesis-intro" label="Build Plan: Intro" /></div>
         <div className="text-[13px] text-acs-charcoal leading-relaxed">Mitratech CaseCloud already ships most of what a partition practice needs. The right ACS build leans hard on native objects (Matter, Participant, Activity Plan, Fee Arrangement, Budget) and adds only two genuine customs: <strong>Lis_Pendens_Record__c</strong> for multi-county recording compliance, and <strong>PRPA_Clock__c</strong> for the four cascading PRPA deadlines. Everything else is configuration, not code.</div>
       </div>
 
       <div className="bg-gradient-to-r from-acs-gold to-yellow-300 text-acs-charcoal p-5 rounded-lg shadow-md border-l-4 border-acs-charcoal">
-        <div className="font-mont text-[14px] font-bold mb-1.5">★ Headline custom build — Common-Benefit Time-Entry Tagger</div>
+        <div className="flex items-center justify-between mb-1.5"><div className="font-mont text-[14px] font-bold">★ Headline custom build — Common-Benefit Time-Entry Tagger</div><Feedback section="buildplan.cb-tagger" label="Build Plan: CB Tagger" /></div>
         <div className="text-[13px] leading-relaxed">Required field on every <code className="text-[11.5px] bg-white/40 px-1 rounded">advpm__Time__c</code> entry: <code className="text-[11.5px] bg-white/40 px-1 rounded">Common_Benefit__c</code> picklist (Y / N / Mixed) + <code className="text-[11.5px] bg-white/40 px-1 rounded">Common_Benefit_Reason__c</code> text. Save blocked unless populated. At fee-motion time, a single SOQL roll-up generates the § 874.040 fee declaration. <strong>This is the build that turns contingency partition from a marketing pitch into recoverable revenue</strong> — every untagged hour at month-end is a fee dollar Talkov leaves on the table. Firm-wide tag rate today: 42%; goal post-build: 100%.</div>
       </div>
 
-      <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">CaseCloud native objects — Talkov uses these out of the box</h3>
+      <div className="flex items-center justify-between mt-2"><h3 className="text-[18px] font-bold text-acs-blue font-mont">CaseCloud native objects — Talkov uses these out of the box</h3><Feedback section="buildplan.natives" label="Build Plan: Native Objects" /></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {natives.map((n, i) => (
           <div key={i} className="bg-white p-4 rounded-md border-l-4 border-acs-success shadow-sm">
@@ -4211,7 +4211,7 @@ function BuildPlanTab() {
         ))}
       </div>
 
-      <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">Custom objects — three genuinely novel builds</h3>
+      <div className="flex items-center justify-between mt-2"><h3 className="text-[18px] font-bold text-acs-blue font-mont">Custom objects — three genuinely novel builds</h3><Feedback section="buildplan.customs" label="Build Plan: Custom Objects" /></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {customs.map((c, i) => (
           <div key={i} className="bg-white p-4 rounded-md border-l-4 border-acs-gold shadow-sm">
@@ -4221,7 +4221,7 @@ function BuildPlanTab() {
         ))}
       </div>
 
-      <h3 className="text-[18px] font-bold text-acs-blue mt-3 font-mont">12-week sprint plan</h3>
+      <div className="flex items-center justify-between mt-3"><h3 className="text-[18px] font-bold text-acs-blue font-mont">12-week sprint plan</h3><Feedback section="buildplan.sprints" label="Build Plan: Sprint Plan" /></div>
       <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-[12.5px]">
           <thead><tr className="bg-acs-blue text-white text-left">
@@ -4244,7 +4244,7 @@ function BuildPlanTab() {
       </div>
 
       <div className="bg-acs-charcoal text-white p-5 rounded-lg border-l-4 border-acs-gold">
-        <div className="font-mont text-[14px] font-bold text-acs-gold mb-2">The thesis — four pillars of contingency partition at scale</div>
+        <div className="flex items-center justify-between mb-2"><div className="font-mont text-[14px] font-bold text-acs-gold">The thesis — four pillars of contingency partition at scale</div><Feedback section="buildplan.thesis" label="Build Plan: Thesis" /></div>
         <ol className="text-[12.5px] leading-relaxed space-y-1.5 list-decimal list-inside">
           <li><strong className="text-acs-gold">Right is absolute</strong> — Capuccio / LEG Investments mean the firm rarely loses on liability. Contingency risk is cycle-time, not outcome.</li>
           <li><strong className="text-acs-gold">PRPA short-fuse</strong> — § 874.317 buyout closes filing-to-escrow in 8–10 months. Compresses contingency cycle dramatically vs. classic 18–24 month sale track.</li>
