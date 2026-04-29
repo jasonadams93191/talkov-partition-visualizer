@@ -1995,10 +1995,11 @@ function SfPath({ currentPhase }) {
 // Related list sub-components
 function RelatedParticipants({ subTab, setSubTab }) {
   const SUBS = [
-    { id: 'cotenants', label: 'Cotenants', count: MATTER.cotenants.length, data: MATTER.cotenants, kind: 'cotenant' },
+    { id: 'cotenants', label: 'People Involved', count: MATTER.cotenants.length, data: MATTER.cotenants, kind: 'cotenant' },
     { id: 'counsel', label: 'Counsel', count: MATTER.counselParticipants.length, data: MATTER.counselParticipants, kind: 'counsel' },
     { id: 'court', label: 'Court', count: MATTER.courtParticipants.length, data: MATTER.courtParticipants, kind: 'court' },
-    { id: 'vendors', label: 'Vendors', count: MATTER.vendorParticipants.length, data: MATTER.vendorParticipants, kind: 'vendor' },
+    { id: 'vendors', label: 'Vendors / Orgs', count: MATTER.vendorParticipants.length, data: MATTER.vendorParticipants, kind: 'vendor' },
+    { id: 'map', label: 'Map', count: null, data: null, kind: 'map' },
   ];
   const active = SUBS.find((s) => s.id === subTab) || SUBS[0];
 
@@ -2010,24 +2011,137 @@ function RelatedParticipants({ subTab, setSubTab }) {
           <button
             key={s.id}
             onClick={() => setSubTab(s.id)}
-            className={`px-3 py-1.5 text-[11.5px] font-mont font-semibold rounded-t border-b-2 transition-colors ${
+            className={`px-3 py-1.5 text-[11.5px] font-mont font-semibold rounded-t border-b-2 transition-colors flex items-center gap-1.5 ${
               subTab === s.id ? 'border-sf-blue text-sf-navy bg-acs-light-blue' : 'border-transparent text-gray-500 hover:text-sf-navy'
             }`}
           >
-            {s.label} ({s.count})
+            {s.id === 'cotenants' && <span>👥</span>}
+            {s.id === 'counsel' && <span>📘</span>}
+            {s.id === 'court' && <span>🏛</span>}
+            {s.id === 'vendors' && <span>🏢</span>}
+            {s.id === 'map' && <span>📍</span>}
+            <span>{s.label}{s.count !== null && ` (${s.count})`}</span>
           </button>
         ))}
       </div>
 
-      <div className="space-y-2.5">
-        {active.data.map((p, i) => (
-          <ParticipantCard key={i} p={p} kind={active.kind} />
-        ))}
-      </div>
+      {subTab === 'map' ? (
+        <PartiesMap />
+      ) : (
+        <div className="space-y-2.5">
+          {active.data.map((p, i) => (
+            <ParticipantCard key={i} p={p} kind={active.kind} />
+          ))}
+        </div>
+      )}
     </>
   );
 }
 
+function PartiesMap() {
+  const W = 1200;
+  const H = 700;
+  const cx = W / 2;
+  const cy = H / 2;
+  const radius = Math.min(W, H) * 0.34;
+
+  // Build node list — flatten participants with role + style
+  const nodes = [
+    ...MATTER.cotenants.map((c) => ({
+      name: c.name, role: `${c.role.toLowerCase()} (${c.share})`,
+      icon: '👤', fill: '#fce4ec', stroke: '#c23934', textColor: '#7a1f2a',
+    })),
+    ...MATTER.counselParticipants.map((c) => ({
+      name: c.name, role: c.role.toLowerCase(),
+      icon: '⚖', fill: '#e3f2fd', stroke: '#0176d3', textColor: '#032d60',
+    })),
+    ...MATTER.courtParticipants.map((c) => ({
+      name: c.name, role: c.role.toLowerCase(),
+      icon: '🏛', fill: '#e8eaf6', stroke: '#3f51b5', textColor: '#1a237e',
+    })),
+    ...MATTER.vendorParticipants.filter((v) => v.phone !== '—').map((c) => ({
+      name: c.firm || c.name, role: c.role.toLowerCase(),
+      icon: '🏢', fill: '#e8f5e9', stroke: '#28a745', textColor: '#1b5e20',
+    })),
+    // The property as a special node
+    {
+      name: '4521 Mockingbird Ln',
+      role: 'subject property',
+      icon: '🏡', fill: '#fff8e1', stroke: '#FFD700', textColor: '#7a5c00',
+    },
+  ];
+
+  const positioned = nodes.map((n, i) => {
+    const angle = (i / nodes.length) * 2 * Math.PI - Math.PI / 2;
+    return { ...n, x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  });
+
+  return (
+    <div className="bg-white border border-sf-border rounded">
+      <div className="flex justify-between items-center px-4 py-3 border-b border-sf-border">
+        <div>
+          <div className="font-mont font-bold text-[14px] text-sf-navy">Participation Map</div>
+          <div className="text-[11px] text-gray-500">showing participants, for all types and all roles</div>
+        </div>
+        <div className="flex gap-1">
+          <button className="sf-action-btn">New</button>
+          <button className="sf-action-btn">📍 ▾</button>
+          <button className="sf-action-btn">●○○ ▾</button>
+          <button className="sf-action-btn">▽</button>
+          <button className="sf-action-btn">⛶</button>
+        </div>
+      </div>
+      <div className="p-3">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full block" style={{ background: '#fafbfc', borderRadius: 6, maxHeight: '650px' }}>
+          {/* Lines + role labels */}
+          {positioned.map((n, i) => {
+            const midX = (cx + n.x) / 2;
+            const midY = (cy + n.y) / 2;
+            return (
+              <g key={`line-${i}`}>
+                <line x1={cx} y1={cy} x2={n.x} y2={n.y} stroke="#cbd5e0" strokeWidth="1" />
+                <text
+                  x={midX}
+                  y={midY - 4}
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontFamily="Lato, sans-serif"
+                  fill="#5e6c84"
+                  style={{ paintOrder: 'stroke', stroke: '#fafbfc', strokeWidth: 4, strokeLinecap: 'round', strokeLinejoin: 'round' }}
+                >
+                  {n.role}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Participant nodes */}
+          {positioned.map((n, i) => (
+            <g key={`node-${i}`}>
+              <circle cx={n.x} cy={n.y} r="26" fill={n.fill} stroke={n.stroke} strokeWidth="2.5" />
+              <text x={n.x} y={n.y + 7} textAnchor="middle" fontSize="20">{n.icon}</text>
+              <text x={n.x} y={n.y + 48} textAnchor="middle" fontSize="11.5" fontWeight="600" fontFamily="Montserrat, sans-serif" fill={n.textColor}>{n.name}</text>
+            </g>
+          ))}
+
+          {/* Center matter node */}
+          <circle cx={cx} cy={cy} r="38" fill="#0057B8" stroke="#003D80" strokeWidth="3" />
+          <text x={cx} y={cy + 9} textAnchor="middle" fontSize="26" fill="#FFD700">⚖</text>
+          <text x={cx} y={cy + 60} textAnchor="middle" fontSize="13" fontWeight="700" fontFamily="Montserrat, sans-serif" fill="#003D80">Hernandez v. Hernandez</text>
+          <text x={cx} y={cy + 76} textAnchor="middle" fontSize="11" fontFamily="Lato, sans-serif" fill="#5e6c84">Partition Action · RIC-2025-0148211</text>
+        </svg>
+      </div>
+      <div className="px-4 py-2 bg-gray-50 border-t border-sf-border flex flex-wrap gap-3 text-[10.5px] text-gray-600">
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#fce4ec', border:'2px solid #c23934'}}></span>Cotenants</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#e3f2fd', border:'2px solid #0176d3'}}></span>Counsel</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#e8eaf6', border:'2px solid #3f51b5'}}></span>Court</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#e8f5e9', border:'2px solid #28a745'}}></span>Vendors / Orgs</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#fff8e1', border:'2px solid #FFD700'}}></span>Subject Property</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded-full" style={{background:'#0057B8', border:'2px solid #003D80'}}></span>Matter</span>
+      </div>
+    </div>
+  );
+}
 function ParticipantCard({ p, kind }) {
   const [expanded, setExpanded] = React.useState(false);
   const noteCount = (p.notes || []).length;
