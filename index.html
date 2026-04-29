@@ -529,6 +529,56 @@ const MATTER = {
     { item: 'Net adjustment (sums to zero)', authority: '', carlos: -26472, maria: 52944, luis: -26472, isTotal: true },
     { item: 'Estimated net distribution at sale ($812K FMV less ~6% costs ≈ $763,280)', authority: 'Pre-§874.040 motion', carlos: 227955, maria: 307371, luis: 227955, isFinal: true },
   ],
+  matterInformation: [
+    { label: 'Name', value: 'Hernandez v. Hernandez \u2014 Partition' },
+    { label: 'Stage', valueNode: 'PHASE_6_PRPA' },
+    { label: 'SOL', value: 'N/A \u2014 partition is equitable, no statute of limitations bar' },
+    { label: 'Contingency %', value: '35.000%' },
+    { label: 'Practice Area', value: 'Partition (California)' },
+    { label: 'Subtype', value: 'PRPA \u2014 TIC, no written agreement, post-2023' },
+    { label: 'Court', value: 'Riverside County Superior Court' },
+    { label: 'Judge', value: 'Hon. T. Velasquez (Dept. 8)' },
+    { label: 'Filed', value: '10/14/2025' },
+    { label: 'Case Number', value: 'RIC-2025-0148211' },
+  ],
+  retained: [
+    { label: 'Retainer Method', value: 'Contingency \u2014 No Fee Until You Win' },
+    { label: 'Case Type', value: 'Partition Action (PRPA track)' },
+    { label: 'Responsible Attorney', value: 'Scott Talkov' },
+    { label: 'Associate', value: 'Adeeb Djawad' },
+    { label: 'Paralegal', value: 'Lexi Scott' },
+    { label: 'Office', value: 'Riverside (3610 Central Ave Ste 400)' },
+    { label: 'Client Contact Info Verified', value: 'Yes (10/8/2025)' },
+    { label: 'Lead Attorney', value: 'Scott Talkov' },
+  ],
+  propertyInformation: [
+    { label: 'Property Address', value: '4521 Mockingbird Ln, Riverside, CA 92506' },
+    { label: 'APN', value: '218-330-014' },
+    { label: 'FMV (court-ordered appraisal)', value: '$812,000' },
+    { label: 'Vesting', value: 'TIC 1/3 each (deed of distribution 8/2021)' },
+    { label: 'Plaintiff Interest', value: 'Carlos Hernandez \u2014 1/3' },
+    { label: 'Buyout Funding (if Maria elects)', value: '$270,667' },
+  ],
+  signedFiles: [
+    { name: 'Engagement Letter', signed: '10/8/2025', signer: 'Carlos Hernandez', method: 'DocuSign', status: 'Complete' },
+    { name: 'Verified Complaint', signed: '10/14/2025', signer: 'Scott Talkov (verification)', method: 'In-person', status: 'Complete' },
+    { name: 'Cert-Mail Proof - Lis Pendens', signed: '10/15/2025', signer: 'Lexi Scott', method: 'In-person', status: 'Complete' },
+    { name: 'Default Request - Luis', signed: '1/8/2026', signer: 'Scott Talkov', method: 'E-signature', status: 'Complete' },
+    { name: 'Buyout Funding Order (draft)', signed: 'Pending', signer: 'TBD', method: 'E-signature', status: 'Awaiting' },
+  ],
+  chatterUpdates: [
+    { date: 'Apr 29, 1:54 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
+    { date: 'Apr 29, 1:17 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
+    { date: 'Apr 29, 1:16 AM', actor: 'You', action: 'Field Tracking Update', detail: 'Updated this record' },
+    { date: 'Apr 28, 4:22 PM', actor: 'Adeeb Djawad', action: 'Status Change', detail: 'Stage changed: Discovery -> PRPA Track' },
+    { date: 'Apr 22, 11:08 AM', actor: 'Scott Talkov', action: 'Order Recorded', detail: 'FMV confirmed at $812,000 by court' },
+  ],
+  upcomingTasks: [
+    { date: 'Apr 30', name: 'Update cotenant ledger \u2014 March mortgage', owner: 'Lexi Scott', overdue: false },
+    { date: 'May 3', name: 'Confirm Maria written buyout election', owner: 'Scott Talkov', overdue: false },
+    { date: 'May 3', name: 'Draft buyout funding court order', owner: 'Adeeb Djawad', overdue: false },
+    { date: 'May 6', name: 'PRPA buyout election deadline', owner: 'Statutory', overdue: false, critical: true },
+  ],
   prpaClocks: [
     { clock: '10-day FMV notice', trigger: 'Appraisal received 3/8/2026', deadline: '3/18/2026', status: 'met', statusText: 'Mailed 3/16', cite: '§ 874.316(c)' },
     { clock: '30-day FMV objection hearing', trigger: 'FMV notice 3/16/2026', deadline: '≥ 4/15/2026', status: 'met', statusText: 'Heard 4/22 — value confirmed $812K', cite: '§ 874.316(d)' },
@@ -1369,49 +1419,252 @@ function MatterTab() {
         </div>
       </div>
 
-      {/* CASE DETAILS + TIMELINE (2-column, timeline sticks) */}
+      {/* BOTTOM: nested-tab Case Details card (left) + Notes + Timeline cards (right, sticky) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
-        <div className="lg:col-span-2 sf-card">
-          <div className="sf-card-header">
-            <span>📋 Case Details</span>
-            <button className="text-[11px] font-normal text-sf-blue">Edit</button>
+        <div className="lg:col-span-2">
+          <CaseDetailsCard />
+        </div>
+        <div className="lg:col-span-1 lg:sticky lg:top-3 space-y-3" style={{ maxHeight: 'calc(100vh - 24px)', overflowY: 'auto' }}>
+          <NotesCard />
+          <MatterTimelineCard />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CaseDetailsCard() {
+  const [topTab, setTopTab] = React.useState('case-details');
+  const [subTab, setSubTab] = React.useState('case-development');
+  return (
+    <div className="sf-card">
+      {/* TOP tabs: Case Details | Files & E-Signature */}
+      <div className="border-b border-sf-border bg-gray-50 px-3 flex">
+        <button onClick={() => setTopTab('case-details')} className={`px-3 py-2.5 font-mont text-[12.5px] font-semibold border-b-2 flex items-center gap-1.5 ${topTab === 'case-details' ? 'border-sf-blue text-sf-navy bg-white' : 'border-transparent text-gray-600 hover:text-sf-navy'}`}>
+          📄 Case Details
+        </button>
+        <button onClick={() => setTopTab('files')} className={`px-3 py-2.5 font-mont text-[12.5px] font-semibold border-b-2 flex items-center gap-1.5 ${topTab === 'files' ? 'border-sf-blue text-sf-navy bg-white' : 'border-transparent text-gray-600 hover:text-sf-navy'}`}>
+          📝 Files & E-Signature
+        </button>
+      </div>
+
+      {topTab === 'case-details' && (
+        <>
+          {/* SUB tabs: Case Development | Case Onboarding */}
+          <div className="border-b border-sf-border bg-white px-3 flex">
+            <button onClick={() => setSubTab('case-development')} className={`px-3 py-2 font-mont text-[11.5px] font-semibold border-b-2 flex items-center gap-1.5 ${subTab === 'case-development' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
+              📝 Case Development
+            </button>
+            <button onClick={() => setSubTab('case-onboarding')} className={`px-3 py-2 font-mont text-[11.5px] font-semibold border-b-2 flex items-center gap-1.5 ${subTab === 'case-onboarding' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
+              🚀 Case Onboarding
+            </button>
           </div>
-          <div className="sf-card-body grid grid-cols-1 md:grid-cols-2 gap-x-5">
-            {MATTER.caseDetails.map((d) => (
-              <div key={d.label} className="sf-detail-row">
-                <div className="sf-detail-label">{d.label}</div>
-                <div className="sf-detail-value">{d.value}</div>
+
+          {subTab === 'case-development' && <CaseDevelopment />}
+          {subTab === 'case-onboarding' && <CaseOnboarding />}
+        </>
+      )}
+
+      {topTab === 'files' && <FilesESignature />}
+    </div>
+  );
+}
+
+function CaseDevelopment() {
+  return (
+    <div className="p-4 space-y-4">
+      <FieldGroup title="Matter Information" rows={MATTER.matterInformation} />
+      <FieldGroup title="Retained" rows={MATTER.retained} />
+      <FieldGroup title="Property Information" rows={MATTER.propertyInformation} />
+    </div>
+  );
+}
+
+function FieldGroup({ title, rows }) {
+  return (
+    <div>
+      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5">
+        <span className="text-acs-blue">\u25BC</span> {title}
+      </div>
+      <div className="border border-t-0 border-sf-border rounded-b p-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5">
+        {rows.map((r, i) => (
+          <div key={i} className="text-[12.5px]">
+            <div className="text-[10.5px] uppercase tracking-wider text-gray-500 font-mont">{r.label}</div>
+            <div className="text-sf-navy font-medium mt-0.5 flex items-center gap-1.5">
+              {r.valueNode === 'PHASE_6_PRPA'
+                ? <span className="sf-pill sf-pill-gold">PHASE 6 \u00b7 PRPA</span>
+                : <span>{r.value}</span>}
+              <span className="text-gray-400 text-[11px] hover:text-acs-blue cursor-pointer">\u270F</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CaseOnboarding() {
+  return (
+    <div className="p-4">
+      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center gap-1.5">
+        <span className="text-acs-blue">\u25BC</span> Onboarding Checklist
+        <span className="ml-auto text-[11px] font-normal text-gray-500">{MATTER.onboarding.filter(o => o.complete).length}/{MATTER.onboarding.length} complete</span>
+      </div>
+      <div className="border border-t-0 border-sf-border rounded-b">
+        {MATTER.onboarding.map((o, i) => (
+          <div key={i} className="flex items-start gap-3 px-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-acs-light-blue">
+            <div className={`mt-0.5 w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center text-[11px] font-bold ${o.complete ? 'bg-acs-success text-white' : 'bg-white border border-gray-300 text-gray-400'}`}>
+              {o.complete ? '\u2713' : ''}
+            </div>
+            <div className="flex-1 text-[12.5px]">
+              <div className={o.complete ? 'text-gray-700' : 'text-acs-charcoal font-medium'}>{o.task}</div>
+              <div className="text-[11px] text-gray-500 mt-0.5">{o.owner} \u00b7 {o.date}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FilesESignature() {
+  return (
+    <div className="p-4">
+      <div className="bg-gray-50 px-3 py-2 font-mont text-[11.5px] font-bold text-sf-navy border border-sf-border rounded-t flex items-center justify-between">
+        <span className="flex items-center gap-1.5"><span className="text-acs-blue">\u25BC</span> Signed Documents ({MATTER.signedFiles.length})</span>
+        <button className="sf-action-btn">+ Send for Signature</button>
+      </div>
+      <div className="border border-t-0 border-sf-border rounded-b">
+        <table className="w-full text-[12.5px]">
+          <thead><tr className="text-left border-b border-sf-border text-gray-500 font-mont uppercase text-[11px] bg-gray-50">
+            <th className="py-1.5 px-2">Document</th><th className="py-1.5 px-2">Signed</th><th className="py-1.5 px-2">Signer</th><th className="py-1.5 px-2">Method</th><th className="py-1.5 px-2">Status</th>
+          </tr></thead>
+          <tbody>
+            {MATTER.signedFiles.map((f, i) => (
+              <tr key={i} className="border-b border-gray-100">
+                <td className="py-2 px-2 text-sf-blue">📄 {f.name}</td>
+                <td className="py-2 px-2 mono-num">{f.signed}</td>
+                <td className="py-2 px-2 text-[11.5px]">{f.signer}</td>
+                <td className="py-2 px-2 text-[11.5px]">{f.method}</td>
+                <td className="py-2 px-2"><span className={`sf-pill ${f.status === 'Complete' ? 'sf-pill-green' : 'sf-pill-gold'}`}>{f.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function NotesCard() {
+  return (
+    <div className="sf-card">
+      <div className="sf-card-header">
+        <span className="flex items-center gap-1.5"><span>📝</span> Notes ({MATTER.notes.length})</span>
+        <button className="text-[11px] font-normal text-sf-blue">+ New</button>
+      </div>
+      <div className="sf-card-body space-y-2.5">
+        {MATTER.notes.slice(0, 3).map((n, i) => (
+          <div key={i} className="border-l-2 border-acs-blue bg-acs-light-blue px-3 py-2 rounded">
+            <div className="flex justify-between items-baseline mb-1">
+              <span className="font-mont font-bold text-[11.5px] text-sf-navy">{n.author}</span>
+              <span className="text-[10.5px] text-gray-500 mono-num">{n.date}</span>
+            </div>
+            <div className="text-[11.5px] text-acs-charcoal leading-snug">{n.text}</div>
+          </div>
+        ))}
+        {MATTER.notes.length > 3 && (
+          <div className="text-center pt-1">
+            <button className="text-[11px] text-sf-blue font-mont font-semibold">View all ({MATTER.notes.length})</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MatterTimelineCard() {
+  const [tab, setTab] = React.useState('timeline');
+  return (
+    <div className="sf-card">
+      <div className="sf-card-header">
+        <span>Matter Timeline</span>
+        <div className="flex gap-1">
+          <button className="text-gray-400 hover:text-sf-blue text-[12px]">🔍</button>
+          <button className="text-gray-400 hover:text-sf-blue text-[12px]">+</button>
+          <button className="text-gray-400 hover:text-sf-blue text-[12px]">\u21BB</button>
+        </div>
+      </div>
+      <div className="border-b border-sf-border bg-white px-2 flex">
+        <button onClick={() => setTab('timeline')} className={`px-3 py-1.5 font-mont text-[11.5px] font-semibold border-b-2 flex items-center gap-1 ${tab === 'timeline' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
+          🕑 Timeline
+        </button>
+        <button onClick={() => setTab('chatter')} className={`px-3 py-1.5 font-mont text-[11.5px] font-semibold border-b-2 flex items-center gap-1 ${tab === 'chatter' ? 'border-sf-blue text-sf-navy' : 'border-transparent text-gray-500 hover:text-sf-navy'}`}>
+          💬 Chatter
+        </button>
+      </div>
+      <div className="sf-card-body">
+        {tab === 'timeline' && (
+          <>
+            {/* Upcoming & Overdue */}
+            <div className="bg-gray-50 px-2 py-1.5 font-mont text-[10.5px] font-bold text-sf-navy uppercase tracking-wider mb-2 border-l-2 border-acs-blue rounded">
+              \u25BC Upcoming & Overdue
+            </div>
+            <div className="space-y-2 mb-4">
+              {MATTER.upcomingTasks.map((t, i) => (
+                <div key={i} className={`flex items-start gap-2 px-2 py-1.5 rounded ${t.critical ? 'bg-red-50 border-l-2 border-acs-error' : 'hover:bg-gray-50'}`}>
+                  <input type="checkbox" className="mt-1 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className={`text-[12px] font-medium ${t.critical ? 'text-acs-error' : 'text-sf-blue'}`}>{t.name}</div>
+                    <div className="text-[10.5px] text-gray-500 mt-0.5">{t.owner}</div>
+                  </div>
+                  <div className={`text-[11px] font-mont font-bold mono-num flex-shrink-0 ${t.critical ? 'text-acs-error' : 'text-gray-600'}`}>{t.date}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Past events grouped */}
+            <div className="bg-gray-50 px-2 py-1.5 font-mont text-[10.5px] font-bold text-sf-navy uppercase tracking-wider mb-2 mt-3 rounded">
+              April \u2022 2026 \u2014 This Month
+            </div>
+            <div className="space-y-1.5">
+              {MATTER.timeline.slice(0, 8).map((t, i) => {
+                const dotCls = t.type === 'urgent' ? 'bg-acs-error' : t.type === 'milestone' ? 'bg-acs-gold' : t.type === 'future' ? 'bg-gray-300' : t.type === 'consult' ? 'bg-pink-400' : 'bg-acs-blue';
+                return (
+                  <div key={i} className="flex gap-2.5 relative">
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <div className={`w-2 h-2 rounded-full mt-1.5 ${dotCls}`}></div>
+                      {i < 7 && <div className="w-px bg-sf-border flex-1 my-1 min-h-[16px]"></div>}
+                    </div>
+                    <div className="flex-1 pb-1.5">
+                      <div className="font-mont text-[10.5px] font-bold text-sf-navy mono-num">{t.date}</div>
+                      <div className={`text-[11.5px] mt-0.5 leading-snug ${t.type === 'urgent' ? 'text-acs-error font-bold' : 'text-acs-charcoal'}`}>{t.event}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+        {tab === 'chatter' && (
+          <div className="space-y-2.5">
+            {MATTER.chatterUpdates.map((c, i) => (
+              <div key={i} className="flex gap-2 px-2 py-2 hover:bg-gray-50 rounded">
+                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-acs-blue text-white flex items-center justify-center font-bold text-[10px]">
+                  {c.actor.split(' ').map(s => s[0]).join('').slice(0, 2)}
+                </div>
+                <div className="flex-1">
+                  <div className="text-[11.5px]">
+                    <span className="font-bold text-sf-blue">{c.actor}</span>
+                    <span className="text-gray-500"> \u00b7 {c.action}</span>
+                  </div>
+                  <div className="text-[11px] text-gray-600 mt-0.5">{c.detail}</div>
+                  <div className="text-[10.5px] text-gray-400 mt-0.5 mono-num">{c.date}</div>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-        <div className="lg:col-span-1">
-          <div className="sf-card lg:sticky lg:top-3">
-            <div className="sf-card-header">
-              <span>📅 Timeline</span>
-              <span className="text-[11px] font-normal text-gray-500">{MATTER.timeline.length} events</span>
-            </div>
-            <div className="sf-card-body" style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
-              <div className="space-y-3">
-                {MATTER.timeline.map((t, i) => {
-                  const dotCls = t.type === 'urgent' ? 'bg-acs-error' : t.type === 'milestone' ? 'bg-acs-gold' : t.type === 'future' ? 'bg-gray-300' : t.type === 'consult' ? 'bg-pink-400' : 'bg-acs-blue';
-                  return (
-                    <div key={i} className="flex gap-2.5 relative">
-                      <div className="flex flex-col items-center flex-shrink-0">
-                        <div className={`w-2.5 h-2.5 rounded-full mt-1.5 ${dotCls}`}></div>
-                        {i < MATTER.timeline.length - 1 && <div className="w-px bg-sf-border flex-1 my-1 min-h-[20px]"></div>}
-                      </div>
-                      <div className="flex-1 pb-2">
-                        <div className="font-mont text-[11px] font-bold text-sf-navy mono-num">{t.date}</div>
-                        <div className={`text-[12px] mt-0.5 leading-snug ${t.type === 'urgent' ? 'text-acs-error font-bold' : 'text-acs-charcoal'}`}>{t.event}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
