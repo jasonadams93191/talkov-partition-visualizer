@@ -3901,10 +3901,7 @@ function BuildPlanTab() {
     { name: 'PRPA_Clock__c', justification: 'The four cascading PRPA clocks (10/30/45/60) keyed to the appraisal-receipt date. Auto-creates four child clock records with calculated due dates + escalation rules. CaseCloud Date_Calculation supports single-trigger calcs but not the cascade pattern PRPA requires.' },
   ];
 
-  const recommendedAdds = [
-    { name: 'Offer & Demands (combined object)', note: 'CaseCloud may already track this via Activity records or as part of the Settlement Calculator parties — verify with Bellopede first. If not native, build as Offer_Demand__c with kind picklist (Offer / Demand / Counter-Offer), date, from/to participants, amount, type, deadline, status. Talkov needs this to roll up into Settlement Calculator scenarios.' },
-    { name: 'Settlement Calculator field-set', note: 'CaseCloud likely has a Settlement Calculator component pattern (we mirrored the field grid Talkov uses today). Confirm with Bellopede whether it ships pre-built or is configured per-firm — partition implementation is a fields-and-rollup customization on top of advpm__Participant__c.' },
-  ];
+
 
   const sprints = [
     ['Sprint 0', '1', 'Org assessment, sandbox, brand pack, governance kickoff', 'Foundation'],
@@ -3950,14 +3947,7 @@ function BuildPlanTab() {
         ))}
       </div>
 
-      <h3 className="text-[18px] font-bold text-acs-blue mt-2 font-mont">Recommended adds — verify availability before building</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {recommendedAdds.map((r, i) => (
-          <div key={i} className="bg-white p-4 rounded-md border-l-4 border-gray-400 shadow-sm">
-            <div className="font-mont text-[13px] text-acs-charcoal font-bold mb-1">{r.name}</div>
-            <div className="text-[12.5px] text-acs-charcoal leading-relaxed">{r.note}</div>
-          </div>
-        ))}
+              ))}
       </div>
 
       <h3 className="text-[18px] font-bold text-acs-blue mt-3 font-mont">12-week sprint plan</h3>
